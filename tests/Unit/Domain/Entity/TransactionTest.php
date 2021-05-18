@@ -5,8 +5,8 @@ namespace CommissionsTest\Unit\Domain\Entity;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
-use Commissions\CalculatorContext\Domain\ValueObject\ClientType;
-use Commissions\CalculatorContext\Domain\ValueObject\OperationType;
+use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
+use Commissions\CalculatorContext\Domain\ValueObject\UserType;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -17,14 +17,13 @@ class TransactionTest extends TestCase
 {
     public function testCanCreateTransaction(): void
     {
-        $user = User::create(1);
+        $user = User::create(1, UserType::create(UserType::USER_TYPE_PRIVATE));
 
         $transaction = new Transaction(
             Uuid::uuid4(),
             new \DateTimeImmutable('2021-01-01 12:00:00'),
             $user,
-            ClientType::create(ClientType::CLIENT_TYPE_PRIVATE),
-            OperationType::create(OperationType::OPERATION_TYPE_DEPOSIT),
+            TransactionType::create(TransactionType::TRANSACTION_TYPE_DEPOSIT),
             Money::of('100.00', 'EUR')
         );
 

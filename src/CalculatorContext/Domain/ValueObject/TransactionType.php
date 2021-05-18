@@ -4,10 +4,10 @@ namespace Commissions\CalculatorContext\Domain\ValueObject;
 
 use Exception;
 
-class OperationType
+class TransactionType
 {
-    const OPERATION_TYPE_DEPOSIT  = 'deposit';
-    const OPERATION_TYPE_WITHDRAW = 'withdraw';
+    const TRANSACTION_TYPE_DEPOSIT  = 'deposit';
+    const TRANSACTION_TYPE_WITHDRAW = 'withdraw';
 
     private string $operationType;
 
@@ -18,7 +18,7 @@ class OperationType
         $this->operationType = $clientType;
     }
 
-    public static function create(string $operationType): OperationType
+    public static function create(string $operationType): TransactionType
     {
         if (!in_array($operationType, self::getOperationTypes())) {
             throw new Exception(sprintf('Operation type %s is not available', $operationType));
@@ -40,8 +40,8 @@ class OperationType
     public static function getOperationTypes(): array
     {
         return [
-            self::OPERATION_TYPE_DEPOSIT,
-            self::OPERATION_TYPE_WITHDRAW,
+            self::TRANSACTION_TYPE_DEPOSIT,
+            self::TRANSACTION_TYPE_WITHDRAW,
         ];
     }
 }

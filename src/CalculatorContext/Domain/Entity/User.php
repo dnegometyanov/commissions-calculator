@@ -2,20 +2,32 @@
 
 namespace Commissions\CalculatorContext\Domain\Entity;
 
+use Commissions\CalculatorContext\Domain\ValueObject\UserType;
+
 class User
 {
+    /**
+     * @var int
+     */
     private int $id;
 
+    /**
+     * @var UserType
+     */
+    private UserType $userType;
+
     private function __construct(
-        int $id
+        int $id,
+        UserType $userType
     )
     {
-        $this->id = $id;
+        $this->id       = $id;
+        $this->userType = $userType;
     }
 
-    public static function create(int $id): User
+    public static function create(int $id, UserType $userType): User
     {
-        return new self($id);
+        return new self($id, $userType);
     }
 
     public function getId(): int

@@ -4,10 +4,10 @@ namespace Commissions\CalculatorContext\Domain\ValueObject;
 
 use Exception;
 
-class ClientType
+class UserType
 {
-    const CLIENT_TYPE_PRIVATE  = 'private';
-    const CLIENT_TYPE_BUSINESS = 'business';
+    const USER_TYPE_PRIVATE  = 'private';
+    const USER_TYPE_BUSINESS = 'business';
 
     private string $clientType;
 
@@ -18,7 +18,7 @@ class ClientType
         $this->clientType = $clientType;
     }
 
-    public static function create(string $clientType): ClientType
+    public static function create(string $clientType): UserType
     {
         if (!in_array($clientType, self::getClientTypes())) {
             throw new Exception(sprintf('Client type %s is not available', $clientType));
@@ -40,8 +40,8 @@ class ClientType
     public static function getClientTypes(): array
     {
         return [
-            self::CLIENT_TYPE_PRIVATE,
-            self::CLIENT_TYPE_BUSINESS,
+            self::USER_TYPE_PRIVATE,
+            self::USER_TYPE_BUSINESS,
         ];
     }
 }

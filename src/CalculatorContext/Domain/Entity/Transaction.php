@@ -3,8 +3,7 @@
 namespace Commissions\CalculatorContext\Domain\Entity;
 
 use Brick\Money\Money;
-use Commissions\CalculatorContext\Domain\ValueObject\ClientType;
-use Commissions\CalculatorContext\Domain\ValueObject\OperationType;
+use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use DateTimeImmutable;
 use Ramsey\Uuid\UuidInterface;
 
@@ -23,14 +22,9 @@ class Transaction
     private User $user;
 
     /**
-     * @var ClientType
+     * @var TransactionType
      */
-    private ClientType $clientType;
-
-    /**
-     * @var OperationType
-     */
-    private OperationType $operationType;
+    private TransactionType $transactionType;
 
     /**
      * @var Money
@@ -41,17 +35,15 @@ class Transaction
         UuidInterface $uuid,
         DateTimeImmutable $dateTime,
         User $user,
-        ClientType $clientType,
-        OperationType $operationType,
+        TransactionType $operationType,
         Money $amount
     )
     {
-        $this->uuid          = $uuid;
-        $this->dateTime      = $dateTime;
-        $this->user          = $user;
-        $this->clientType    = $clientType;
-        $this->operationType = $operationType;
-        $this->amount        = $amount;
+        $this->uuid            = $uuid;
+        $this->dateTime        = $dateTime;
+        $this->user            = $user;
+        $this->transactionType = $operationType;
+        $this->amount          = $amount;
     }
 
     /**
@@ -79,19 +71,11 @@ class Transaction
     }
 
     /**
-     * @return ClientType
+     * @return TransactionType
      */
-    public function getClientType(): ClientType
+    public function getTransactionType(): TransactionType
     {
-        return $this->clientType;
-    }
-
-    /**
-     * @return OperationType
-     */
-    public function getOperationType(): OperationType
-    {
-        return $this->operationType;
+        return $this->transactionType;
     }
 
     /**
