@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  php-cli:
+    build: docker/php74-cli
+    working_dir: "/var/code/"
+    volumes:
+      - ./:/var/code:rw,cached
