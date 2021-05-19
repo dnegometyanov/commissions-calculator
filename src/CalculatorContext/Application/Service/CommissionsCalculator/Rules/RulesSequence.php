@@ -9,9 +9,9 @@ class RulesSequence
      */
     private array $rules;
 
-    public function __construct()
+    private function __construct(array $rules)
     {
-        $this->rules = [];
+        $this->rules = $rules;
     }
 
     /**
@@ -21,13 +21,9 @@ class RulesSequence
      *
      * @return $this
      */
-    public function createFromArray(array $rules): RulesSequence
+    public static function createFromArray(array $rules): RulesSequence
     {
-        // TODO validate elements type
-
-        $this->rules = $rules;
-
-        return $this;
+        return new self($rules);
     }
 
     /**

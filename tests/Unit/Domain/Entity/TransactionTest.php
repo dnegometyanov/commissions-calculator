@@ -10,9 +10,6 @@ use Commissions\CalculatorContext\Domain\ValueObject\UserType;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
-/**
- * Class TransactionTest
- */
 class TransactionTest extends TestCase
 {
     public function testCanCreateTransaction(): void
