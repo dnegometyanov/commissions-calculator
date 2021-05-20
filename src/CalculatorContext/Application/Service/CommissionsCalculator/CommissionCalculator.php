@@ -25,7 +25,7 @@ class CommissionCalculator implements CommissionCalculatorInterface
         UserCalculationStateRepositoryInterface $userCalculationStateRepository
     )
     {
-        $this->rulesSequence = $rulesSequence;
+        $this->rulesSequence                  = $rulesSequence;
         $this->userCalculationStateRepository = $userCalculationStateRepository;
     }
 
