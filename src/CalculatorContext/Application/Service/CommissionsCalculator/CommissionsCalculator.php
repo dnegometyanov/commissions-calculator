@@ -3,7 +3,6 @@
 namespace Commissions\CalculatorContext\Application\Service\CommissionsCalculator;
 
 use Commissions\CalculatorContext\Domain\Entity\CommissionList;
-use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\TransactionList;
 
 class CommissionsCalculator implements CommissionsCalculatorInterface

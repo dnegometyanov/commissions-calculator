@@ -51,7 +51,6 @@ class CommissionsCalculatorTest extends TestCase
         );
 
         $commissionCalculator = new CommissionCalculator($rulesSequence);
-
         $commissionsCalculator = new CommissionsCalculator($commissionCalculator);
 
         $commissionList      = $commissionsCalculator->calculateCommissions($transactionList);

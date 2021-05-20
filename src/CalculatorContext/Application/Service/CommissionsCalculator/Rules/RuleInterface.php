@@ -2,7 +2,7 @@
 
 namespace Commissions\CalculatorContext\Application\Service\CommissionsCalculator\Rules;
 
-use Brick\Money\Money;
+use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 
 interface RuleInterface
@@ -16,8 +16,9 @@ interface RuleInterface
 
     /**
      * @param Transaction $transaction
+     * @param UserCalculationState $userCalculationState
      *
-     * @return Money
+     * @return RuleResult
      */
-    public function calculateCommissionAmount(Transaction $transaction): Money;
+    public function calculateCommissionAmount(Transaction $transaction, UserCalculationState $userCalculationState): RuleResult;
 }
