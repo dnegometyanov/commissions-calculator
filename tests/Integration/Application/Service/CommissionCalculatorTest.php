@@ -3,6 +3,7 @@
 namespace CommissionsTest\Integration\Application\Service;
 
 use Brick\Money\Money;
+use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CalculationState\UserCalculationStateRepositoryDefault;
 use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CommissionCalculator;
 use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\Rules\CommonDepositRule;
 use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\Rules\RulesSequence;
@@ -35,7 +36,9 @@ class CommissionCalculatorTest extends TestCase
             ]
         );
 
-        $transactionCommissionCalculator = new CommissionCalculator($rulesSequence);
+        $userCalculationStateRepository = new UserCalculationStateRepositoryDefault();
+
+        $transactionCommissionCalculator = new CommissionCalculator($rulesSequence, $userCalculationStateRepository);
 
         $commission = $transactionCommissionCalculator->calculateCommissionForTransaction($transaction);
 
