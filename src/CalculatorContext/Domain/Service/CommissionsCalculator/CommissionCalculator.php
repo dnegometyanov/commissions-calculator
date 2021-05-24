@@ -37,13 +37,13 @@ class CommissionCalculator implements CommissionCalculatorInterface
             if ($rule->isSuitable($transaction)) {
                 $userCalculationState = $this->userCalculationStateRepository->getStateForUser($transaction->getUser());
 
-                $ruleResult              = $rule->calculateCommissionAmount($transaction, $userCalculationState);
+                $ruleResult = $rule->calculate($transaction, $userCalculationState);
 
                 $this->userCalculationStateRepository->persistStateForUser(
                     $transaction->getUser(),
                     $ruleResult->getUserCalculationState()
-                )
-                ;
+                );
+
                 $transactionCommissionAmount = $transactionCommissionAmount->plus($ruleResult->getCommissionAmount());
             }
         }

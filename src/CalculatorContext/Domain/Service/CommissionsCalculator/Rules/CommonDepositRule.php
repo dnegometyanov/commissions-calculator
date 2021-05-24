@@ -5,6 +5,7 @@ namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rul
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
+use Exception;
 
 class CommonDepositRule implements RuleInterface
 {
@@ -18,8 +19,16 @@ class CommonDepositRule implements RuleInterface
     }
 
     /** @inheritDoc */
-    public function calculateCommissionAmount(Transaction $transaction, UserCalculationState $userCalculationState): RuleResult
+    public function calculate(Transaction $transaction, UserCalculationState $userCalculationState): RuleResult
     {
+        if ($userCalculationState->isTransactionBeforeWeekRange($transaction)) {
+            throw new Exception(
+                sprintf('Transactions should be sorted in ascending order by date, error for transaction with id %s and date %s',
+                    (string)$transaction->getUuid(),
+                    $transaction->getDateTime()->format('Y-m-d H:i:s')
+                ));
+        }
+
         return new RuleResult(
             new UserCalculationState(), // TODO create new modified state
             $transaction->getAmount()->multipliedBy(self::DEPOSIT_COMMISSION_PERCENTAGE)

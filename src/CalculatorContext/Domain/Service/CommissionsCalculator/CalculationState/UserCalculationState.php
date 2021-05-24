@@ -3,6 +3,7 @@
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState;
 
 use Brick\Money\Money;
+use Commissions\CalculatorContext\Domain\Entity\Transaction;
 
 class UserCalculationState
 {
@@ -74,5 +75,20 @@ class UserCalculationState
     public function getWeekRange(): ?WeekRange
     {
         return $this->weekRange;
+    }
+
+    public function isTransactionWithinWeekRange(Transaction $transaction): bool
+    {
+        return $this->getWeekRange() !== null && $this->getWeekRange()->compareWithDateTime($transaction->getDateTime())->isWithin();
+    }
+
+    public function isTransactionBeforeWeekRange(Transaction $transaction): bool
+    {
+        return $this->getWeekRange() !== null && $this->getWeekRange()->compareWithDateTime($transaction->getDateTime())->isBefore();
+    }
+
+    public function isTransactionAfterWeekRange(Transaction $transaction): bool
+    {
+        return $this->getWeekRange() !== null && $this->getWeekRange()->compareWithDateTime($transaction->getDateTime())->isAfter();
     }
 }

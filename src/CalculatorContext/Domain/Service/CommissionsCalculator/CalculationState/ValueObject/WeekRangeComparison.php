@@ -22,11 +22,6 @@ class WeekRangeComparison
         $this->value = $value;
     }
 
-    public function is(string $value): bool
-    {
-        return $this->value === $value;
-    }
-
     public static function within(): WeekRangeComparison
     {
         return new WeekRangeComparison(self::COMPARE_DATETIME_TO_WEEK_RANGE_WITHIN);
@@ -40,6 +35,21 @@ class WeekRangeComparison
     public static function after(): WeekRangeComparison
     {
         return new WeekRangeComparison(self::COMPARE_DATETIME_TO_WEEK_RANGE_AFTER);
+    }
+
+    public function isWithin(): bool
+    {
+        return $this->value === self::COMPARE_DATETIME_TO_WEEK_RANGE_WITHIN;
+    }
+
+    public function isBefore(): bool
+    {
+        return $this->value === self::COMPARE_DATETIME_TO_WEEK_RANGE_BEFORE;
+    }
+
+    public function isAfter(): bool
+    {
+        return $this->value === self::COMPARE_DATETIME_TO_WEEK_RANGE_AFTER;
     }
 
     private function getWeekRangeComparisonOptions(): array

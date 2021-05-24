@@ -7,10 +7,6 @@ use DateTimeImmutable;
 
 class WeekRange
 {
-    const COMPARE_DATETIME_TO_WEEK_RANGE_WITHIN = 'within';
-    const COMPARE_DATETIME_TO_WEEK_RANGE_AFTER  = 'after';
-    const COMPARE_DATETIME_TO_WEEK_RANGE_BEFORE = 'before';
-
     private ?DateTimeImmutable $dateWeekStart;
     private ?DateTimeImmutable $dateWeekEnd;
 

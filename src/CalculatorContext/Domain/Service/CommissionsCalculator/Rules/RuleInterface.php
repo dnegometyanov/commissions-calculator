@@ -20,5 +20,5 @@ interface RuleInterface
      *
      * @return RuleResult
      */
-    public function calculateCommissionAmount(Transaction $transaction, UserCalculationState $userCalculationState): RuleResult;
+    public function calculate(Transaction $transaction, UserCalculationState $userCalculationState): RuleResult;
 }
