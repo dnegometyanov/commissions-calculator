@@ -1,17 +1,30 @@
 <?php declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CalculationState;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState;
 
 use Brick\Money\Money;
 
 class UserCalculationState
 {
+    /**
+     * @var int
+     */
     private int $weeklyTransactionsProcessed;
+
+    /**
+     * @var Money|null
+     */
     private Money $weeklyAmount;
+
+    /**
+     * @var WeekRange|null
+     */
+    private ?WeekRange $weekRange;
 
     public function __construct(
         int $weeklyTransactionsProcessed = 0,
-        ?Money $weeklyAmount = null
+        ?Money $weeklyAmount = null,
+        WeekRange $weekRange = null
     )
     {
         if ($weeklyAmount === null) {
@@ -20,6 +33,7 @@ class UserCalculationState
 
         $this->weeklyTransactionsProcessed = $weeklyTransactionsProcessed;
         $this->weeklyAmount                = $weeklyAmount;
+        $this->weekRange                   = $weekRange;
     }
 
     /**
@@ -52,5 +66,13 @@ class UserCalculationState
     public function setWeeklyAmount(Money $weeklyAmount): void
     {
         $this->weeklyAmount = $weeklyAmount;
+    }
+
+    /**
+     * @return WeekRange|null
+     */
+    public function getWeekRange(): ?WeekRange
+    {
+        return $this->weekRange;
     }
 }

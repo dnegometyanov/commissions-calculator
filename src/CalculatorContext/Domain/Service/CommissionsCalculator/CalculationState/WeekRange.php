@@ -1,11 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CalculationState;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState;
 
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRangeComparison;
 use DateTimeImmutable;
 
 class WeekRange
 {
+    const COMPARE_DATETIME_TO_WEEK_RANGE_WITHIN = 'within';
+    const COMPARE_DATETIME_TO_WEEK_RANGE_AFTER  = 'after';
+    const COMPARE_DATETIME_TO_WEEK_RANGE_BEFORE = 'before';
+
     private ?DateTimeImmutable $dateWeekStart;
     private ?DateTimeImmutable $dateWeekEnd;
 
@@ -15,7 +20,7 @@ class WeekRange
     )
     {
         $this->dateWeekStart = $dateWeekStart;
-        $this->dateWeekEnd = $dateWeekEnd;
+        $this->dateWeekEnd   = $dateWeekEnd;
     }
 
     public static function createFromDate(DateTimeImmutable $datetime): WeekRange
@@ -24,6 +29,18 @@ class WeekRange
             new DateTimeImmutable(date('Y-m-d 00:00:00', strtotime('monday this week', $datetime->getTimestamp()))),
             new DateTimeImmutable(date('Y-m-d 23:59:59', strtotime('sunday this week', $datetime->getTimestamp()))),
         );
+    }
+
+    public function compareWithDateTime(DateTimeImmutable $datetime): WeekRangeComparison
+    {
+        switch (true) {
+            case $datetime < $this->dateWeekStart:
+                return WeekRangeComparison::before();
+            case $datetime > $this->dateWeekStart:
+                return WeekRangeComparison::after();
+            default:
+                return WeekRangeComparison::within();
+        }
     }
 
     /**

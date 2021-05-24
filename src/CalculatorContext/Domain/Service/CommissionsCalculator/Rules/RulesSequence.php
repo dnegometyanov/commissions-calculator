@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Application\Service\CommissionsCalculator\Rules;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
 class RulesSequence
 {

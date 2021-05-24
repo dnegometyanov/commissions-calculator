@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Application\Service\CommissionsCalculator;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator;
 
 use Commissions\CalculatorContext\Domain\Entity\Commission;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;

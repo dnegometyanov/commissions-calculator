@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Application\Service\CommissionsCalculator\Rules;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
-use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 
-class CommonWithdrawRule implements RuleInterface
+class CommonDepositRule implements RuleInterface
 {
-    const WITHDRAW_COMMISSION_PERCENTAGE = '0.003';
+    const DEPOSIT_COMMISSION_PERCENTAGE = '0.003';
 
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
     {
-        return $transaction->getTransactionType()->is(TransactionType::TRANSACTION_TYPE_WITHDRAW);
+        return $transaction->getTransactionType()->is(TransactionType::TRANSACTION_TYPE_DEPOSIT);
 
     }
 
@@ -22,7 +22,7 @@ class CommonWithdrawRule implements RuleInterface
     {
         return new RuleResult(
             new UserCalculationState(), // TODO create new modified state
-            $transaction->getAmount()->multipliedBy(self::WITHDRAW_COMMISSION_PERCENTAGE)
+            $transaction->getAmount()->multipliedBy(self::DEPOSIT_COMMISSION_PERCENTAGE)
         );
     }
 }

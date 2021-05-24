@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CalculationState;
+namespace Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator;
 
 use Commissions\CalculatorContext\Domain\Entity\User;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 
 interface UserCalculationStateRepositoryInterface
 {

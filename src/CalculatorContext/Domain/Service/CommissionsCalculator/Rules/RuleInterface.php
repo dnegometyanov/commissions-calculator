@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Application\Service\CommissionsCalculator\Rules;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
-use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 
 interface RuleInterface
 {

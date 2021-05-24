@@ -1,16 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace CommissionsTest\Integration\Application\Service;
+namespace CommissionsTest\Integration\Domain\Service\CommissionsCalculator;
 
 use Brick\Money\Money;
-use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CalculationState\UserCalculationStateRepositoryDefault;
-use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CommissionCalculator;
-use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CommissionsCalculator;
-use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\Rules\CommonDepositRule;
-use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\Rules\RulesSequence;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\TransactionList;
 use Commissions\CalculatorContext\Domain\Entity\User;
+use Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryDefault;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionCalculator;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionsCalculator;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\CommonDepositRule;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Commissions\CalculatorContext\Domain\ValueObject\UserType;
 use PHPUnit\Framework\TestCase;

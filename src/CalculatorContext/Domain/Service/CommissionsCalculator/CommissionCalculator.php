@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Application\Service\CommissionsCalculator;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator;
 
 use Brick\Money\Money;
-use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\CalculationState\UserCalculationStateRepositoryInterface;
-use Commissions\CalculatorContext\Application\Service\CommissionsCalculator\Rules\RulesSequence;
 use Commissions\CalculatorContext\Domain\Entity\Commission;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
+use Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryInterface;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence;
 
 class CommissionCalculator implements CommissionCalculatorInterface
 {
