@@ -3,6 +3,7 @@
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
 use Brick\Money\Money;
+use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeekRange;
@@ -13,6 +14,18 @@ class PrivateWithdrawRule implements RuleInterface
     const WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE   = '0.003';
     const WITHDRAW_PRIVATE_WEEKLY_FREE_AMOUNT             = '1000';
     const WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT = 3;
+
+    /**
+     * @var ExchangeRates
+     */
+    private ExchangeRates $exchangeRates;
+
+    public function __construct(
+        ExchangeRates $exchangeRates
+    )
+    {
+        $this->exchangeRates = $exchangeRates;
+    }
 
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool

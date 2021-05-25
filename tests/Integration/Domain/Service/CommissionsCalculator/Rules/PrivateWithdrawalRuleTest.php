@@ -3,6 +3,7 @@
 namespace CommissionsTest\Integration\Domain\Service\CommissionsCalculator\Rules;
 
 use Brick\Money\Money;
+use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
@@ -56,7 +57,16 @@ class PrivateWithdrawalRuleTest extends TestCase
             $stateWeekRange
         );
 
-        $privateWithdrawalRule = new PrivateWithdrawRule();
+        $exchangeRates = new ExchangeRates(
+            'EUR',
+            new DateTimeImmutable('2021-05-01'),
+            [
+                'JPY' => '133.181359',
+                'USD' => '1.22469',
+            ]
+        );
+
+        $privateWithdrawalRule = new PrivateWithdrawRule($exchangeRates);
 
         $ruleResult = $privateWithdrawalRule->calculate($transaction, $userCalculationState);
 
@@ -176,7 +186,16 @@ class PrivateWithdrawalRuleTest extends TestCase
             $stateWeekRange
         );
 
-        $privateWithdrawalRule = new PrivateWithdrawRule();
+        $exchangeRates = new ExchangeRates(
+            'EUR',
+            new DateTimeImmutable('2021-05-01'),
+            [
+                'JPY' => '133.181359',
+                'USD' => '1.22469',
+            ]
+        );
+
+        $privateWithdrawalRule = new PrivateWithdrawRule($exchangeRates);
 
         $privateWithdrawalRule->calculate($transaction, $userCalculationState);
     }
