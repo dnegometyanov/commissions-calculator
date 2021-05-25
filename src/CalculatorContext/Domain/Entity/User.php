@@ -34,4 +34,12 @@ class User
     {
         return $this->id;
     }
+
+    /**
+     * @return UserType
+     */
+    public function getUserType(): UserType
+    {
+        return $this->userType;
+    }
 }

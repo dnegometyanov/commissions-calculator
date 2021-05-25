@@ -32,9 +32,14 @@ class UserType
         return $this->clientType;
     }
 
-    public function is(string $clientType): bool
+    public function isPrivate(): bool
     {
-        return $this->clientType === $clientType;
+        return $this->clientType === self::USER_TYPE_PRIVATE;
+    }
+
+    public function isBusiness(): bool
+    {
+        return $this->clientType === self::USER_TYPE_BUSINESS;
     }
 
     public static function getClientTypes(): array
