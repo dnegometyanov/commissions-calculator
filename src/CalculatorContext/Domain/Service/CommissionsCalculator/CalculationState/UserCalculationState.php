@@ -89,6 +89,7 @@ class UserCalculationState
 
     public function isTransactionAfterWeekRange(Transaction $transaction): bool
     {
+//        echo "NULL"; var_dump($this->getWeekRange() !== null); exit;
         return $this->getWeekRange() !== null && $this->getWeekRange()->compareWithDateTime($transaction->getDateTime())->isAfter();
     }
 }

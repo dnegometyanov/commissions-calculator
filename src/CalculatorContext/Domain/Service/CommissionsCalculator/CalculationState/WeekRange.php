@@ -32,7 +32,7 @@ class WeekRange
         switch (true) {
             case $datetime < $this->dateWeekStart:
                 return WeekRangeComparison::before();
-            case $datetime > $this->dateWeekStart:
+            case $datetime > $this->dateWeekEnd:
                 return WeekRangeComparison::after();
             default:
                 return WeekRangeComparison::within();
@@ -53,5 +53,18 @@ class WeekRange
     public function getDateWeekEnd(): DateTimeImmutable
     {
         return $this->dateWeekEnd;
+    }
+
+    public function __toString(): string
+    {
+        if ($this->dateWeekStart === null or $this->dateWeekEnd === null) {
+            return '';
+        }
+
+        return sprintf(
+            '%s - %s',
+            $this->dateWeekStart->format('Y-m-d H:i:s'),
+            $this->dateWeekEnd->format('Y-m-d H:i:s')
+        );
     }
 }

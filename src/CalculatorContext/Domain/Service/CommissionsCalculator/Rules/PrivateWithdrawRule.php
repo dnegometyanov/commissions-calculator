@@ -24,6 +24,13 @@ class PrivateWithdrawRule implements RuleInterface
     /** @inheritDoc */
     public function calculate(Transaction $transaction, UserCalculationState $userCalculationState): RuleResult
     {
+//        var_dump('WeeklyRange ' . (string)$userCalculationState->getWeekRange());
+//        var_dump('WeeklyAmount1 ' . (string)$userCalculationState->getWeeklyAmount());
+//        var_dump('TransactionDate ' . $transaction->getDateTime()->format('Y-m-d H:i:s'));
+//        var_dump($userCalculationState->isTransactionWithinWeekRange($transaction));
+//        var_dump($userCalculationState->isTransactionAfterWeekRange($transaction));
+//        var_dump($userCalculationState->isTransactionBeforeWeekRange($transaction));
+//exit;
         switch (true) {
             case $userCalculationState->isTransactionBeforeWeekRange($transaction):
                 throw new \Exception(
@@ -32,24 +39,28 @@ class PrivateWithdrawRule implements RuleInterface
                         $transaction->getDateTime()->format('Y-m-d H:i:s')
                     ));
             case $userCalculationState->isTransactionAfterWeekRange($transaction):
-            default:
                 $userCalculationState = new UserCalculationState(
                     0,
-                    $transaction->getAmount(),
+                    Money::of('0', 'EUR'),
                     WeekRange::createFromDate($transaction->getDateTime())
                 );
                 break;
         }
 
         $limitAmount = Money::of(self::WITHDRAW_PRIVATE_WEEKLY_FREE_AMOUNT, 'EUR');
-
+//        var_dump('WeeklyAmount2 ' . (string)$userCalculationState->getWeeklyAmount());
+//        var_dump('LimitAmount ' . (string)$limitAmount);
         $overLimitAmount = $userCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
             ? $transaction->getAmount()
-            : $limitAmount->minus($userCalculationState->getWeeklyAmount());
+            : $userCalculationState->getWeeklyAmount()->plus($transaction->getAmount())->minus($limitAmount);
 
+//        var_dump('OverLimitAmount1 ' . (string)$overLimitAmount);
         if ($overLimitAmount->isNegative()) {
             $overLimitAmount = Money::of(0, 'EUR');
         }
+
+//        var_dump('OverLimitAmount2 ' . (string)$overLimitAmount);
+//        exit;
 
         $commissionAmount = $overLimitAmount->multipliedBy(self::WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE);
 
