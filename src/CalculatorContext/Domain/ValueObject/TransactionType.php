@@ -9,18 +9,18 @@ class TransactionType
     const TRANSACTION_TYPE_DEPOSIT  = 'deposit';
     const TRANSACTION_TYPE_WITHDRAW = 'withdraw';
 
-    private string $operationType;
+    private string $transactionType;
 
     private function __construct(
-        string $clientType
+        string $transactionType
     )
     {
-        $this->operationType = $clientType;
+        $this->transactionType = $transactionType;
     }
 
     public static function create(string $operationType): TransactionType
     {
-        if (!in_array($operationType, self::getOperationTypes())) {
+        if (!in_array($operationType, self::getTransactionTypes())) {
             throw new Exception(sprintf('Operation type %s is not available', $operationType));
         }
 
@@ -29,15 +29,15 @@ class TransactionType
 
     public function getValue(): string
     {
-        return $this->operationType;
+        return $this->transactionType;
     }
 
     public function is(string $operationType): bool
     {
-        return $this->operationType === $operationType;
+        return $this->transactionType === $operationType;
     }
 
-    public static function getOperationTypes(): array
+    public static function getTransactionTypes(): array
     {
         return [
             self::TRANSACTION_TYPE_DEPOSIT,
