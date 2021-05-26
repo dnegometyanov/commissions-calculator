@@ -2,6 +2,7 @@
 
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
+use Brick\Math\RoundingMode;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
@@ -30,12 +31,7 @@ class BusinessWithdrawRule implements RuleInterface
                 ));
         }
 
-        $commissionAmount = $transaction->getAmount()->multipliedBy(self::WITHDRAW_BUSINESS_COMMON_COMMISSION_PERCENTAGE);
-
-        return new RuleResult(
-            new UserCalculationState(), // TODO create new modified state
-            $transaction->getAmount()->multipliedBy(self::WITHDRAW_BUSINESS_COMMON_COMMISSION_PERCENTAGE)
-        );
+        $commissionAmount = $transaction->getAmount()->multipliedBy(self::WITHDRAW_BUSINESS_COMMON_COMMISSION_PERCENTAGE,RoundingMode::HALF_UP);
 
         return new RuleResult(
             $userCalculationState,

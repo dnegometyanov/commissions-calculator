@@ -2,6 +2,7 @@
 
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
+use Brick\Math\RoundingMode;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
@@ -31,7 +32,7 @@ class CommonDepositRule implements RuleInterface
 
         return new RuleResult(
             new UserCalculationState(), // TODO create new modified state
-            $transaction->getAmount()->multipliedBy(self::DEPOSIT_COMMISSION_PERCENTAGE)
+            $transaction->getAmount()->multipliedBy(self::DEPOSIT_COMMISSION_PERCENTAGE, RoundingMode::HALF_UP)
         );
     }
 }
