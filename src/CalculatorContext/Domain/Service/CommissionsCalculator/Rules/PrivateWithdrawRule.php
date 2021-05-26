@@ -2,12 +2,14 @@
 
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
+use Brick\Math\RoundingMode;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeekRange;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
+use Exception;
 
 class PrivateWithdrawRule implements RuleInterface
 {
@@ -37,16 +39,9 @@ class PrivateWithdrawRule implements RuleInterface
     /** @inheritDoc */
     public function calculate(Transaction $transaction, UserCalculationState $userCalculationState): RuleResult
     {
-//        var_dump('WeeklyRange ' . (string)$userCalculationState->getWeekRange());
-//        var_dump('WeeklyAmount1 ' . (string)$userCalculationState->getWeeklyAmount());
-//        var_dump('TransactionDate ' . $transaction->getDateTime()->format('Y-m-d H:i:s'));
-//        var_dump($userCalculationState->isTransactionWithinWeekRange($transaction));
-//        var_dump($userCalculationState->isTransactionAfterWeekRange($transaction));
-//        var_dump($userCalculationState->isTransactionBeforeWeekRange($transaction));
-//exit;
         switch (true) {
             case $userCalculationState->isTransactionBeforeWeekRange($transaction):
-                throw new \Exception(
+                throw new Exception(
                     sprintf('Transactions should be sorted in ascending order by date, error for transaction with id %s and date %s',
                         (string)$transaction->getUuid(),
                         $transaction->getDateTime()->format('Y-m-d H:i:s')
@@ -61,25 +56,44 @@ class PrivateWithdrawRule implements RuleInterface
         }
 
         $limitAmount = Money::of(self::WITHDRAW_PRIVATE_WEEKLY_FREE_AMOUNT, 'EUR');
-//        var_dump('WeeklyAmount2 ' . (string)$userCalculationState->getWeeklyAmount());
-//        var_dump('LimitAmount ' . (string)$limitAmount);
-        $overLimitAmount = $userCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
-            ? $transaction->getAmount()
-            : $userCalculationState->getWeeklyAmount()->plus($transaction->getAmount())->minus($limitAmount);
 
-//        var_dump('OverLimitAmount1 ' . (string)$overLimitAmount);
+        $transactionCurrencyCode = $transaction->getAmount()->getCurrency()->getCurrencyCode();
+        $baseCurrencyCode        = 'EUR';
+
+        if ($transactionCurrencyCode === $baseCurrencyCode) {
+            $transactionAmountBaseCurrency = $transaction->getAmount();
+
+            $overLimitAmount = $userCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
+                ? $transaction->getAmount()
+                : $userCalculationState->getWeeklyAmount()->plus($transactionAmountBaseCurrency)->minus($limitAmount);
+        } else {
+            $exchangeRate = $this->exchangeRates->getRate($transactionCurrencyCode) ?? null;
+            if ($exchangeRate === null) {
+                throw new Exception(sprintf('Exchange rate for currency code %s not found', $transactionCurrencyCode));
+            }
+
+            $transactionAmountBaseCurrency = Money::of(
+                $transaction->getAmount()->dividedBy($exchangeRate, RoundingMode::HALF_UP)->getAmount(), // TODO think on rounding
+                'EUR'
+            );
+
+            $overLimitAmount = $userCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
+                ? $transaction->getAmount()
+                : $userCalculationState->getWeeklyAmount()
+                    ->plus($transactionAmountBaseCurrency)
+                    ->minus($limitAmount)
+                    ->multipliedBy($exchangeRate, RoundingMode::HALF_UP);
+        }
+
         if ($overLimitAmount->isNegative()) {
             $overLimitAmount = Money::of(0, 'EUR');
         }
 
-//        var_dump('OverLimitAmount2 ' . (string)$overLimitAmount);
-//        exit;
-
-        $commissionAmount = $overLimitAmount->multipliedBy(self::WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE);
+        $commissionAmount = $overLimitAmount->multipliedBy(self::WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE, RoundingMode::HALF_UP);
 
         $userCalculationState = new UserCalculationState(
             $userCalculationState->getWeeklyTransactionsProcessed() + 1,
-            $userCalculationState->getWeeklyAmount()->plus($transaction->getAmount()),
+            $userCalculationState->getWeeklyAmount()->plus($transactionAmountBaseCurrency),
             WeekRange::createFromDate($transaction->getDateTime())
         );
 
