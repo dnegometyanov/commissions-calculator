@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
@@ -20,9 +22,7 @@ class RuleResult
     public function __construct(
         UserCalculationState $userCalculationState,
         Money $commissionAmount
-    )
-    {
-
+    ) {
         $this->userCalculationState = $userCalculationState;
         $this->commissionAmount     = $commissionAmount;
     }

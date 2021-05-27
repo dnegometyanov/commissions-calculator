@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Entity;
 
@@ -19,8 +21,7 @@ class Commission
     public function __construct(
         Transaction $transaction,
         Money $amount
-    )
-    {
+    ) {
         $this->transaction = $transaction;
         $this->amount      = $amount;
     }

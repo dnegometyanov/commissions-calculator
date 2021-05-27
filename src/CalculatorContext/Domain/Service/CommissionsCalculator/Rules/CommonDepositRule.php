@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
@@ -10,13 +12,12 @@ use Exception;
 
 class CommonDepositRule implements RuleInterface
 {
-    const DEPOSIT_COMMISSION_PERCENTAGE = '0.003';
+    public const DEPOSIT_COMMISSION_PERCENTAGE = '0.003';
 
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
     {
         return $transaction->getTransactionType()->is(TransactionType::TRANSACTION_TYPE_DEPOSIT);
-
     }
 
     /** @inheritDoc */
@@ -24,10 +25,12 @@ class CommonDepositRule implements RuleInterface
     {
         if ($userCalculationState->isTransactionBeforeWeekRange($transaction)) {
             throw new Exception(
-                sprintf('Transactions should be sorted in ascending order by date, error for transaction with id %s and date %s',
+                sprintf(
+                    'Transactions should be sorted in ascending order by date, error for transaction with id %s and date %s',
                     (string)$transaction->getUuid(),
                     $transaction->getDateTime()->format('Y-m-d H:i:s')
-                ));
+                )
+            );
         }
 
         return new RuleResult(

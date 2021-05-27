@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState;
 
@@ -26,8 +28,7 @@ class UserCalculationState
         int $weeklyTransactionsProcessed = 0,
         ?Money $weeklyAmount = null,
         WeekRange $weekRange = null
-    )
-    {
+    ) {
         if ($weeklyAmount === null) {
             $weeklyAmount = Money::zero('EUR');
         }

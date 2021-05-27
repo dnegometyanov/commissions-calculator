@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\ValueObject;
 
@@ -6,21 +8,20 @@ use Exception;
 
 class UserType
 {
-    const USER_TYPE_PRIVATE  = 'private';
-    const USER_TYPE_BUSINESS = 'business';
+    public const USER_TYPE_PRIVATE  = 'private';
+    public const USER_TYPE_BUSINESS = 'business';
 
     private string $clientType;
 
     private function __construct(
         string $clientType
-    )
-    {
+    ) {
         $this->clientType = $clientType;
     }
 
     public static function create(string $clientType): UserType
     {
-        if (!in_array($clientType, self::getClientTypes())) {
+        if (!in_array($clientType, self::getClientTypes(), true)) {
             throw new Exception(sprintf('Client type %s is not available', $clientType));
         }
 

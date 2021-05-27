@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Entity;
 
@@ -25,8 +27,7 @@ class ExchangeRates
         string $baseCurrencyCode,
         DateTimeImmutable $dateUpdated,
         array $rates
-    )
-    {
+    ) {
         $this->baseCurrencyCode = $baseCurrencyCode;
         $this->dateUpdated      = $dateUpdated;
         $this->rates            = $rates;

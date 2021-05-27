@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Entity;
 
@@ -37,8 +39,7 @@ class Transaction
         User $user,
         TransactionType $operationType,
         Money $amount
-    )
-    {
+    ) {
         $this->uuid            = $uuid;
         $this->dateTime        = $dateTime;
         $this->user            = $user;

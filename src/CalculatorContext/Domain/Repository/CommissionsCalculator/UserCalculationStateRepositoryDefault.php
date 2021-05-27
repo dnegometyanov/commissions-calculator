@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator;
 
@@ -20,7 +22,6 @@ class UserCalculationStateRepositoryDefault implements UserCalculationStateRepos
     public function persistStateForUser(User $user, UserCalculationState $userCalculationState): void
     {
         $this->userCalculationStatesGroupedByUser[$user->getId()] = $userCalculationState;
-
     }
 
     public function getStateForUser(User $user): UserCalculationState

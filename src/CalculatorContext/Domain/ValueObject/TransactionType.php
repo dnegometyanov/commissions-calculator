@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\ValueObject;
 
@@ -6,21 +8,20 @@ use Exception;
 
 class TransactionType
 {
-    const TRANSACTION_TYPE_DEPOSIT  = 'deposit';
-    const TRANSACTION_TYPE_WITHDRAW = 'withdraw';
+    public const TRANSACTION_TYPE_DEPOSIT  = 'deposit';
+    public const TRANSACTION_TYPE_WITHDRAW = 'withdraw';
 
     private string $transactionType;
 
     private function __construct(
         string $transactionType
-    )
-    {
+    ) {
         $this->transactionType = $transactionType;
     }
 
     public static function create(string $operationType): TransactionType
     {
-        if (!in_array($operationType, self::getTransactionTypes())) {
+        if (!in_array($operationType, self::getTransactionTypes(), true)) {
             throw new Exception(sprintf('Operation type %s is not available', $operationType));
         }
 

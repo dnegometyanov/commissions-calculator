@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace CommissionsTest\Integration\Domain\Service\CommissionsCalculator\Rules;
 
@@ -39,8 +41,7 @@ class PrivateWithdrawalRuleTest extends TestCase
         TransactionType $transactionType,
         Money $transactionAmount,
         string $expectedCommission
-    ): void
-    {
+    ): void {
         $user = User::create(1, UserType::create(UserType::USER_TYPE_PRIVATE));
 
         $transaction = new Transaction(
@@ -183,8 +184,7 @@ class PrivateWithdrawalRuleTest extends TestCase
         Money $transactionAmount,
         string $expectedExceptionClass,
         string $expectedExceptionMessage
-    ): void
-    {
+    ): void {
         $this->expectException($expectedExceptionClass);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
@@ -243,5 +243,4 @@ class PrivateWithdrawalRuleTest extends TestCase
             ],
         ];
     }
-
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator;
 
@@ -14,8 +16,7 @@ class CommissionsCalculator implements CommissionsCalculatorInterface
 
     public function __construct(
         CommissionCalculator $commissionCalculator
-    )
-    {
+    ) {
         $this->commissionCalculator = $commissionCalculator;
     }
 

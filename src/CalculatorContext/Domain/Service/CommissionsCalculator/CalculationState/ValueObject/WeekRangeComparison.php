@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject;
 
@@ -15,7 +17,7 @@ class WeekRangeComparison
 
     private function __construct(string $value)
     {
-        if (!in_array($value, $this->getWeekRangeComparisonOptions())) {
+        if (!in_array($value, $this->getWeekRangeComparisonOptions(), true)) {
             throw new \Exception(sprintf('Invalid WeekRangeComparison value %s', $value));
         }
 

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
@@ -13,9 +15,9 @@ use Exception;
 
 class PrivateWithdrawRule implements RuleInterface
 {
-    const WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE   = '0.003';
-    const WITHDRAW_PRIVATE_WEEKLY_FREE_AMOUNT             = '1000';
-    const WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT = 3;
+    public const WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE   = '0.003';
+    public const WITHDRAW_PRIVATE_WEEKLY_FREE_AMOUNT             = '1000';
+    public const WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT = 3;
 
     /**
      * @var ExchangeRates
@@ -27,8 +29,7 @@ class PrivateWithdrawRule implements RuleInterface
      */
     public function __construct(
         ExchangeRates $exchangeRates
-    )
-    {
+    ) {
         $this->exchangeRates = $exchangeRates;
     }
 
@@ -45,10 +46,12 @@ class PrivateWithdrawRule implements RuleInterface
         switch (true) {
             case $userCalculationState->isTransactionBeforeWeekRange($transaction):
                 throw new Exception(
-                    sprintf('Transactions should be sorted in ascending order by date, error for transaction with id %s and date %s',
+                    sprintf(
+                        'Transactions should be sorted in ascending order by date, error for transaction with id %s and date %s',
                         (string)$transaction->getUuid(),
                         $transaction->getDateTime()->format('Y-m-d H:i:s')
-                    ));
+                    )
+                );
             case $userCalculationState->isTransactionAfterWeekRange($transaction):
                 $userCalculationState = new UserCalculationState(
                     0,

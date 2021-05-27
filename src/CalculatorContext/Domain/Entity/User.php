@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Entity;
 
@@ -19,8 +21,7 @@ class User
     private function __construct(
         int $id,
         UserType $userType
-    )
-    {
+    ) {
         $this->id       = $id;
         $this->userType = $userType;
     }

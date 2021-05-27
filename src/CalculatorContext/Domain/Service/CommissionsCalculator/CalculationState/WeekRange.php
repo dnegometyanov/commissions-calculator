@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState;
 
@@ -13,8 +15,7 @@ class WeekRange
     private function __construct(
         ?DateTimeImmutable $dateWeekStart = null,
         ?DateTimeImmutable $dateWeekEnd = null
-    )
-    {
+    ) {
         $this->dateWeekStart = $dateWeekStart;
         $this->dateWeekEnd   = $dateWeekEnd;
     }
