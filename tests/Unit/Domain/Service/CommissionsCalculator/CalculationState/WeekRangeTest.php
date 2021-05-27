@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CommissionsTest\Integration\Domain\Service\CommissionsCalculator\CalculationState;
+namespace CommissionsTest\Unit\Domain\Service\CommissionsCalculator\CalculationState;
 
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeekRange;
 use DateTimeImmutable;

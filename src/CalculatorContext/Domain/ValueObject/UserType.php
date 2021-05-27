@@ -8,20 +8,57 @@ use Exception;
 
 class UserType
 {
-    public const USER_TYPE_PRIVATE  = 'private';
-    public const USER_TYPE_BUSINESS = 'business';
+    private const USER_TYPE_PRIVATE  = 'private';
+    private const USER_TYPE_BUSINESS = 'business';
+
+    private const USER_TYPES = [
+        self::USER_TYPE_PRIVATE,
+        self::USER_TYPE_BUSINESS,
+    ];
 
     /**
      * @var string
      */
-    private string $clientType;
+    private string $userType;
 
     /**
-     * @param string $clientType
+     * @param string $userType
      */
-    private function __construct(string $clientType)
+    private function __construct(string $userType)
     {
-        $this->clientType = $clientType;
+        $this->userType = $userType;
+    }
+
+    /**
+     * @return UserType
+     */
+    public static function private(): UserType
+    {
+        return new self(self::USER_TYPE_PRIVATE);
+    }
+
+    /**
+     * @return UserType
+     */
+    public static function business(): UserType
+    {
+        return new self(self::USER_TYPE_BUSINESS);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPrivate(): bool
+    {
+        return $this->userType === self::USER_TYPE_PRIVATE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBusiness(): bool
+    {
+        return $this->userType === self::USER_TYPE_BUSINESS;
     }
 
     /**
@@ -31,9 +68,9 @@ class UserType
      *
      * @throws Exception
      */
-    public static function create(string $clientType): UserType
+    public static function createFromValue(string $clientType): UserType
     {
-        if (!in_array($clientType, self::getClientTypes(), true)) {
+        if (!in_array($clientType, self::USER_TYPES, true)) {
             throw new Exception(sprintf('Client type %s is not available', $clientType));
         }
 
@@ -45,33 +82,16 @@ class UserType
      */
     public function getValue(): string
     {
-        return $this->clientType;
+        return $this->userType;
     }
 
     /**
+     * @param UserType $userType
+     *
      * @return bool
      */
-    public function isPrivate(): bool
+    public function is(UserType $userType): bool
     {
-        return $this->clientType === self::USER_TYPE_PRIVATE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBusiness(): bool
-    {
-        return $this->clientType === self::USER_TYPE_BUSINESS;
-    }
-
-    /**
-     * @return array|string[]
-     */
-    public static function getClientTypes(): array
-    {
-        return [
-            self::USER_TYPE_PRIVATE,
-            self::USER_TYPE_BUSINESS,
-        ];
+        return $this->userType === $userType->getValue();
     }
 }

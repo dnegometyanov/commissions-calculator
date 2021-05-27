@@ -19,12 +19,14 @@ class TransactionTest extends TestCase
      */
     public function testCanCreateTransaction(): void
     {
-        $user = User::create(1, UserType::create(UserType::USER_TYPE_PRIVATE));
+        $userMock = $this->createMock(User::class);
+        $userMock->method("getId")->willReturn(1);
+        $userMock->method("getUserType")->willReturn(UserType::private());
 
         $transaction = new Transaction(
             Uuid::uuid4(),
             new \DateTimeImmutable('2021-01-01 12:00:00'),
-            $user,
+            $userMock,
             TransactionType::create(TransactionType::TRANSACTION_TYPE_DEPOSIT),
             Money::of('100.00', 'EUR')
         );

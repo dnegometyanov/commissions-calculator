@@ -26,7 +26,7 @@ class CommissionsCalculatorTest extends TestCase
      */
     public function testCalculateCommissionForTransactionsList(): void
     {
-        $user = User::create(1, UserType::create(UserType::USER_TYPE_PRIVATE));
+        $user = User::create(1, UserType::private());
 
         $transaction1 = new Transaction(
             Uuid::uuid4(),

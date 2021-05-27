@@ -40,7 +40,7 @@ class CommonDepositRuleTest extends TestCase
         Money $transactionAmount,
         string $expectedCommission
     ): void {
-        $user = User::create(1, UserType::create(UserType::USER_TYPE_PRIVATE));
+        $user = User::create(1, UserType::private());
 
         $transaction = new Transaction(
             Uuid::uuid4(),
@@ -132,7 +132,7 @@ class CommonDepositRuleTest extends TestCase
         $this->expectException($expectedExceptionClass);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
-        $user = User::create(1, UserType::create(UserType::USER_TYPE_PRIVATE));
+        $user = User::create(1, UserType::private());
 
         $transaction = new Transaction(
             Uuid::fromString('2dc5b876-0cca-4bc8-8e78-1cc904e4f143'),
