@@ -27,7 +27,7 @@ class TransactionTest extends TestCase
             Uuid::uuid4(),
             new \DateTimeImmutable('2021-01-01 12:00:00'),
             $userMock,
-            TransactionType::create(TransactionType::TRANSACTION_TYPE_DEPOSIT),
+            TransactionType::deposit(),
             Money::of('100.00', 'EUR')
         );
 

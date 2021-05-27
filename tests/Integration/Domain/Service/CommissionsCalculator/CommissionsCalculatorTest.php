@@ -32,7 +32,7 @@ class CommissionsCalculatorTest extends TestCase
             Uuid::uuid4(),
             new \DateTimeImmutable('2021-01-01 12:00:00'),
             $user,
-            TransactionType::create(TransactionType::TRANSACTION_TYPE_DEPOSIT),
+            TransactionType::deposit(),
             Money::of('100.00', 'EUR')
         );
 
@@ -40,7 +40,7 @@ class CommissionsCalculatorTest extends TestCase
             Uuid::uuid4(),
             new \DateTimeImmutable('2021-01-01 13:00:00'),
             $user,
-            TransactionType::create(TransactionType::TRANSACTION_TYPE_DEPOSIT),
+            TransactionType::deposit(),
             Money::of('150.00', 'EUR')
         );
 

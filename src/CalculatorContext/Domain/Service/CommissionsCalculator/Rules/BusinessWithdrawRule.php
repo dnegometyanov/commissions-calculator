@@ -7,7 +7,6 @@ namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rul
 use Brick\Math\RoundingMode;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
-use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Exception;
 
 class BusinessWithdrawRule implements RuleInterface
@@ -17,7 +16,7 @@ class BusinessWithdrawRule implements RuleInterface
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
     {
-        return $transaction->getTransactionType()->is(TransactionType::TRANSACTION_TYPE_WITHDRAW)
+        return $transaction->getTransactionType()->isWithdraw()
             && $transaction->getUser()->getUserType()->isBusiness();
     }
 
@@ -34,7 +33,10 @@ class BusinessWithdrawRule implements RuleInterface
             );
         }
 
-        $commissionAmount = $transaction->getAmount()->multipliedBy(self::WITHDRAW_BUSINESS_COMMON_COMMISSION_PERCENTAGE, RoundingMode::HALF_UP);
+        $commissionAmount = $transaction->getAmount()->multipliedBy(
+            self::WITHDRAW_BUSINESS_COMMON_COMMISSION_PERCENTAGE,
+            RoundingMode::HALF_UP
+        );
 
         return new RuleResult(
             $userCalculationState,

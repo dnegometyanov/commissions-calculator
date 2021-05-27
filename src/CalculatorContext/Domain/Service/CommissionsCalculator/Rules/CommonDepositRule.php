@@ -7,7 +7,6 @@ namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rul
 use Brick\Math\RoundingMode;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
-use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Exception;
 
 class CommonDepositRule implements RuleInterface
@@ -17,7 +16,7 @@ class CommonDepositRule implements RuleInterface
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
     {
-        return $transaction->getTransactionType()->is(TransactionType::TRANSACTION_TYPE_DEPOSIT);
+        return $transaction->getTransactionType()->isDeposit();
     }
 
     /** @inheritDoc */

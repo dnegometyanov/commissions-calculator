@@ -8,8 +8,13 @@ use Exception;
 
 class TransactionType
 {
-    public const TRANSACTION_TYPE_DEPOSIT  = 'deposit';
-    public const TRANSACTION_TYPE_WITHDRAW = 'withdraw';
+    private const TRANSACTION_TYPE_DEPOSIT = 'deposit';
+    private const TRANSACTION_TYPE_WITHDRAW = 'withdraw';
+
+    private const TRANSACTION_TYPES = [
+        self::TRANSACTION_TYPE_DEPOSIT,
+        self::TRANSACTION_TYPE_WITHDRAW,
+    ];
 
     /**
      * @var string
@@ -31,9 +36,9 @@ class TransactionType
      *
      * @throws Exception
      */
-    public static function create(string $operationType): TransactionType
+    public static function createFromValue(string $operationType): TransactionType
     {
-        if (!in_array($operationType, self::getTransactionTypes(), true)) {
+        if (!in_array($operationType, self::TRANSACTION_TYPES, true)) {
             throw new Exception(sprintf('Operation type %s is not available', $operationType));
         }
 
@@ -49,23 +54,44 @@ class TransactionType
     }
 
     /**
-     * @param string $operationType
-     *
-     * @return bool
+     * @return TransactionType
      */
-    public function is(string $operationType): bool
+    public static function deposit(): TransactionType
     {
-        return $this->transactionType === $operationType;
+        return new self(self::TRANSACTION_TYPE_DEPOSIT);
     }
 
     /**
-     * @return array|string[]
+     * @return TransactionType
      */
-    public static function getTransactionTypes(): array
+    public static function withdraw(): TransactionType
     {
-        return [
-            self::TRANSACTION_TYPE_DEPOSIT,
-            self::TRANSACTION_TYPE_WITHDRAW,
-        ];
+        return new self(self::TRANSACTION_TYPE_WITHDRAW);
+    }
+
+    /**
+     * @param TransactionType $transactionType
+     *
+     * @return bool
+     */
+    public function is(TransactionType $transactionType): bool
+    {
+        return $this->transactionType === $transactionType->getValue();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeposit(): bool
+    {
+        return $this->transactionType === self::TRANSACTION_TYPE_DEPOSIT;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWithdraw(): bool
+    {
+        return $this->transactionType === self::TRANSACTION_TYPE_WITHDRAW;
     }
 }

@@ -71,7 +71,7 @@ class CommonDepositRuleTest extends TestCase
                 null,
                 null,
                 new DateTimeImmutable('2021-01-01 12:00:00'),
-                TransactionType::create(TransactionType::TRANSACTION_TYPE_DEPOSIT),
+                TransactionType::deposit(),
                 Money::of('100.00', 'EUR'),
                 'EUR 0.30'
             ],
@@ -80,7 +80,7 @@ class CommonDepositRuleTest extends TestCase
                 null,
                 null,
                 new DateTimeImmutable('2021-01-01 12:00:00'),
-                TransactionType::create(TransactionType::TRANSACTION_TYPE_DEPOSIT),
+                TransactionType::deposit(),
                 Money::of('2000.00', 'EUR'),
                 'EUR 6.00'
             ],
@@ -89,7 +89,7 @@ class CommonDepositRuleTest extends TestCase
                 Money::of('900', 'EUR'),
                 WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
                 new DateTimeImmutable('2021-01-01 12:00:00'),
-                TransactionType::create(TransactionType::TRANSACTION_TYPE_DEPOSIT),
+                TransactionType::deposit(),
                 Money::of('500.00', 'EUR'),
                 'EUR 1.50'
             ],
@@ -98,7 +98,7 @@ class CommonDepositRuleTest extends TestCase
                 Money::of('0', 'EUR'),
                 WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
                 new DateTimeImmutable('2021-01-01 12:00:00'),
-                TransactionType::create(TransactionType::TRANSACTION_TYPE_DEPOSIT),
+                TransactionType::deposit(),
                 Money::of('500.00', 'EUR'),
                 'EUR 1.50'
             ],
@@ -166,7 +166,7 @@ class CommonDepositRuleTest extends TestCase
                 Money::of('0', 'EUR'),
                 WeekRange::createFromDate(new DateTimeImmutable('2030-01-01 12:00:00')),
                 new DateTimeImmutable('2021-01-01 12:00:00'),
-                TransactionType::create(TransactionType::TRANSACTION_TYPE_DEPOSIT),
+                TransactionType::deposit(),
                 Money::of('500.00', 'EUR'),
                 Exception::class,
                 'Transactions should be sorted in ascending order by date, error for transaction with id 2dc5b876-0cca-4bc8-8e78-1cc904e4f143 and date 2021-01-01 12:00:00'
