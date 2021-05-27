@@ -49,6 +49,11 @@ class ExchangeRates
         return $this->dateUpdated;
     }
 
+    /**
+     * @param string $currencyCode
+     *
+     * @return string|null
+     */
     public function getRate(string $currencyCode): ?string
     {
         if (!isset($this->rates[$currencyCode])) {

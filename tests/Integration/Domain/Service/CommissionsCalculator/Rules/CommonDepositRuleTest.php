@@ -116,6 +116,7 @@ class CommonDepositRuleTest extends TestCase
      * @param Money $transactionAmount
      * @param string $expectedExceptionClass
      * @param string $expectedExceptionMessage
+     *
      * @throws Exception
      */
     public function testCalculateException(
@@ -152,6 +153,11 @@ class CommonDepositRuleTest extends TestCase
         $commonDepositRule->calculate($transaction, $userCalculationState);
     }
 
+    /**
+     * @return array|array[]
+     *
+     * @throws \Brick\Money\Exception\UnknownCurrencyException
+     */
     public function calculateProviderException(): array
     {
         return [

@@ -18,6 +18,10 @@ class Commission
      */
     private Money $amount;
 
+    /**
+     * @param Transaction $transaction
+     * @param Money $amount
+     */
     public function __construct(
         Transaction $transaction,
         Money $amount

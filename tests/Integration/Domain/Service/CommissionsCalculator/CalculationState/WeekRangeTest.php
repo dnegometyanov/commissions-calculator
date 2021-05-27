@@ -10,6 +10,9 @@ use PHPUnit\Framework\TestCase;
 
 class WeekRangeTest extends TestCase
 {
+    /**
+     * @throws \Exception
+     */
     public function testWeekRangeCreate(): void
     {
         $datetimeImmutable = new DateTimeImmutable('2021-05-01');

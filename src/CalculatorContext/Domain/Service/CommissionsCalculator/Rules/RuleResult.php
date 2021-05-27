@@ -19,6 +19,10 @@ class RuleResult
      */
     private Money $commissionAmount;
 
+    /**
+     * @param UserCalculationState $userCalculationState
+     * @param Money $commissionAmount
+     */
     public function __construct(
         UserCalculationState $userCalculationState,
         Money $commissionAmount

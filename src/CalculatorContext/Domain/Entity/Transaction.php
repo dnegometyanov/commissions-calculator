@@ -16,6 +16,9 @@ class Transaction
      */
     private UuidInterface $uuid;
 
+    /**
+     * @var DateTimeImmutable
+     */
     private DateTimeImmutable $dateTime;
 
     /**

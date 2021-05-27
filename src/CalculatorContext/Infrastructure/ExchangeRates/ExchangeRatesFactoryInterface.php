@@ -9,9 +9,9 @@ use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 interface ExchangeRatesFactoryInterface
 {
     /**
-     * @param $data
+     * @param $rawData
      *
      * @return ExchangeRates
      */
-    public static function create($data): ExchangeRates;
+    public static function create(string $rawData): ExchangeRates;
 }

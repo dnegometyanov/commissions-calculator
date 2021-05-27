@@ -20,6 +20,10 @@ use Ramsey\Uuid\Uuid;
 
 class CommissionsCalculatorTest extends TestCase
 {
+    /**
+     * @throws \Brick\Money\Exception\MoneyMismatchException
+     * @throws \Brick\Money\Exception\UnknownCurrencyException
+     */
     public function testCalculateCommissionForTransactionsList(): void
     {
         $user = User::create(1, UserType::create(UserType::USER_TYPE_PRIVATE));

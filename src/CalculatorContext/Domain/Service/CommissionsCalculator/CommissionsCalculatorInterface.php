@@ -9,5 +9,10 @@ use Commissions\CalculatorContext\Domain\Entity\TransactionList;
 
 interface CommissionsCalculatorInterface
 {
+    /**
+     * @param TransactionList $transactionList
+     *
+     * @return CommissionList
+     */
     public function calculateCommissions(TransactionList $transactionList): CommissionList;
 }

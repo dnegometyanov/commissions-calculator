@@ -12,5 +12,6 @@ return $config
         '@PSR12'       => true,
         'strict_param' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'phpdoc_separation' => true,
     ])
     ->setFinder($finder);

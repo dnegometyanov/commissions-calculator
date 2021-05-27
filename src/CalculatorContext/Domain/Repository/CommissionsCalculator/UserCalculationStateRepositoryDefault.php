@@ -14,16 +14,25 @@ class UserCalculationStateRepositoryDefault implements UserCalculationStateRepos
      */
     private array $userCalculationStatesGroupedByUser;
 
+    /**
+     * @param array $userCalculationStates
+     */
     public function __construct(array $userCalculationStates = [])
     {
         $this->userCalculationStatesGroupedByUser = $userCalculationStates;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function persistStateForUser(User $user, UserCalculationState $userCalculationState): void
     {
         $this->userCalculationStatesGroupedByUser[$user->getId()] = $userCalculationState;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getStateForUser(User $user): UserCalculationState
     {
         return $this->userCalculationStatesGroupedByUser[$user->getId()]

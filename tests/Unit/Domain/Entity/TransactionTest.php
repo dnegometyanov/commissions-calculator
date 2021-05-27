@@ -14,6 +14,9 @@ use Ramsey\Uuid\Uuid;
 
 class TransactionTest extends TestCase
 {
+    /**
+     * @throws \Brick\Money\Exception\UnknownCurrencyException
+     */
     public function testCanCreateTransaction(): void
     {
         $user = User::create(1, UserType::create(UserType::USER_TYPE_PRIVATE));

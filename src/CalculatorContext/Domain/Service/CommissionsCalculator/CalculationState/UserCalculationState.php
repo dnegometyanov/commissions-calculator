@@ -24,6 +24,11 @@ class UserCalculationState
      */
     private ?WeekRange $weekRange;
 
+    /**
+     * @param int $weeklyTransactionsProcessed
+     * @param Money|null $weeklyAmount
+     * @param WeekRange|null $weekRange
+     */
     public function __construct(
         int $weeklyTransactionsProcessed = 0,
         ?Money $weeklyAmount = null,
@@ -78,19 +83,33 @@ class UserCalculationState
         return $this->weekRange;
     }
 
+    /**
+     * @param Transaction $transaction
+     *
+     * @return bool
+     */
     public function isTransactionWithinWeekRange(Transaction $transaction): bool
     {
         return $this->getWeekRange() !== null && $this->getWeekRange()->compareWithDateTime($transaction->getDateTime())->isWithin();
     }
 
+    /**
+     * @param Transaction $transaction
+     *
+     * @return bool
+     */
     public function isTransactionBeforeWeekRange(Transaction $transaction): bool
     {
         return $this->getWeekRange() !== null && $this->getWeekRange()->compareWithDateTime($transaction->getDateTime())->isBefore();
     }
 
+    /**
+     * @param Transaction $transaction
+     *
+     * @return bool
+     */
     public function isTransactionAfterWeekRange(Transaction $transaction): bool
     {
-//        echo "NULL"; var_dump($this->getWeekRange() !== null); exit;
         return $this->getWeekRange() !== null && $this->getWeekRange()->compareWithDateTime($transaction->getDateTime())->isAfter();
     }
 }

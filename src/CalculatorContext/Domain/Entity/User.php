@@ -18,6 +18,10 @@ class User
      */
     private UserType $userType;
 
+    /**
+     * @param int $id
+     * @param UserType $userType
+     */
     private function __construct(
         int $id,
         UserType $userType
@@ -26,6 +30,12 @@ class User
         $this->userType = $userType;
     }
 
+    /**
+     * @param int $id
+     * @param UserType $userType
+     *
+     * @return User
+     */
     public static function create(int $id, UserType $userType): User
     {
         return new self($id, $userType);

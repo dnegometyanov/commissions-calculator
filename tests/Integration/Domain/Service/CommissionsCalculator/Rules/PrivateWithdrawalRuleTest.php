@@ -74,6 +74,11 @@ class PrivateWithdrawalRuleTest extends TestCase
         $this->assertEquals($expectedCommission, (string)$ruleResult->getCommissionAmount());
     }
 
+    /**
+     * @return array|array[]
+     *
+     * @throws \Brick\Money\Exception\UnknownCurrencyException
+     */
     public function calculateProvider(): array
     {
         return [
@@ -218,6 +223,11 @@ class PrivateWithdrawalRuleTest extends TestCase
         $privateWithdrawalRule->calculate($transaction, $userCalculationState);
     }
 
+    /**
+     * @return array|array[]
+     *
+     * @throws \Brick\Money\Exception\UnknownCurrencyException
+     */
     public function calculateProviderException(): array
     {
         return [

@@ -15,9 +15,9 @@ use Exception;
 
 class PrivateWithdrawRule implements RuleInterface
 {
-    public const WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE   = '0.003';
-    public const WITHDRAW_PRIVATE_WEEKLY_FREE_AMOUNT             = '1000';
-    public const WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT = 3;
+    private const WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE   = '0.003';
+    private const WITHDRAW_PRIVATE_WEEKLY_FREE_AMOUNT             = '1000';
+    private const WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT = 3;
 
     /**
      * @var ExchangeRates

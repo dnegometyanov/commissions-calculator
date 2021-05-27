@@ -14,12 +14,23 @@ class CommissionsCalculator implements CommissionsCalculatorInterface
      */
     private CommissionCalculator $commissionCalculator;
 
+    /**
+     * @param CommissionCalculator $commissionCalculator
+     */
     public function __construct(
         CommissionCalculator $commissionCalculator
     ) {
         $this->commissionCalculator = $commissionCalculator;
     }
 
+    /**
+     * @param TransactionList $transactionList
+     *
+     * @return CommissionList
+     *
+     * @throws \Brick\Money\Exception\MoneyMismatchException
+     * @throws \Brick\Money\Exception\UnknownCurrencyException
+     */
     public function calculateCommissions(TransactionList $transactionList): CommissionList
     {
         $commissionsList = new CommissionList();

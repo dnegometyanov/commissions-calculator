@@ -12,7 +12,7 @@ use Exception;
 
 class BusinessWithdrawRule implements RuleInterface
 {
-    public const WITHDRAW_BUSINESS_COMMON_COMMISSION_PERCENTAGE = '0.005';
+    private const WITHDRAW_BUSINESS_COMMON_COMMISSION_PERCENTAGE = '0.005';
 
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool

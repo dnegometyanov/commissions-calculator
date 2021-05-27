@@ -9,9 +9,20 @@ use DateTimeImmutable;
 
 class WeekRange
 {
+    /**
+     * @var DateTimeImmutable|null
+     */
     private ?DateTimeImmutable $dateWeekStart;
+
+    /**
+     * @var DateTimeImmutable|null
+     */
     private ?DateTimeImmutable $dateWeekEnd;
 
+    /**
+     * @param DateTimeImmutable|null $dateWeekStart
+     * @param DateTimeImmutable|null $dateWeekEnd
+     */
     private function __construct(
         ?DateTimeImmutable $dateWeekStart = null,
         ?DateTimeImmutable $dateWeekEnd = null
@@ -20,6 +31,13 @@ class WeekRange
         $this->dateWeekEnd   = $dateWeekEnd;
     }
 
+    /**
+     * @param DateTimeImmutable $datetime
+     *
+     * @return WeekRange
+     *
+     * @throws \Exception
+     */
     public static function createFromDate(DateTimeImmutable $datetime): WeekRange
     {
         return new WeekRange(
@@ -28,6 +46,11 @@ class WeekRange
         );
     }
 
+    /**
+     * @param DateTimeImmutable $datetime
+     *
+     * @return WeekRangeComparison
+     */
     public function compareWithDateTime(DateTimeImmutable $datetime): WeekRangeComparison
     {
         switch (true) {
@@ -56,6 +79,9 @@ class WeekRange
         return $this->dateWeekEnd;
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         if ($this->dateWeekStart === null or $this->dateWeekEnd === null) {

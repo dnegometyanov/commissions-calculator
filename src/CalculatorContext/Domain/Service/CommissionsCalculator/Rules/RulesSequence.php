@@ -11,6 +11,9 @@ class RulesSequence
      */
     private array $rules;
 
+    /**
+     * @param array $rules
+     */
     private function __construct(array $rules)
     {
         $this->rules = $rules;

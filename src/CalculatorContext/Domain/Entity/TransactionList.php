@@ -16,6 +16,11 @@ class TransactionList
         $this->transactions = [];
     }
 
+    /**
+     * @param Transaction $transaction
+     *
+     * @return $this
+     */
     public function addTransaction(Transaction $transaction): TransactionList
     {
         $this->transactions[(string)$transaction->getUuid()] = $transaction;

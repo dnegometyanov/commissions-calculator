@@ -16,6 +16,11 @@ class CommissionList
         $this->commissions = [];
     }
 
+    /**
+     * @param Commission $commission
+     *
+     * @return $this
+     */
     public function addCommission(Commission $commission): CommissionList
     {
         $this->commissions[(string)$commission->getTransaction()->getUuid()] = $commission;

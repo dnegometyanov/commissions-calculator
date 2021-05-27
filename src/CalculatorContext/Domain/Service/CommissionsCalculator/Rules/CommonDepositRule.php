@@ -12,7 +12,7 @@ use Exception;
 
 class CommonDepositRule implements RuleInterface
 {
-    public const DEPOSIT_COMMISSION_PERCENTAGE = '0.003';
+    private const DEPOSIT_COMMISSION_PERCENTAGE = '0.003';
 
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool

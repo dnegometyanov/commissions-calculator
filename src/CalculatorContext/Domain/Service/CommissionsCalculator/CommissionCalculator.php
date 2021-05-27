@@ -22,6 +22,10 @@ class CommissionCalculator implements CommissionCalculatorInterface
      */
     private UserCalculationStateRepositoryInterface $userCalculationStateRepository;
 
+    /**
+     * @param RulesSequence $rulesSequence
+     * @param UserCalculationStateRepositoryInterface $userCalculationStateRepository
+     */
     public function __construct(
         RulesSequence $rulesSequence,
         UserCalculationStateRepositoryInterface $userCalculationStateRepository
@@ -30,6 +34,14 @@ class CommissionCalculator implements CommissionCalculatorInterface
         $this->userCalculationStateRepository = $userCalculationStateRepository;
     }
 
+    /**
+     * @param Transaction $transaction
+     *
+     * @return Commission
+     *
+     * @throws \Brick\Money\Exception\MoneyMismatchException
+     * @throws \Brick\Money\Exception\UnknownCurrencyException
+     */
     public function calculateCommissionForTransaction(Transaction $transaction): Commission
     {
         $transactionCommissionAmount = Money::of('0', $transaction->getAmount()->getCurrency()->getCurrencyCode());
