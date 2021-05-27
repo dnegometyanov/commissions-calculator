@@ -8,7 +8,7 @@ use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeekRange;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\BusinessWithdrawRule;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Commissions\CalculatorContext\Domain\ValueObject\UserType;

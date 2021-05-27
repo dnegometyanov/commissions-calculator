@@ -6,6 +6,7 @@ namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Cal
 
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 
 class UserCalculationState
 {

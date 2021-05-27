@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject;
 
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRangeComparison;
 use DateTimeImmutable;
 
 class WeekRange
