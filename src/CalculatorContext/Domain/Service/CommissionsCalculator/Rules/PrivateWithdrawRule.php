@@ -22,6 +22,9 @@ class PrivateWithdrawRule implements RuleInterface
      */
     private ExchangeRates $exchangeRates;
 
+    /**
+     * @param ExchangeRates $exchangeRates
+     */
     public function __construct(
         ExchangeRates $exchangeRates
     )
@@ -63,9 +66,10 @@ class PrivateWithdrawRule implements RuleInterface
         if ($transactionCurrencyCode === $baseCurrencyCode) {
             $transactionAmountBaseCurrency = $transaction->getAmount();
 
-            $overLimitAmount = $userCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
-                ? $transaction->getAmount()
-                : $userCalculationState->getWeeklyAmount()->plus($transactionAmountBaseCurrency)->minus($limitAmount);
+            $overLimitAmount =
+                $userCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
+                    ? $transaction->getAmount()
+                    : $userCalculationState->getWeeklyAmount()->plus($transactionAmountBaseCurrency)->minus($limitAmount);
         } else {
             $exchangeRate = $this->exchangeRates->getRate($transactionCurrencyCode) ?? null;
             if ($exchangeRate === null) {
@@ -77,9 +81,10 @@ class PrivateWithdrawRule implements RuleInterface
                 'EUR'
             );
 
-            $overLimitAmount = $userCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
-                ? $transaction->getAmount()
-                : $userCalculationState->getWeeklyAmount()
+            $overLimitAmount =
+                $userCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
+                    ? $transaction->getAmount()
+                    : $userCalculationState->getWeeklyAmount()
                     ->plus($transactionAmountBaseCurrency)
                     ->minus($limitAmount)
                     ->multipliedBy($exchangeRate, RoundingMode::HALF_UP);
@@ -89,7 +94,10 @@ class PrivateWithdrawRule implements RuleInterface
             $overLimitAmount = Money::of(0, 'EUR');
         }
 
-        $commissionAmount = $overLimitAmount->multipliedBy(self::WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE, RoundingMode::HALF_UP);
+        $commissionAmount = $overLimitAmount->multipliedBy(
+            self::WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE,
+            RoundingMode::HALF_UP
+        );
 
         $userCalculationState = new UserCalculationState(
             $userCalculationState->getWeeklyTransactionsProcessed() + 1,

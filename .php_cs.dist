@@ -16,6 +16,8 @@ return PhpCsFixer\Config::create()
                    'increment_style'               => ['style' => 'post'],
                    'concat_space'                  => ['spacing' => 'one'],
                    'no_superfluous_phpdoc_tags'    => false,
+                   'ordered_imports'               => true,
+                   'single_blank_line_at_eof'      => true,
                ])
     ->setFinder($finder)
     ->setUsingCache(true);
