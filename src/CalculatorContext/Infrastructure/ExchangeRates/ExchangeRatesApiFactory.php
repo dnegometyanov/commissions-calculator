@@ -10,16 +10,14 @@ use Exception;
 class ExchangeRatesApiFactory implements ExchangeRatesFactoryInterface
 {
     /**
-     * @param $rawRawData
-     *
-     * @return ExchangeRates
+     * @inheritDoc
      *
      * @throws Exception
      */
-    public static function create(string $rawRawData): ExchangeRates
+    public static function create(string $rawData): ExchangeRates
     {
         try {
-            $data = json_decode($rawRawData, true, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($rawData, true, 512, JSON_THROW_ON_ERROR);
         } catch (Exception $e) {
             echo 'Error'; // TODO
         }

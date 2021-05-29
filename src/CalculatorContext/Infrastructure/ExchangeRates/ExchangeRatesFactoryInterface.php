@@ -9,7 +9,7 @@ use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 interface ExchangeRatesFactoryInterface
 {
     /**
-     * @param $rawData
+     * @param string $rawData
      *
      * @return ExchangeRates
      */

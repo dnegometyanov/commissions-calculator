@@ -18,7 +18,7 @@ class UserCalculationState
     /**
      * @var Money|null
      */
-    private Money $weeklyAmount;
+    private ?Money $weeklyAmount;
 
     /**
      * @var WeekRange|null
