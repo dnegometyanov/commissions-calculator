@@ -8,6 +8,7 @@ use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\CommonDepositRule;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
@@ -56,9 +57,13 @@ class CommonDepositRuleTest extends TestCase
             $stateWeekRange
         );
 
+        $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
+            TransactionType::deposit()->getValue() => $userCalculationState
+        ]);
+
         $commonDepositRule = new CommonDepositRule();
 
-        $ruleResult = $commonDepositRule->calculate($transaction, $userCalculationState);
+        $ruleResult = $commonDepositRule->calculate($transaction, $userCalculationStateCollection);
 
         $this->assertEquals($expectedCommission, (string)$ruleResult->getCommissionAmount());
     }
@@ -148,9 +153,13 @@ class CommonDepositRuleTest extends TestCase
             $stateWeekRange
         );
 
+        $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
+            TransactionType::deposit()->getValue() => $userCalculationState
+        ]);
+
         $commonDepositRule = new CommonDepositRule();
 
-        $commonDepositRule->calculate($transaction, $userCalculationState);
+        $commonDepositRule->calculate($transaction, $userCalculationStateCollection);
     }
 
     /**

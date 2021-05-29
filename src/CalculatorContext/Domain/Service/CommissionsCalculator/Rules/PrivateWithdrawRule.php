@@ -9,6 +9,7 @@ use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Exception;
@@ -41,10 +42,12 @@ class PrivateWithdrawRule implements RuleInterface
     }
 
     /** @inheritDoc */
-    public function calculate(Transaction $transaction, UserCalculationState $userCalculationState): RuleResult
+    public function calculate(Transaction $transaction, UserCalculationStateCollection $userCalculationStateCollection): RuleResult
     {
+        $userWithdrawCalculationState = $userCalculationStateCollection->getByTransactionType(TransactionType::withdraw());
+
         switch (true) {
-            case $userCalculationState->isTransactionBeforeWeekRange($transaction):
+            case $userWithdrawCalculationState->isTransactionBeforeWeekRange($transaction):
                 throw new Exception(
                     sprintf(
                         'Transactions should be sorted in ascending order by date, error for transaction with id %s and date %s',
@@ -52,8 +55,8 @@ class PrivateWithdrawRule implements RuleInterface
                         $transaction->getDateTime()->format('Y-m-d H:i:s')
                     )
                 );
-            case $userCalculationState->isTransactionAfterWeekRange($transaction):
-                $userCalculationState = new UserCalculationState(
+            case $userWithdrawCalculationState->isTransactionAfterWeekRange($transaction):
+                $userWithdrawCalculationState = new UserCalculationState(
                     0,
                     Money::of('0', 'EUR'),
                     WeekRange::createFromDate($transaction->getDateTime())
@@ -70,9 +73,9 @@ class PrivateWithdrawRule implements RuleInterface
             $transactionAmountBaseCurrency = $transaction->getAmount();
 
             $overLimitAmount =
-                $userCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
+                $userWithdrawCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
                     ? $transaction->getAmount()
-                    : $userCalculationState->getWeeklyAmount()->plus($transactionAmountBaseCurrency)->minus($limitAmount);
+                    : $userWithdrawCalculationState->getWeeklyAmount()->plus($transactionAmountBaseCurrency)->minus($limitAmount);
         } else {
             $exchangeRate = $this->exchangeRates->getRate($transactionCurrencyCode) ?? null;
             if ($exchangeRate === null) {
@@ -85,9 +88,9 @@ class PrivateWithdrawRule implements RuleInterface
             );
 
             $overLimitAmount =
-                $userCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
+                $userWithdrawCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
                     ? $transaction->getAmount()
-                    : $userCalculationState->getWeeklyAmount()
+                    : $userWithdrawCalculationState->getWeeklyAmount()
                     ->plus($transactionAmountBaseCurrency)
                     ->minus($limitAmount)
                     ->multipliedBy($exchangeRate, RoundingMode::HALF_UP);
@@ -102,14 +105,14 @@ class PrivateWithdrawRule implements RuleInterface
             RoundingMode::HALF_UP
         );
 
-        $userCalculationState = new UserCalculationState(
-            $userCalculationState->getWeeklyTransactionsProcessed() + 1,
-            $userCalculationState->getWeeklyAmount()->plus($transactionAmountBaseCurrency),
+        $userWithdrawCalculationState = new UserCalculationState(
+            $userWithdrawCalculationState->getWeeklyTransactionsProcessed() + 1,
+            $userWithdrawCalculationState->getWeeklyAmount()->plus($transactionAmountBaseCurrency),
             WeekRange::createFromDate($transaction->getDateTime())
         );
 
         return new RuleResult(
-            $userCalculationState,
+            $userWithdrawCalculationState,
             $commissionAmount
         );
     }

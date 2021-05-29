@@ -8,6 +8,7 @@ use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\BusinessWithdrawRule;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
@@ -57,9 +58,13 @@ class BusinessWithdrawalRuleTest extends TestCase
             $stateWeekRange
         );
 
+        $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
+            TransactionType::withdraw()->getValue() => $userCalculationState
+        ]);
+
         $businessWithdrawalRule = new BusinessWithdrawRule();
 
-        $ruleResult = $businessWithdrawalRule->calculate($transaction, $userCalculationState);
+        $ruleResult = $businessWithdrawalRule->calculate($transaction, $userCalculationStateCollection);
 
         $this->assertEquals($expectedCommission, (string)$ruleResult->getCommissionAmount());
     }
@@ -181,9 +186,13 @@ class BusinessWithdrawalRuleTest extends TestCase
             $stateWeekRange
         );
 
+        $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
+            TransactionType::withdraw()->getValue() => $userCalculationState
+        ]);
+
         $businessWithdrawalRule = new BusinessWithdrawRule();
 
-        $businessWithdrawalRule->calculate($transaction, $userCalculationState);
+        $businessWithdrawalRule->calculate($transaction, $userCalculationStateCollection);
     }
 
     /**

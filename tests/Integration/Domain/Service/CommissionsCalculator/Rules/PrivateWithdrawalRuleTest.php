@@ -9,6 +9,7 @@ use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\PrivateWithdrawRule;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
@@ -58,6 +59,10 @@ class PrivateWithdrawalRuleTest extends TestCase
             $stateWeekRange
         );
 
+        $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
+            TransactionType::withdraw()->getValue() => $userCalculationState
+        ]);
+
         $exchangeRates = new ExchangeRates(
             'EUR',
             new DateTimeImmutable('2021-05-01'),
@@ -69,7 +74,7 @@ class PrivateWithdrawalRuleTest extends TestCase
 
         $privateWithdrawalRule = new PrivateWithdrawRule($exchangeRates);
 
-        $ruleResult = $privateWithdrawalRule->calculate($transaction, $userCalculationState);
+        $ruleResult = $privateWithdrawalRule->calculate($transaction, $userCalculationStateCollection);
 
         $this->assertEquals($expectedCommission, (string)$ruleResult->getCommissionAmount());
     }
@@ -209,6 +214,10 @@ class PrivateWithdrawalRuleTest extends TestCase
             $stateWeekRange
         );
 
+        $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
+            TransactionType::withdraw()->getValue() => $userCalculationState
+        ]);
+
         $exchangeRates = new ExchangeRates(
             'EUR',
             new DateTimeImmutable('2021-05-01'),
@@ -220,7 +229,7 @@ class PrivateWithdrawalRuleTest extends TestCase
 
         $privateWithdrawalRule = new PrivateWithdrawRule($exchangeRates);
 
-        $privateWithdrawalRule->calculate($transaction, $userCalculationState);
+        $privateWithdrawalRule->calculate($transaction, $userCalculationStateCollection);
     }
 
     /**

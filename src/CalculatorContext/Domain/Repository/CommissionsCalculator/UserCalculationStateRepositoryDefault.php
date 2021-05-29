@@ -6,36 +6,44 @@ namespace Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator;
 
 use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
+use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
+use phpDocumentor\Reflection\Types\Array_;
 
 class UserCalculationStateRepositoryDefault implements UserCalculationStateRepositoryInterface
 {
     /**
      * @var array
      */
-    private array $userCalculationStatesGroupedByUser;
+    private array $userCalculationStatesGrouped;
 
     /**
      * @param array $userCalculationStates
      */
     public function __construct(array $userCalculationStates = [])
     {
-        $this->userCalculationStatesGroupedByUser = $userCalculationStates;
+        $this->userCalculationStatesGrouped = $userCalculationStates;
     }
 
     /**
      * @inheritDoc
      */
-    public function persistStateForUser(User $user, UserCalculationState $userCalculationState): void
+    public function persistStateForUserAndTransactionType(User $user, UserCalculationState $userCalculationState, TransactionType $transactionType): void
     {
-        $this->userCalculationStatesGroupedByUser[$user->getId()] = $userCalculationState;
+        if (!isset($this->userCalculationStatesGrouped[$user->getId()])) {
+            $this->userCalculationStatesGrouped[$user->getId()] = [];
+        }
+
+        $this->userCalculationStatesGrouped[$user->getId()][$transactionType->getValue()] = $userCalculationState;
     }
 
     /**
      * @inheritDoc
      */
-    public function getStateForUser(User $user): UserCalculationState
+    public function getStateCollectionForUser(User $user): UserCalculationStateCollection
     {
-        return $this->userCalculationStatesGroupedByUser[$user->getId()]
-            ?? new UserCalculationState();
+        return isset($this->userCalculationStatesGrouped[$user->getId()])
+            ? UserCalculationStateCollection::createFromArray($this->userCalculationStatesGrouped[$user->getId()])
+            : UserCalculationStateCollection::createFromArray([]);
     }
 }

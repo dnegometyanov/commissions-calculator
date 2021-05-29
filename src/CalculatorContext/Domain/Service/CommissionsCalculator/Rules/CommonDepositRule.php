@@ -7,6 +7,8 @@ namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rul
 use Brick\Math\RoundingMode;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
+use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Exception;
 
 class CommonDepositRule implements RuleInterface
@@ -20,9 +22,11 @@ class CommonDepositRule implements RuleInterface
     }
 
     /** @inheritDoc */
-    public function calculate(Transaction $transaction, UserCalculationState $userCalculationState): RuleResult
+    public function calculate(Transaction $transaction, UserCalculationStateCollection $userCalculationStateCollection): RuleResult
     {
-        if ($userCalculationState->isTransactionBeforeWeekRange($transaction)) {
+        $userDepositCalculationState = $userCalculationStateCollection->getByTransactionType(TransactionType::deposit());
+
+        if ($userDepositCalculationState->isTransactionBeforeWeekRange($transaction)) {
             throw new Exception(
                 sprintf(
                     'Transactions should be sorted in ascending order by date, error for transaction with id %s and date %s',
