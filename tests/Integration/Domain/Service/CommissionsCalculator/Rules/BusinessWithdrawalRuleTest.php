@@ -59,7 +59,7 @@ class BusinessWithdrawalRuleTest extends TestCase
         );
 
         $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
-            TransactionType::withdraw()->getValue() => $userCalculationState
+            TransactionType::withdraw()->getValue() => $userCalculationState,
         ]);
 
         $businessWithdrawalRule = new BusinessWithdrawRule();
@@ -84,7 +84,7 @@ class BusinessWithdrawalRuleTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('100.00', 'EUR'),
-                'expectedCommission'               => 'EUR 0.50'
+                'expectedCommission'               => 'EUR 0.50',
             ],
             'state_empty_transaction_amount_higher_then_weekly_withdrawal_limit'              => [
                 'stateWeeklyTransactionsProcessed' => 0,
@@ -93,7 +93,7 @@ class BusinessWithdrawalRuleTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('2000.00', 'EUR'),
-                'expectedCommission'               => 'EUR 10.00'
+                'expectedCommission'               => 'EUR 10.00',
             ],
             'state_has_weekly_amount_total_weekly_amount_lower_then_weekly_withdrawal_limit'  => [
                 'stateWeeklyTransactionsProcessed' => 0,
@@ -102,7 +102,7 @@ class BusinessWithdrawalRuleTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('50.00', 'EUR'),
-                'expectedCommission'               => 'EUR 0.25'
+                'expectedCommission'               => 'EUR 0.25',
             ],
             'state_has_weekly_amount_total_weekly_amount_higher_then_weekly_withdrawal_limit' => [
                 'stateWeeklyTransactionsProcessed' => 0,
@@ -111,7 +111,7 @@ class BusinessWithdrawalRuleTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 2.50'
+                'expectedCommission'               => 'EUR 2.50',
             ],
             'state_has_weekly_transactions_count_equal_to_weekly_withdrawal_limit'            => [
                 'stateWeeklyTransactionsProcessed' => 3,
@@ -120,7 +120,7 @@ class BusinessWithdrawalRuleTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 2.50'
+                'expectedCommission'               => 'EUR 2.50',
             ],
             'state_has_weekly_transactions_count_higher_then_weekly_withdrawal_limit'         => [
                 'stateWeeklyTransactionsProcessed' => 4,
@@ -129,7 +129,7 @@ class BusinessWithdrawalRuleTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 2.50'
+                'expectedCommission'               => 'EUR 2.50',
             ],
             'state_has_weekly_transactions_count_lowe_then_weekly_withdrawal_limit'           => [
                 'stateWeeklyTransactionsProcessed' => 1,
@@ -138,7 +138,7 @@ class BusinessWithdrawalRuleTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 2.50'
+                'expectedCommission'               => 'EUR 2.50',
             ],
         ];
     }
@@ -187,7 +187,7 @@ class BusinessWithdrawalRuleTest extends TestCase
         );
 
         $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
-            TransactionType::withdraw()->getValue() => $userCalculationState
+            TransactionType::withdraw()->getValue() => $userCalculationState,
         ]);
 
         $businessWithdrawalRule = new BusinessWithdrawRule();
@@ -211,7 +211,7 @@ class BusinessWithdrawalRuleTest extends TestCase
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
                 'expectedExceptionClass'           => Exception::class,
-                'expectedExceptionMessage'         => 'Transactions should be sorted in ascending order by date, error for transaction with id 2dc5b876-0cca-4bc8-8e78-1cc904e4f143 and date 2021-01-01 12:00:00'
+                'expectedExceptionMessage'         => 'Transactions should be sorted in ascending order by date, error for transaction with id 2dc5b876-0cca-4bc8-8e78-1cc904e4f143 and date 2021-01-01 12:00:00',
             ],
         ];
     }

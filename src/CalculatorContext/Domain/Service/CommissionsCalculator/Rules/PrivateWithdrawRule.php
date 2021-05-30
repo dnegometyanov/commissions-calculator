@@ -71,13 +71,21 @@ class PrivateWithdrawRule implements RuleInterface
         $transactionCurrencyCode = $transaction->getAmount()->getCurrency()->getCurrencyCode();
         $baseCurrencyCode        = 'EUR';
 
+        // If state amount is lower then allowed free amount,
+        // then we need decrease new transaction paid amount by this delta,
+        // otherwise, we take commission from whole new transaction
+        $stateLimitDelta = $limitAmount->minus($userWithdrawCalculationState->getWeeklyAmount());
+        if ($stateLimitDelta->isNegative()) {
+            $stateLimitDelta = Money::of('0', 'EUR');
+        }
+
         if ($transactionCurrencyCode === $baseCurrencyCode) {
             $transactionAmountBaseCurrency = $transaction->getAmount();
 
             $overLimitAmount =
                 $userWithdrawCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
                     ? $transaction->getAmount()
-                    : $userWithdrawCalculationState->getWeeklyAmount()->plus($transactionAmountBaseCurrency)->minus($limitAmount);
+                    : $transactionAmountBaseCurrency->minus($stateLimitDelta);
         } else {
             $exchangeRate = $this->exchangeRates->getRate($transactionCurrencyCode) ?? null;
             if ($exchangeRate === null) {
@@ -102,9 +110,7 @@ class PrivateWithdrawRule implements RuleInterface
             $overLimitAmountBaseCurrency =
                 $userWithdrawCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
                     ? $transaction->getAmount()
-                    : $userWithdrawCalculationState->getWeeklyAmount()
-                    ->plus($transactionAmountBaseCurrency)
-                    ->minus($limitAmount);
+                    : $transactionAmountBaseCurrency->minus($stateLimitDelta);
 
             $overLimitAmount = $converter->convert(
                 $overLimitAmountBaseCurrency,

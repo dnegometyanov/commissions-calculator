@@ -49,7 +49,6 @@ class CommissionCalculator implements CommissionCalculatorInterface
         foreach ($this->rulesSequence->toArray() as $rule) {
             if ($rule->isSuitable($transaction)) {
                 $userCalculationStateCollection = $this->userCalculationStateRepository->getStateCollectionForUser($transaction->getUser());
-//                var_dump($userCalculationStateCollection);
                 $ruleResult = $rule->calculate($transaction, $userCalculationStateCollection);
 
                 $this->userCalculationStateRepository->persistStateForUserAndTransactionType(
@@ -57,8 +56,6 @@ class CommissionCalculator implements CommissionCalculatorInterface
                     $ruleResult->getUserCalculationState(),
                     $transaction->getTransactionType(),
                 );
-
-//                var_dump($this->userCalculationStateRepository->getStateCollectionForUser($transaction->getUser()));
 
                 $transactionCommissionAmount = $transactionCommissionAmount->plus($ruleResult->getCommissionAmount());
             }

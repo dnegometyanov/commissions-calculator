@@ -9,9 +9,10 @@ $config = new PhpCsFixer\Config();
 return $config
     ->setRiskyAllowed(true)
     ->setRules([
-        '@PSR12'                        => true,
-        'strict_param'                  => true,
-        'array_syntax'                  => ['syntax' => 'short'],
-        'phpdoc_separation'             => true,
+        '@PSR12'                      => true,
+        'strict_param'                => true,
+        'array_syntax'                => ['syntax' => 'short'],
+        'phpdoc_separation'           => true,
+        'trailing_comma_in_multiline' => true,
     ])
     ->setFinder($finder);

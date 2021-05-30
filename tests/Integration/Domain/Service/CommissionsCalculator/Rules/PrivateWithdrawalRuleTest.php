@@ -66,7 +66,7 @@ class PrivateWithdrawalRuleTest extends TestCase
         );
 
         $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
-            TransactionType::withdraw()->getValue() => $userCalculationState
+            TransactionType::withdraw()->getValue() => $userCalculationState,
         ]);
 
         $exchangeRates = new ExchangeRates(
@@ -132,7 +132,7 @@ class PrivateWithdrawalRuleTest extends TestCase
                 'expectedWeeklyTransactionProceeded' => 1,
                 'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
-            'amount_higher_then_weekly_withdrawal_limit' => [
+            'amount_higher_then_weekly_withdrawal_limit_state_amount_lower_then_limit' => [
                 'stateWeeklyTransactionsProcessed'   => 0,
                 'stateWeeklyAmount'                  => Money::of('900', 'EUR'),
                 'stateWeekRange'                     => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
@@ -141,6 +141,18 @@ class PrivateWithdrawalRuleTest extends TestCase
                 'transactionAmount'                  => Money::of('500.00', 'EUR'),
                 'expectedCommission'                 => 'EUR 1.20',
                 'expectedWeeklyAmount'               => 'EUR 1400.00',
+                'expectedWeeklyTransactionProceeded' => 1,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+            ],
+            'amount_higher_then_weekly_withdrawal_limit_state_amount_higher_then_limit' => [
+                'stateWeeklyTransactionsProcessed'   => 0,
+                'stateWeeklyAmount'                  => Money::of('1100', 'EUR'),
+                'stateWeekRange'                     => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('500.00', 'EUR'),
+                'expectedCommission'                 => 'EUR 1.50',
+                'expectedWeeklyAmount'               => 'EUR 1600.00',
                 'expectedWeeklyTransactionProceeded' => 1,
                 'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
@@ -204,6 +216,18 @@ class PrivateWithdrawalRuleTest extends TestCase
                 'expectedWeeklyTransactionProceeded' => 1,
                 'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
+            'amount_higher_then_weekly_withdrawal_limit_state_amount_higher_then_limit_USD_transaction' => [
+                'stateWeeklyTransactionsProcessed'   => 0,
+                'stateWeeklyAmount'                  => Money::of('1100', 'EUR'),
+                'stateWeekRange'                     => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('500.00', 'USD'),
+                'expectedCommission'                 => 'USD 1.50',
+                'expectedWeeklyAmount'               => 'EUR 1508.27',
+                'expectedWeeklyTransactionProceeded' => 1,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+            ],
         ];
     }
 
@@ -251,7 +275,7 @@ class PrivateWithdrawalRuleTest extends TestCase
         );
 
         $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
-            TransactionType::withdraw()->getValue() => $userCalculationState
+            TransactionType::withdraw()->getValue() => $userCalculationState,
         ]);
 
         $exchangeRates = new ExchangeRates(
@@ -284,7 +308,7 @@ class PrivateWithdrawalRuleTest extends TestCase
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
                 'expectedExceptionClass'           => Exception::class,
-                'expectedExceptionMessage'         => 'Transactions should be sorted in ascending order by date, error for transaction with id 2dc5b876-0cca-4bc8-8e78-1cc904e4f143 and date 2021-01-01 12:00:00'
+                'expectedExceptionMessage'         => 'Transactions should be sorted in ascending order by date, error for transaction with id 2dc5b876-0cca-4bc8-8e78-1cc904e4f143 and date 2021-01-01 12:00:00',
             ],
             'exchange_rate_not_found' => [
                 'stateWeeklyTransactionsProcessed' => 3,
@@ -294,7 +318,7 @@ class PrivateWithdrawalRuleTest extends TestCase
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'GBP'), // Currency rate not set in test for GBP
                 'expectedExceptionClass'           => Exception::class,
-                'expectedExceptionMessage'         => 'Exchange rate for currency code GBP not found'
+                'expectedExceptionMessage'         => 'Exchange rate for currency code GBP not found',
             ],
         ];
     }

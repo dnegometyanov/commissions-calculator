@@ -29,8 +29,9 @@ class CommonDepositRuleTest extends TestCase
      * @param DateTimeImmutable $transactionDate
      * @param TransactionType $transactionType
      * @param Money $transactionAmount
+     * @param string $expectedCommission
      *
-     * @throws \Brick\Money\Exception\UnknownCurrencyException
+     * @throws Exception
      */
     public function testCalculate(
         int $stateWeeklyTransactionsProcessed,
@@ -58,7 +59,7 @@ class CommonDepositRuleTest extends TestCase
         );
 
         $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
-            TransactionType::deposit()->getValue() => $userCalculationState
+            TransactionType::deposit()->getValue() => $userCalculationState,
         ]);
 
         $commonDepositRule = new CommonDepositRule();
@@ -78,7 +79,7 @@ class CommonDepositRuleTest extends TestCase
                 new DateTimeImmutable('2021-01-01 12:00:00'),
                 TransactionType::deposit(),
                 Money::of('100.00', 'EUR'),
-                'EUR 0.30'
+                'EUR 0.03',
             ],
             'state_empty_transaction_amount_higher_then_weekly_withdrawal_limit'              => [
                 0,
@@ -87,7 +88,7 @@ class CommonDepositRuleTest extends TestCase
                 new DateTimeImmutable('2021-01-01 12:00:00'),
                 TransactionType::deposit(),
                 Money::of('2000.00', 'EUR'),
-                'EUR 6.00'
+                'EUR 0.60',
             ],
             'state_has_weekly_amount_total_weekly_amount_higher_then_weekly_withdrawal_limit' => [
                 0,
@@ -96,7 +97,7 @@ class CommonDepositRuleTest extends TestCase
                 new DateTimeImmutable('2021-01-01 12:00:00'),
                 TransactionType::deposit(),
                 Money::of('500.00', 'EUR'),
-                'EUR 1.50'
+                'EUR 0.15',
             ],
             'state_has_weekly_transactions_count_equal_to_weekly_withdrawal_limit'            => [
                 3,
@@ -105,7 +106,7 @@ class CommonDepositRuleTest extends TestCase
                 new DateTimeImmutable('2021-01-01 12:00:00'),
                 TransactionType::deposit(),
                 Money::of('500.00', 'EUR'),
-                'EUR 1.50'
+                'EUR 0.15',
             ],
         ];
     }
@@ -154,7 +155,7 @@ class CommonDepositRuleTest extends TestCase
         );
 
         $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
-            TransactionType::deposit()->getValue() => $userCalculationState
+            TransactionType::deposit()->getValue() => $userCalculationState,
         ]);
 
         $commonDepositRule = new CommonDepositRule();
@@ -178,7 +179,7 @@ class CommonDepositRuleTest extends TestCase
                 TransactionType::deposit(),
                 Money::of('500.00', 'EUR'),
                 Exception::class,
-                'Transactions should be sorted in ascending order by date, error for transaction with id 2dc5b876-0cca-4bc8-8e78-1cc904e4f143 and date 2021-01-01 12:00:00'
+                'Transactions should be sorted in ascending order by date, error for transaction with id 2dc5b876-0cca-4bc8-8e78-1cc904e4f143 and date 2021-01-01 12:00:00',
             ],
         ];
     }

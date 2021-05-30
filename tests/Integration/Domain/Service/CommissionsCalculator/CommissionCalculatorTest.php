@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace CommissionsTest\Integration\Domain\Service\CommissionsCalculator;
 
 use Brick\Money\Money;
+use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryDefault;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionCalculator;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\BusinessWithdrawRule;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\CommonDepositRule;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\PrivateWithdrawRule;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Commissions\CalculatorContext\Domain\ValueObject\UserType;
@@ -52,17 +55,30 @@ class CommissionCalculatorTest extends TestCase
 
         $transaction = new Transaction(
             Uuid::uuid4(),
-            new DateTimeImmutable('2021-01-01 12:00:00'),
+            $transactionDate,
             $user,
-            TransactionType::deposit(),
-            Money::of('100.00', 'EUR')
+            $transactionType,
+            $transactionAmount,
+        );
+
+        $exchangeRates = new ExchangeRates(
+            'EUR',
+            new DateTimeImmutable('2021-05-01'),
+            [
+                'JPY' => '129.53',
+                'USD' => '1.1497',
+            ]
         );
 
         $commonDepositRule = new CommonDepositRule();
+        $privateWithdrawRule = new PrivateWithdrawRule($exchangeRates);
+        $businessWithdrawRule = new BusinessWithdrawRule();
 
         $rulesSequence = RulesSequence::createFromArray(
             [
-                $commonDepositRule
+                $commonDepositRule,
+                $businessWithdrawRule,
+                $privateWithdrawRule,
             ]
         );
 
@@ -80,7 +96,7 @@ class CommissionCalculatorTest extends TestCase
 
         $commission = $transactionCommissionCalculator->calculateCommissionForTransaction($transaction);
 
-        $this->assertEquals('EUR 0.30', (string)$commission->getAmount());
+        $this->assertEquals($expectedCommission, (string)$commission->getAmount());
     }
 
     /**
@@ -100,7 +116,7 @@ class CommissionCalculatorTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('100.00', 'EUR'),
-                'expectedCommission'               => 'EUR 0.50'
+                'expectedCommission'               => 'EUR 0.00',
             ],
             'state_empty_transaction_amount_higher_then_weekly_withdrawal_limit'              => [
                 'userId'                           => 1,
@@ -111,7 +127,7 @@ class CommissionCalculatorTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('2000.00', 'EUR'),
-                'expectedCommission'               => 'EUR 10.00'
+                'expectedCommission'               => 'EUR 3.00',
             ],
             'state_has_weekly_amount_total_weekly_amount_lower_then_weekly_withdrawal_limit'  => [
                 'userId'                           => 1,
@@ -122,7 +138,7 @@ class CommissionCalculatorTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('50.00', 'EUR'),
-                'expectedCommission'               => 'EUR 0.25'
+                'expectedCommission'               => 'EUR 0.00',
             ],
             'state_has_weekly_amount_total_weekly_amount_higher_then_weekly_withdrawal_limit' => [
                 'userId'                           => 1,
@@ -133,7 +149,7 @@ class CommissionCalculatorTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 2.50'
+                'expectedCommission'               => 'EUR 1.20',
             ],
             'state_has_weekly_transactions_count_equal_to_weekly_withdrawal_limit'            => [
                 'userId'                           => 1,
@@ -144,7 +160,7 @@ class CommissionCalculatorTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 2.50'
+                'expectedCommission'               => 'EUR 1.50',
             ],
             'state_has_weekly_transactions_count_higher_then_weekly_withdrawal_limit'         => [
                 'userId'                           => 1,
@@ -155,9 +171,9 @@ class CommissionCalculatorTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 2.50'
+                'expectedCommission'               => 'EUR 1.50',
             ],
-            'state_has_weekly_transactions_count_lowe_then_weekly_withdrawal_limit'           => [
+            'state_has_weekly_transactions_count_lower_then_weekly_withdrawal_limit'           => [
                 'userId'                           => 1,
                 'userType'                         => UserType::private(),
                 'stateWeeklyTransactionsProcessed' => 1,
@@ -166,7 +182,7 @@ class CommissionCalculatorTest extends TestCase
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
                 'transactionType'                  => TransactionType::withdraw(),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 2.50'
+                'expectedCommission'               => 'EUR 0.00',
             ],
         ];
     }
