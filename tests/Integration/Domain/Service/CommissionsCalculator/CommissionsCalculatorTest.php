@@ -34,9 +34,9 @@ class CommissionsCalculatorTest extends TestCase
     private const TRANSACTION_UUID_8 = '88888888-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
     private const TRANSACTION_UUID_9 = '99999999-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
     private const TRANSACTION_UUID_10 = '10101010-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
-    private const TRANSACTION_UUID_11 = '11x11x11-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
-    private const TRANSACTION_UUID_12 = '12x12x12-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
-    private const TRANSACTION_UUID_13 = '13x13x13-aaaa-aaaa-aaaaaaaaaaaa';
+    private const TRANSACTION_UUID_11 = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+    private const TRANSACTION_UUID_12 = 'bbbbbbbb-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+    private const TRANSACTION_UUID_13 = 'cccccccc-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
 
     /**
      * @dataProvider calculateCommissionsProvider
@@ -444,7 +444,6 @@ class CommissionsCalculatorTest extends TestCase
                         'transactionAmount'  => Money::of('10000.00', 'EUR'),
                         'expectedCommission' => 'EUR 3.00',
                     ],
-                    /*
                     self::TRANSACTION_UUID_11 => [
 //                        2016-01-10,3,private,withdraw,1000.00,EUR
                         'userId'             => 3,
@@ -453,7 +452,7 @@ class CommissionsCalculatorTest extends TestCase
                         'transactionDate'    => new DateTimeImmutable('2016-01-10 12:00:00'),
                         'transactionType'    => TransactionType::withdraw(),
                         'transactionAmount'  => Money::of('1000.00', 'EUR'),
-                        'expectedCommission' => 'USD 0.45',
+                        'expectedCommission' => 'EUR 0.00',
                     ],
                     self::TRANSACTION_UUID_12 => [
 //                        2016-02-15,1,private,withdraw,300.00,EUR
@@ -463,8 +462,8 @@ class CommissionsCalculatorTest extends TestCase
                         'transactionDate'    => new DateTimeImmutable('2016-02-15 12:00:00'),
                         'transactionType'    => TransactionType::withdraw(),
                         'transactionAmount'  => Money::of('300.00', 'EUR'),
-                        'expectedCommission' => 'USD 0.45'
-                    ],*//*
+                        'expectedCommission' => 'EUR 0.00',
+                    ],
                     self::TRANSACTION_UUID_13 => [
 //                        2016-02-19,5,private,withdraw,3000000,JPY
                         'userId'             => 5,
@@ -473,8 +472,8 @@ class CommissionsCalculatorTest extends TestCase
                         'transactionDate'    => new DateTimeImmutable('2016-02-19 12:00:00'),
                         'transactionType'    => TransactionType::withdraw(),
                         'transactionAmount'  => Money::of('3000000.00', 'JPY'),
-                        'expectedCommission' => 'USD 0.45'
-                    ],*/
+                        'expectedCommission' => 'JPY 8612',
+                    ],
                 ],
             ],
         ];
