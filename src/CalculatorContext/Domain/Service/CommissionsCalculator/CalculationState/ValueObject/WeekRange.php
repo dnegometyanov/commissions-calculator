@@ -78,6 +78,12 @@ class WeekRange
         return $this->dateWeekEnd;
     }
 
+    public function is(WeekRange $weekRange): bool
+    {
+        return $this->dateWeekStart->format('Y-m-d H:i:s') === $weekRange->getDateWeekStart()->format('Y-m-d H:i:s')
+            && $this->dateWeekEnd->format('Y-m-d H:i:s') === $weekRange->getDateWeekEnd()->format('Y-m-d H:i:s');
+    }
+
     /**
      * @return string
      */

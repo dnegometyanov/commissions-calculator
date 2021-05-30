@@ -31,6 +31,9 @@ class PrivateWithdrawalRuleTest extends TestCase
      * @param TransactionType $transactionType
      * @param Money $transactionAmount
      * @param string $expectedCommission
+     * @param string $expectedWeeklyAmount
+     * @param int $expectedWeeklyTransactionProceeded
+     * @param WeekRange $expectedWeekRange
      *
      * @throws Exception
      */
@@ -41,7 +44,10 @@ class PrivateWithdrawalRuleTest extends TestCase
         DateTimeImmutable $transactionDate,
         TransactionType $transactionType,
         Money $transactionAmount,
-        string $expectedCommission
+        string $expectedCommission,
+        string $expectedWeeklyAmount,
+        int $expectedWeeklyTransactionProceeded,
+        WeekRange $expectedWeekRange
     ): void {
         $user = User::create(1, UserType::private());
 
@@ -77,6 +83,9 @@ class PrivateWithdrawalRuleTest extends TestCase
         $ruleResult = $privateWithdrawalRule->calculate($transaction, $userCalculationStateCollection);
 
         $this->assertEquals($expectedCommission, (string)$ruleResult->getCommissionAmount());
+        $this->assertEquals($expectedWeeklyAmount, (string)$ruleResult->getUserCalculationState()->getWeeklyAmount());
+        $this->assertEquals($expectedWeeklyTransactionProceeded, $ruleResult->getUserCalculationState()->getWeeklyTransactionsProcessed());
+        $this->assertTrue($expectedWeekRange->is($ruleResult->getUserCalculationState()->getWeekRange()));
     }
 
     /**
@@ -88,85 +97,112 @@ class PrivateWithdrawalRuleTest extends TestCase
     {
         return [
             'state_empty_transaction_amount_lower_then_weekly_withdrawal_limit'               => [
-                'stateWeeklyTransactionsProcessed' => 0,
-                'stateWeeklyAmount'                => null,
-                'stateWeekRange'                   => null,
-                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
-                'transactionAmount'                => Money::of('100.00', 'EUR'),
-                'expectedCommission'               => 'EUR 0.00'
+                'stateWeeklyTransactionsProcessed'   => 0,
+                'stateWeeklyAmount'                  => null,
+                'stateWeekRange'                     => null,
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('100.00', 'EUR'),
+                'expectedCommission'                 => 'EUR 0.00',
+                'expectedWeeklyAmount'               => 'EUR 100.00',
+                'expectedWeeklyTransactionProceeded' => 1,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
             'state_empty_transaction_amount_higher_then_weekly_withdrawal_limit'              => [
-                'stateWeeklyTransactionsProcessed' => 0,
-                'stateWeeklyAmount'                => null,
-                'stateWeekRange'                   => null,
-                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
-                'transactionAmount'                => Money::of('2000.00', 'EUR'),
-                'expectedCommission'               => 'EUR 3.00'
+                'stateWeeklyTransactionsProcessed'   => 0,
+                'stateWeeklyAmount'                  => null,
+                'stateWeekRange'                     => null,
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('2000.00', 'EUR'),
+                'expectedCommission'                 => 'EUR 3.00',
+                'expectedWeeklyAmount'               => 'EUR 2000.00',
+                'expectedWeeklyTransactionProceeded' => 1,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
             'amount_lower_then_weekly_withdrawal_limit'  => [
-                'stateWeeklyTransactionsProcessed' => 0,
-                'stateWeeklyAmount'                => Money::of('900', 'EUR'),
-                'stateWeekRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
-                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
-                'transactionAmount'                => Money::of('50.00', 'EUR'),
-                'expectedCommission'               => 'EUR 0.00'
+                'stateWeeklyTransactionsProcessed'   => 0,
+                'stateWeeklyAmount'                  => Money::of('900', 'EUR'),
+                'stateWeekRange'                     => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('50.00', 'EUR'),
+                'expectedCommission'                 => 'EUR 0.00',
+                'expectedWeeklyAmount'               => 'EUR 950.00',
+                'expectedWeeklyTransactionProceeded' => 1,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
             'amount_higher_then_weekly_withdrawal_limit' => [
-                'stateWeeklyTransactionsProcessed' => 0,
-                'stateWeeklyAmount'                => Money::of('900', 'EUR'),
-                'stateWeekRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
-                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
-                'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 1.20'
+                'stateWeeklyTransactionsProcessed'   => 0,
+                'stateWeeklyAmount'                  => Money::of('900', 'EUR'),
+                'stateWeekRange'                     => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('500.00', 'EUR'),
+                'expectedCommission'                 => 'EUR 1.20',
+                'expectedWeeklyAmount'               => 'EUR 1400.00',
+                'expectedWeeklyTransactionProceeded' => 1,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
             'weekly_transactions_count_equal_to_weekly_withdrawal_limit'            => [
-                'stateWeeklyTransactionsProcessed' => 3,
-                'stateWeeklyAmount'                => Money::of('0', 'EUR'),
-                'stateWeekRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
-                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
-                'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 1.50'
+                'stateWeeklyTransactionsProcessed'   => 3,
+                'stateWeeklyAmount'                  => Money::of('0', 'EUR'),
+                'stateWeekRange'                     => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('500.00', 'EUR'),
+                'expectedCommission'                 => 'EUR 1.50',
+                'expectedWeeklyAmount'               => 'EUR 500.00',
+                'expectedWeeklyTransactionProceeded' => 4,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
             'weekly_transactions_count_higher_then_weekly_withdrawal_limit'         => [
-                'stateWeeklyTransactionsProcessed' => 4,
-                'stateWeeklyAmount'                => Money::of('0', 'EUR'),
-                'stateWeekRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
-                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
-                'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 1.50'
+                'stateWeeklyTransactionsProcessed'   => 4,
+                'stateWeeklyAmount'                  => Money::of('0', 'EUR'),
+                'stateWeekRange'                     => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('500.00', 'EUR'),
+                'expectedCommission'                 => 'EUR 1.50',
+                'expectedWeeklyAmount'               => 'EUR 500.00',
+                'expectedWeeklyTransactionProceeded' => 5,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
             'weekly_transactions_count_lower_then_weekly_withdrawal_limit'           => [
-                'stateWeeklyTransactionsProcessed' => 1,
-                'stateWeeklyAmount'                => Money::of('0', 'EUR'),
-                'stateWeeklyRange'                 => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
-                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
-                'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 0.00'
+                'stateWeeklyTransactionsProcessed'   => 1,
+                'stateWeeklyAmount'                  => Money::of('0', 'EUR'),
+                'stateWeeklyRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('500.00', 'EUR'),
+                'expectedCommission'                 => 'EUR 0.00',
+                'expectedWeeklyAmount'               => 'EUR 500.00',
+                'expectedWeeklyTransactionProceeded' => 2,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
             'amount_lower_then_weekly_withdrawal_limit_USD_transaction' => [
-                'stateWeeklyTransactionsProcessed' => 0,
-                'stateWeeklyAmount'                => Money::of('900', 'EUR'),
-                'stateWeekRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
-                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
-                'transactionAmount'                => Money::of('105.00', 'USD'),
-                'expectedCommission'               => 'EUR 0.00'
+                'stateWeeklyTransactionsProcessed'   => 0,
+                'stateWeeklyAmount'                  => Money::of('900', 'EUR'),
+                'stateWeekRange'                     => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('105.00', 'USD'),
+                'expectedCommission'                 => 'USD 0.00',
+                'expectedWeeklyAmount'               => 'EUR 985.74',
+                'expectedWeeklyTransactionProceeded' => 1,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
             'amount_higher_then_weekly_withdrawal_limit_USD_transaction' => [
-                'stateWeeklyTransactionsProcessed' => 0,
-                'stateWeeklyAmount'                => Money::of('900', 'EUR'),
-                'stateWeekRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
-                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
-                'transactionAmount'                => Money::of('200.00', 'USD'),
-                'expectedCommission'               => 'EUR 0.23'
+                'stateWeeklyTransactionsProcessed'   => 0,
+                'stateWeeklyAmount'                  => Money::of('900', 'EUR'),
+                'stateWeekRange'                     => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                    => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                    => TransactionType::withdraw(),
+                'transactionAmount'                  => Money::of('200.00', 'USD'),
+                'expectedCommission'                 => 'USD 0.23',
+                'expectedWeeklyAmount'               => 'EUR 1063.31',
+                'expectedWeeklyTransactionProceeded' => 1,
+                'expectedWeekRange'                  => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
             ],
         ];
     }

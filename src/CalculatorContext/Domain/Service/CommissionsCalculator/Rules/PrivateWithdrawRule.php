@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
 use Brick\Math\RoundingMode;
+use Brick\Money\CurrencyConverter;
+use Brick\Money\ExchangeRateProvider\ConfigurableProvider;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
@@ -38,7 +40,7 @@ class PrivateWithdrawRule implements RuleInterface
     public function isSuitable(Transaction $transaction): bool
     {
         return $transaction->getTransactionType()->isWithdraw()
-            && $transaction->getUser()->getUserType()->isBusiness();
+            && $transaction->getUser()->getUserType()->isPrivate();
     }
 
     /** @inheritDoc */
@@ -82,22 +84,37 @@ class PrivateWithdrawRule implements RuleInterface
                 throw new Exception(sprintf('Exchange rate for currency code %s not found', $transactionCurrencyCode));
             }
 
+            // TODO inject dependency
+            $exchangeRateProvider = new ConfigurableProvider();
+            $exchangeRateProvider->setExchangeRate(
+                'EUR',
+                $transaction->getAmount()->getCurrency()->getCurrencyCode(),
+                $exchangeRate
+            );
+            // TODO inject dependency
+            $converter = new CurrencyConverter($exchangeRateProvider); // optionally provide a Context here
+
             $transactionAmountBaseCurrency = Money::of(
                 $transaction->getAmount()->dividedBy($exchangeRate, RoundingMode::HALF_UP)->getAmount(), // TODO think on rounding
                 'EUR'
             );
 
-            $overLimitAmount =
+            $overLimitAmountBaseCurrency =
                 $userWithdrawCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
                     ? $transaction->getAmount()
                     : $userWithdrawCalculationState->getWeeklyAmount()
                     ->plus($transactionAmountBaseCurrency)
-                    ->minus($limitAmount)
-                    ->multipliedBy($exchangeRate, RoundingMode::HALF_UP);
+                    ->minus($limitAmount);
+
+            $overLimitAmount = $converter->convert(
+                $overLimitAmountBaseCurrency,
+                $transaction->getAmount()->getCurrency(),
+                RoundingMode::HALF_UP
+            );
         }
 
         if ($overLimitAmount->isNegative()) {
-            $overLimitAmount = Money::of(0, 'EUR');
+            $overLimitAmount = Money::of(0, $transaction->getAmount()->getCurrency());
         }
 
         $commissionAmount = $overLimitAmount->multipliedBy(

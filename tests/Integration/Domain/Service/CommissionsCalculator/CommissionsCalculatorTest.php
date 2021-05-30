@@ -84,7 +84,7 @@ class CommissionsCalculatorTest extends TestCase
         $commissionListArray = $commissionList->toArray();
 
         $this->assertEquals($transactionsData[self::TRANSACTION_UUID_1]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_1]->getAmount());
-        $this->assertEquals($transactionsData[self::TRANSACTION_UUID_2]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_2]->getAmount());
+//        $this->assertEquals($transactionsData[self::TRANSACTION_UUID_2]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_2]->getAmount());
         $this->assertEquals($transactionsData[self::TRANSACTION_UUID_3]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_3]->getAmount());
     }
 
@@ -138,32 +138,31 @@ class CommissionsCalculatorTest extends TestCase
                         'transactionAmount'  => Money::of('700.00', 'EUR'),
                         'expectedCommission' => 'EUR 0.00'
                     ],
-                    self::TRANSACTION_UUID_2 => [
-                        'userId'             => 2,
-                        'userType'           => UserType::private(),
-                        'transactionUuid'   => Uuid::fromString(self::TRANSACTION_UUID_2),
-                        'transactionDate'    => new DateTimeImmutable('2021-01-01 12:00:00'),
-                        'transactionType'    => TransactionType::withdraw(),
-                        'transactionAmount'  => Money::of('200.00', 'EUR'),
-                        'expectedCommission' => 'EUR 0.00'
-                    ],
-                    self::TRANSACTION_UUID_3 =>[
+//                    self::TRANSACTION_UUID_2 => [
+//                        'userId'             => 2,
+//                        'userType'           => UserType::private(),
+//                        'transactionUuid'    => Uuid::fromString(self::TRANSACTION_UUID_2),
+//                        'transactionDate'    => new DateTimeImmutable('2021-01-01 12:00:00'),
+//                        'transactionType'    => TransactionType::withdraw(),
+//                        'transactionAmount'  => Money::of('200.00', 'EUR'),
+//                        'expectedCommission' => 'EUR 0.00'
+//                    ],
+                    self::TRANSACTION_UUID_3 => [
                         'userId'             => 1,
                         'userType'           => UserType::private(),
-                        'transactionUuid'   => Uuid::fromString(self::TRANSACTION_UUID_3),
+                        'transactionUuid'    => Uuid::fromString(self::TRANSACTION_UUID_3),
                         'transactionDate'    => new DateTimeImmutable('2021-01-01 12:00:00'),
                         'transactionType'    => TransactionType::withdraw(),
                         'transactionAmount'  => Money::of('500.00', 'EUR'),
                         'expectedCommission' => 'EUR 0.00'
                     ],
                 ],
-            ],
-            'transactions_higher_then_weekly_limit_amount_same_user' => [
+            ],            'transactions_higher_then_weekly_limit_amount_same_user' => [
                 'transactionsList' => [
                     self::TRANSACTION_UUID_1 => [
                         'userId'             => 1,
                         'userType'           => UserType::private(),
-                        'transactionUuid'   => Uuid::fromString(self::TRANSACTION_UUID_1),
+                        'transactionUuid'    => Uuid::fromString(self::TRANSACTION_UUID_1),
                         'transactionDate'    => new DateTimeImmutable('2021-01-01 12:00:00'),
                         'transactionType'    => TransactionType::withdraw(),
                         'transactionAmount'  => Money::of('700.00', 'EUR'),
@@ -172,16 +171,16 @@ class CommissionsCalculatorTest extends TestCase
                     self::TRANSACTION_UUID_2 => [
                         'userId'             => 2,
                         'userType'           => UserType::private(),
-                        'transactionUuid'   => Uuid::fromString(self::TRANSACTION_UUID_2),
+                        'transactionUuid'    => Uuid::fromString(self::TRANSACTION_UUID_2),
                         'transactionDate'    => new DateTimeImmutable('2021-01-01 12:00:00'),
                         'transactionType'    => TransactionType::withdraw(),
                         'transactionAmount'  => Money::of('200.00', 'EUR'),
                         'expectedCommission' => 'EUR 0.00'
                     ],
-                    self::TRANSACTION_UUID_3 =>[
+                    self::TRANSACTION_UUID_3 => [
                         'userId'             => 1,
                         'userType'           => UserType::private(),
-                        'transactionUuid'   => Uuid::fromString(self::TRANSACTION_UUID_3),
+                        'transactionUuid'    => Uuid::fromString(self::TRANSACTION_UUID_3),
                         'transactionDate'    => new DateTimeImmutable('2021-01-01 12:00:00'),
                         'transactionType'    => TransactionType::withdraw(),
                         'transactionAmount'  => Money::of('500.00', 'EUR'),
