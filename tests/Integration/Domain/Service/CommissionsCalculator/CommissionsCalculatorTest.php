@@ -74,10 +74,10 @@ class CommissionsCalculatorTest extends TestCase
         );
 
         $commonDepositRule = new CommonDepositRule();
-        $privateWithdrawRule = new PrivateWithdrawRule($exchangeRates);
+        $privateWithdrawRule = new PrivateWithdrawRule();
         $businessWithdrawRule = new BusinessWithdrawRule();
 
-        $rulesSequence = RulesSequence::createFromArray(
+        $rulesSequence = new RulesSequence(
             [
                 $commonDepositRule,
                 $businessWithdrawRule,
@@ -90,7 +90,7 @@ class CommissionsCalculatorTest extends TestCase
         $commissionCalculator  = new CommissionCalculator($rulesSequence, $userCalculationStateRepository);
         $commissionsCalculator = new CommissionsCalculator($commissionCalculator);
 
-        $commissionList      = $commissionsCalculator->calculateCommissions($transactionList);
+        $commissionList      = $commissionsCalculator->calculateCommissions($transactionList, $exchangeRates);
         $commissionListArray = $commissionList->toArray();
 
         // This may like code duplication, but direct assert for each transaction is intentional,

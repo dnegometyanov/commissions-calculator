@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
 use Brick\Math\RoundingMode;
+use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
@@ -22,8 +23,11 @@ class CommonDepositRule implements RuleInterface
     }
 
     /** @inheritDoc */
-    public function calculate(Transaction $transaction, UserCalculationStateCollection $userCalculationStateCollection): RuleResult
-    {
+    public function calculate(
+        Transaction $transaction,
+        UserCalculationStateCollection $userCalculationStateCollection,
+        ExchangeRates $exchangeRates = null
+    ): RuleResult {
         $userDepositCalculationState = $userCalculationStateCollection->getByTransactionType(TransactionType::deposit());
 
         if ($userDepositCalculationState->isTransactionBeforeWeekRange($transaction)) {

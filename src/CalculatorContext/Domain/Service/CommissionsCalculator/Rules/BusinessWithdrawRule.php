@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
 use Brick\Math\RoundingMode;
+use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Exception;
@@ -23,8 +23,11 @@ class BusinessWithdrawRule implements RuleInterface
     }
 
     /** @inheritDoc */
-    public function calculate(Transaction $transaction, UserCalculationStateCollection $userCalculationStateCollection): RuleResult
-    {
+    public function calculate(
+        Transaction $transaction,
+        UserCalculationStateCollection $userCalculationStateCollection,
+        ExchangeRates $exchangeRates = null
+    ): RuleResult {
         $userWithdrawCalculationState = $userCalculationStateCollection->getByTransactionType(TransactionType::withdraw());
 
         if ($userWithdrawCalculationState->isTransactionBeforeWeekRange($transaction)) {

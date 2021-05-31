@@ -8,7 +8,6 @@ use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
-use phpDocumentor\Reflection\Types\Array_;
 
 class UserCalculationStateRepositoryDefault implements UserCalculationStateRepositoryInterface
 {

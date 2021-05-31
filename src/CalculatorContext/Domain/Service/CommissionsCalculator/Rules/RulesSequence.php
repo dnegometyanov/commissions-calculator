@@ -14,21 +14,9 @@ class RulesSequence
     /**
      * @param array $rules
      */
-    private function __construct(array $rules)
+    public function __construct(array $rules)
     {
         $this->rules = $rules;
-    }
-
-    /**
-     * Order of rules does matter
-     *
-     * @param array $rules
-     *
-     * @return $this
-     */
-    public static function createFromArray(array $rules): RulesSequence
-    {
-        return new self($rules);
     }
 
     /**

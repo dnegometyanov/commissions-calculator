@@ -22,20 +22,6 @@ class PrivateWithdrawRule implements RuleInterface
     private const WITHDRAW_PRIVATE_WEEKLY_FREE_AMOUNT             = '1000';
     private const WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT = 3;
 
-    /**
-     * @var ExchangeRates
-     */
-    private ExchangeRates $exchangeRates;
-
-    /**
-     * @param ExchangeRates $exchangeRates
-     */
-    public function __construct(
-        ExchangeRates $exchangeRates
-    ) {
-        $this->exchangeRates = $exchangeRates;
-    }
-
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
     {
@@ -44,8 +30,11 @@ class PrivateWithdrawRule implements RuleInterface
     }
 
     /** @inheritDoc */
-    public function calculate(Transaction $transaction, UserCalculationStateCollection $userCalculationStateCollection): RuleResult
-    {
+    public function calculate(
+        Transaction $transaction,
+        UserCalculationStateCollection $userCalculationStateCollection,
+        ExchangeRates $exchangeRates = null
+    ): RuleResult {
         $userWithdrawCalculationState = $userCalculationStateCollection->getByTransactionType(TransactionType::withdraw());
 
         switch (true) {
@@ -87,7 +76,7 @@ class PrivateWithdrawRule implements RuleInterface
                     ? $transaction->getAmount()
                     : $transactionAmountBaseCurrency->minus($stateLimitDelta);
         } else {
-            $exchangeRate = $this->exchangeRates->getRate($transactionCurrencyCode) ?? null;
+            $exchangeRate = $exchangeRates->getRate($transactionCurrencyCode) ?? null;
             if ($exchangeRate === null) {
                 throw new Exception(sprintf('Exchange rate for currency code %s not found', $transactionCurrencyCode));
             }

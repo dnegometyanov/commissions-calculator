@@ -71,10 +71,10 @@ class CommissionCalculatorTest extends TestCase
         );
 
         $commonDepositRule = new CommonDepositRule();
-        $privateWithdrawRule = new PrivateWithdrawRule($exchangeRates);
+        $privateWithdrawRule = new PrivateWithdrawRule();
         $businessWithdrawRule = new BusinessWithdrawRule();
 
-        $rulesSequence = RulesSequence::createFromArray(
+        $rulesSequence = new RulesSequence(
             [
                 $commonDepositRule,
                 $businessWithdrawRule,
@@ -94,7 +94,7 @@ class CommissionCalculatorTest extends TestCase
 
         $transactionCommissionCalculator = new CommissionCalculator($rulesSequence, $userCalculationStateRepository);
 
-        $commission = $transactionCommissionCalculator->calculateCommissionForTransaction($transaction);
+        $commission = $transactionCommissionCalculator->calculateCommissionForTransaction($transaction, $exchangeRates);
 
         $this->assertEquals($expectedCommission, (string)$commission->getAmount());
     }

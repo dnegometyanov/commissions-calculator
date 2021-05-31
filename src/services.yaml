@@ -1,0 +1,31 @@
+services:
+  demo.service:
+    class:     \Commissions\CalculatorContext\DemoService
+
+  common.deposit.rule:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\CommonDepositRule
+
+  business.withdraw.rule:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\BusinessWithdrawRule
+
+  private.withdraw.rule:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\PrivateWithdrawRule
+
+  rules.sequence:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence
+    arguments:
+      - ['@common.deposit.rule', '@business.withdraw.rule', '@private.withdraw.rule']
+
+  usercalculationstate.repository.default:
+    class:     Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryDefault
+
+  commission.calculator:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionCalculator
+    arguments:
+      - '@rules.sequence'
+      - '@usercalculationstate.repository.default'
+
+  commissions.calculator:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionsCalculator
+    arguments:
+      - '@commission.calculator'

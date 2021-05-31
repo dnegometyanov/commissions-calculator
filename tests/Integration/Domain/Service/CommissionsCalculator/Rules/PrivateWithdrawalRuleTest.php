@@ -78,9 +78,9 @@ class PrivateWithdrawalRuleTest extends TestCase
             ]
         );
 
-        $privateWithdrawalRule = new PrivateWithdrawRule($exchangeRates);
+        $privateWithdrawalRule = new PrivateWithdrawRule();
 
-        $ruleResult = $privateWithdrawalRule->calculate($transaction, $userCalculationStateCollection);
+        $ruleResult = $privateWithdrawalRule->calculate($transaction, $userCalculationStateCollection, $exchangeRates);
 
         $this->assertEquals($expectedCommission, (string)$ruleResult->getCommissionAmount());
         $this->assertEquals($expectedWeeklyAmount, (string)$ruleResult->getUserCalculationState()->getWeeklyAmount());
@@ -287,9 +287,9 @@ class PrivateWithdrawalRuleTest extends TestCase
             ]
         );
 
-        $privateWithdrawalRule = new PrivateWithdrawRule($exchangeRates);
+        $privateWithdrawalRule = new PrivateWithdrawRule();
 
-        $privateWithdrawalRule->calculate($transaction, $userCalculationStateCollection);
+        $privateWithdrawalRule->calculate($transaction, $userCalculationStateCollection, $exchangeRates);
     }
 
     /**
