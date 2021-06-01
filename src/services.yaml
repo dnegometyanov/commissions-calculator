@@ -1,6 +1,15 @@
 services:
-  demo.service:
-    class:     \Commissions\CalculatorContext\DemoService
+  guzzle.http.client:
+    class:     GuzzleHttp\Client
+
+  exchange.rates.api.factory:
+    class:     Commissions\CalculatorContext\Infrastructure\ExchangeRates\ExchangeRatesApiFactory
+
+  exchange.rates.retriever:
+    class:     Commissions\CalculatorContext\Infrastructure\ExchangeRates\ExchangeRatesRetriever
+    arguments:
+      - '@guzzle.http.client'
+      - '@exchange.rates.api.factory'
 
   common.deposit.rule:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\CommonDepositRule

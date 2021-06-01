@@ -13,5 +13,5 @@ interface ExchangeRatesFactoryInterface
      *
      * @return ExchangeRates
      */
-    public static function create(string $rawData): ExchangeRates;
+    public function create(string $rawData): ExchangeRates;
 }

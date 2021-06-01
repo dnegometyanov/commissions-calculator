@@ -14,7 +14,7 @@ class ExchangeRatesApiFactory implements ExchangeRatesFactoryInterface
      *
      * @throws Exception
      */
-    public static function create(string $rawData): ExchangeRates
+    public function create(string $rawData): ExchangeRates
     {
         try {
             $data = json_decode($rawData, true, 512, JSON_THROW_ON_ERROR);

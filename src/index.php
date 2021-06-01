@@ -12,6 +12,7 @@ use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionsCalculator;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Commissions\CalculatorContext\Domain\ValueObject\UserType;
+use Commissions\CalculatorContext\Infrastructure\ExchangeRates\ExchangeRatesRetriever;
 use DateTimeImmutable;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Config\FileLocator;
@@ -58,15 +59,9 @@ try {
         $transactionList->addTransaction($transaction);
     }
 
-    // TODO request exchange rates from service
-    $exchangeRates = new ExchangeRates(
-        'EUR',
-        new DateTimeImmutable('2021-05-01'),
-        [
-            'JPY' => '129.53',
-            'USD' => '1.1497',
-        ]
-    );
+    /** @var ExchangeRatesRetriever $exchangeRatesRetriever */
+    $exchangeRatesRetriever = $containerBuilder->get('exchange.rates.retriever');
+    $exchangeRates = $exchangeRatesRetriever->retrieve();
 
     /** @var CommissionsCalculator $commissionsCalculator */
     $commissionsCalculator = $containerBuilder->get('commissions.calculator');
