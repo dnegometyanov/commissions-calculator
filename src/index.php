@@ -4,23 +4,12 @@ declare(strict_types=1);
 
 namespace Commissions;
 
-use Brick\Money\Money;
-use Commissions\CalculatorContext\Domain\Entity\Commission;
-use Commissions\CalculatorContext\Domain\Entity\Transaction;
-use Commissions\CalculatorContext\Domain\Entity\TransactionList;
-use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionsCalculator;
-use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
-use Commissions\CalculatorContext\Domain\ValueObject\UserType;
 use Commissions\CalculatorContext\Infrastructure\ExchangeRates\ExchangeRatesRetriever;
 use Commissions\CalculatorContext\Infrastructure\InputData\TransactionsDataRetrieverCSV;
-use DateTimeImmutable;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-
-const TRANSACTION_UUID_1 = '11111111-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
 
 require 'vendor/autoload.php';
 
