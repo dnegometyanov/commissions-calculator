@@ -62,19 +62,19 @@ class UserType
     }
 
     /**
-     * @param string $clientType
+     * @param string $userType
      *
      * @return UserType
      *
      * @throws Exception
      */
-    public static function createFromValue(string $clientType): UserType
+    public static function createFromValue(string $userType): UserType
     {
-        if (!in_array($clientType, self::USER_TYPES, true)) {
-            throw new Exception(sprintf('Client type %s is not available', $clientType));
+        if (!in_array($userType, self::USER_TYPES, true)) {
+            throw new Exception(sprintf('Client type %s is not available', $userType));
         }
 
-        return new self($clientType);
+        return new self($userType);
     }
 
     /**

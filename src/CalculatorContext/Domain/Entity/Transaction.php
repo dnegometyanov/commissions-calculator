@@ -40,13 +40,13 @@ class Transaction
         UuidInterface $uuid,
         DateTimeImmutable $dateTime,
         User $user,
-        TransactionType $operationType,
+        TransactionType $transactionType,
         Money $amount
     ) {
         $this->uuid            = $uuid;
         $this->dateTime        = $dateTime;
         $this->user            = $user;
-        $this->transactionType = $operationType;
+        $this->transactionType = $transactionType;
         $this->amount          = $amount;
     }
 

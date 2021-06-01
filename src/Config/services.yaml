@@ -11,6 +11,9 @@ services:
       - '@guzzle.http.client'
       - '@exchange.rates.api.factory'
 
+  transactions.data.retriever:
+    class:     Commissions\CalculatorContext\Infrastructure\InputData\TransactionsDataRetrieverCSV
+
   common.deposit.rule:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\CommonDepositRule
 

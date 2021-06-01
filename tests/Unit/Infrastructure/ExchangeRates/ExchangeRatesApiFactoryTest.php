@@ -11,8 +11,7 @@ class ExchangeRatesApiFactoryTest extends TestCase
 {
     public function testCreateSuccess(): void
     {
-        // TODO fix hardcode
-        $exchangeRatesApiResponse = file_get_contents('/var/code/tests/Unit/Infrastructure/ExchangeRates/Fixture/ExchangeRatesApiResponse.json');
+        $exchangeRatesApiResponse = file_get_contents(realpath(__DIR__) . '/Fixture/ExchangeRatesApiResponse.json');
 
         $exchangeRates = ExchangeRatesApiFactory::create($exchangeRatesApiResponse);
 

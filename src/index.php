@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Commissions;
 
 use Brick\Money\Money;
-use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
+use Commissions\CalculatorContext\Domain\Entity\Commission;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\TransactionList;
 use Commissions\CalculatorContext\Domain\Entity\User;
@@ -13,6 +13,7 @@ use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Commissio
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Commissions\CalculatorContext\Domain\ValueObject\UserType;
 use Commissions\CalculatorContext\Infrastructure\ExchangeRates\ExchangeRatesRetriever;
+use Commissions\CalculatorContext\Infrastructure\InputData\TransactionsDataRetrieverCSV;
 use DateTimeImmutable;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Config\FileLocator;
@@ -23,41 +24,19 @@ const TRANSACTION_UUID_1 = '11111111-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
 
 require 'vendor/autoload.php';
 
+define('APPROOT', realpath(__DIR__ . '/../'));
+
 // init service container
 $containerBuilder = new ContainerBuilder();
 
-$loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__));
+$loader = new YamlFileLoader($containerBuilder, new FileLocator(APPROOT . '/src/config/'));
 
 $loader->load('services.yaml');
 
 try {
-    // TODO move further logic to console command class
-    // TODO read transactions from CSV
-    $transactionList  = new TransactionList();
-    $transactionsData = [
-        TRANSACTION_UUID_1 => [
-            'userId'             => 1,
-            'userType'           => UserType::private(),
-            'transactionUuid'    => Uuid::fromString(TRANSACTION_UUID_1),
-            'transactionDate'    => new DateTimeImmutable('2021-01-01 12:00:00'),
-            'transactionType'    => TransactionType::withdraw(),
-            'transactionAmount'  => Money::of('100.00', 'EUR'),
-            'expectedCommission' => 'EUR 0.00',
-        ],
-    ];
-    foreach ($transactionsData as $transactionData) {
-        $user = User::create($transactionData['userId'], $transactionData['userType']);
-
-        $transaction = new Transaction(
-            $transactionData['transactionUuid'],
-            $transactionData['transactionDate'],
-            $user,
-            $transactionData['transactionType'],
-            $transactionData['transactionAmount'],
-        );
-
-        $transactionList->addTransaction($transaction);
-    }
+    /** @var TransactionsDataRetrieverCSV $transactionsDataRetriever */
+    $transactionsDataRetrieverCSV =  $containerBuilder->get('transactions.data.retriever');
+    $transactionList = $transactionsDataRetrieverCSV->retrieve('input.csv');
 
     /** @var ExchangeRatesRetriever $exchangeRatesRetriever */
     $exchangeRatesRetriever = $containerBuilder->get('exchange.rates.retriever');
@@ -65,8 +44,10 @@ try {
 
     /** @var CommissionsCalculator $commissionsCalculator */
     $commissionsCalculator = $containerBuilder->get('commissions.calculator');
-
-    dump($commissionsCalculator->calculateCommissions($transactionList, $exchangeRates));
+    $commissionsList = $commissionsCalculator->calculateCommissions($transactionList, $exchangeRates);
+    foreach ($commissionsList->toArray() as $commission) {
+        echo (string)$commission->getAmount()->getAmount() . "\n";
+    }
 } catch (\Exception $e) {
-    dump($e->getMessage());
+    echo sprintf('Error while calculating commissions: %s', $e->getMessage());
 }
