@@ -40,7 +40,7 @@ class BusinessWithdrawRule implements RuleInterface
     public function isSuitable(Transaction $transaction): bool
     {
         return $transaction->getTransactionType()->isWithdraw()
-            && $transaction->getUser()->getUserType()->isBusiness();
+            && $transaction->getUserType()->isBusiness();
     }
 
     /** @inheritDoc */

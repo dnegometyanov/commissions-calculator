@@ -7,6 +7,7 @@ namespace Commissions\CalculatorContext\Domain\Entity;
 use Brick\Money\Currency;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
+use Commissions\CalculatorContext\Domain\ValueObject\UserType;
 use DateTimeImmutable;
 use Ramsey\Uuid\UuidInterface;
 
@@ -73,6 +74,14 @@ class Transaction
     public function getUser(): User
     {
         return $this->user;
+    }
+
+    /**
+     * @return UserType
+     */
+    public function getUserType(): UserType
+    {
+        return $this->user->getUserType();
     }
 
     /**

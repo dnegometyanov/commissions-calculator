@@ -68,7 +68,7 @@ class UserType
      *
      * @throws Exception
      */
-    public static function createFromValue(string $userType): UserType
+    public static function of(string $userType): UserType
     {
         if (!in_array($userType, self::USER_TYPES, true)) {
             throw new Exception(sprintf('Client type %s is not available', $userType));

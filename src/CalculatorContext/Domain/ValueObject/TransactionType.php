@@ -36,7 +36,7 @@ class TransactionType
      *
      * @throws Exception
      */
-    public static function createFromValue(string $operationType): TransactionType
+    public static function of(string $operationType): TransactionType
     {
         if (!in_array($operationType, self::TRANSACTION_TYPES, true)) {
             throw new Exception(sprintf('Operation type %s is not available', $operationType));

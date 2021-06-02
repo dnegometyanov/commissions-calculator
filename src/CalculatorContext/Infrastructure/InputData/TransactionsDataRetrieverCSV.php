@@ -28,8 +28,8 @@ class TransactionsDataRetrieverCSV implements TransactionsDataRetrieverInterface
             $transaction = new Transaction(
                 Uuid::uuid4(),
                 new DateTimeImmutable($transactionData[0]),
-                User::create((int)$transactionData[1], UserType::createFromValue($transactionData[2])),
-                TransactionType::createFromValue($transactionData[3]),
+                User::create((int)$transactionData[1], UserType::of($transactionData[2])),
+                TransactionType::of($transactionData[3]),
                 Money::of($transactionData[4], $transactionData[5]),
             );
 

@@ -68,7 +68,7 @@ class PrivateWithdrawRule implements RuleInterface
     public function isSuitable(Transaction $transaction): bool
     {
         return $transaction->getTransactionType()->isWithdraw()
-            && $transaction->getUser()->getUserType()->isPrivate();
+            && $transaction->getUserType()->isPrivate();
     }
 
     /** @inheritDoc */
