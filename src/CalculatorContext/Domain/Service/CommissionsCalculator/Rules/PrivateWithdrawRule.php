@@ -19,8 +19,6 @@ use Exception;
 
 class PrivateWithdrawRule implements RuleInterface
 {
-    private const WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT = 3;
-
     /**
      * @var Money
      */
