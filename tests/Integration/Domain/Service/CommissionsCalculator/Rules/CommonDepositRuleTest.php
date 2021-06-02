@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionsTest\Integration\Domain\Service\CommissionsCalculator\Rules;
 
+use Brick\Money\Currency;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
@@ -62,7 +63,10 @@ class CommonDepositRuleTest extends TestCase
             TransactionType::deposit()->getValue() => $userCalculationState,
         ]);
 
-        $commonDepositRule = new CommonDepositRule();
+        $commonDepositRule = new CommonDepositRule(
+            Currency::of('EUR'),
+            '0.0003'
+        );
 
         $ruleResult = $commonDepositRule->calculate($transaction, $userCalculationStateCollection);
 
@@ -158,7 +162,10 @@ class CommonDepositRuleTest extends TestCase
             TransactionType::deposit()->getValue() => $userCalculationState,
         ]);
 
-        $commonDepositRule = new CommonDepositRule();
+        $commonDepositRule = new CommonDepositRule(
+            Currency::of('EUR'),
+            '0.0003'
+        );
 
         $commonDepositRule->calculate($transaction, $userCalculationStateCollection);
     }

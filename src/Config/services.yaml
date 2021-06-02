@@ -14,14 +14,36 @@ services:
   transactions.data.retriever:
     class:     Commissions\CalculatorContext\Infrastructure\InputData\TransactionsDataRetrieverCSV
 
+  currency.base:
+    class:     Brick\Money\Currency
+    factory:   [Brick\Money\Currency, of]
+    arguments: ['EUR']
+
+  money.private.withdrawal.rule.threshold.amount:
+    class:     Brick\Money\Money
+    factory:   [Brick\Money\Money, of]
+    arguments: ['1000', 'EUR']
+
   common.deposit.rule:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\CommonDepositRule
+    arguments:
+      - '@currency.base'
+      - '0.0003'
 
   business.withdraw.rule:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\BusinessWithdrawRule
+    arguments:
+      - '@currency.base'
+      - '0.005'
 
   private.withdraw.rule:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\PrivateWithdrawRule
+    arguments:
+      - '@currency.base'
+      - '0'
+      - '@money.private.withdrawal.rule.threshold.amount'
+      - '3'
+      - '0.003'
 
   rules.sequence:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence

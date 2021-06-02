@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
 use Brick\Math\RoundingMode;
+use Brick\Money\Currency;
 use Brick\Money\CurrencyConverter;
 use Brick\Money\ExchangeRateProvider\ConfigurableProvider;
 use Brick\Money\Money;
@@ -18,9 +19,52 @@ use Exception;
 
 class PrivateWithdrawRule implements RuleInterface
 {
-    private const WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE   = '0.003';
-    private const WITHDRAW_PRIVATE_WEEKLY_FREE_AMOUNT             = '1000';
     private const WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT = 3;
+
+    /**
+     * @var Money
+     */
+    private Money $thresholdWeeklyAmount;
+
+    /**
+     * @var int
+     */
+    private int $thresholdWeeklyTransactions;
+
+    /**
+     * @var string
+     */
+    private string $exceedingThresholdPercentage;
+    /**
+     * @var Currency
+     */
+    private Currency $baseCurrency;
+
+    /**
+     * @var string
+     */
+    private string $commonPercentage;
+
+    /**
+     * @param Currency $baseCurrency
+     * @param string $commonPercentage
+     * @param Money $thresholdWeeklyAmount
+     * @param int $thresholdWeeklyTransactions
+     * @param string $exceedingThresholdPercentage
+     */
+    public function __construct(
+        Currency $baseCurrency,
+        string $commonPercentage,
+        Money $thresholdWeeklyAmount,
+        int $thresholdWeeklyTransactions,
+        string $exceedingThresholdPercentage
+    ) {
+        $this->baseCurrency                 = $baseCurrency;
+        $this->commonPercentage             = $commonPercentage;
+        $this->thresholdWeeklyAmount        = $thresholdWeeklyAmount;
+        $this->thresholdWeeklyTransactions  = $thresholdWeeklyTransactions;
+        $this->exceedingThresholdPercentage = $exceedingThresholdPercentage;
+    }
 
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
@@ -49,43 +93,40 @@ class PrivateWithdrawRule implements RuleInterface
             case $userWithdrawCalculationState->isTransactionAfterWeekRange($transaction):
                 $userWithdrawCalculationState = new UserCalculationState(
                     0,
-                    Money::of('0', 'EUR'),
+                    Money::of('0', $this->baseCurrency),
                     WeekRange::createFromDate($transaction->getDateTime())
                 );
                 break;
         }
 
-        $limitAmount = Money::of(self::WITHDRAW_PRIVATE_WEEKLY_FREE_AMOUNT, 'EUR');
-
-        $transactionCurrencyCode = $transaction->getAmount()->getCurrency()->getCurrencyCode();
-        $baseCurrencyCode        = 'EUR';
+        $limitAmount = Money::of($this->thresholdWeeklyAmount->getAmount(), $this->baseCurrency);
 
         // If state amount is lower then allowed free amount,
         // then we need decrease new transaction paid amount by this delta,
         // otherwise, we take commission from whole new transaction
         $stateLimitDelta = $limitAmount->minus($userWithdrawCalculationState->getWeeklyAmount());
         if ($stateLimitDelta->isNegative()) {
-            $stateLimitDelta = Money::of('0', 'EUR');
+            $stateLimitDelta = Money::of('0', $this->baseCurrency);
         }
 
-        if ($transactionCurrencyCode === $baseCurrencyCode) {
+        if ($transaction->getCurrency()->is($this->baseCurrency)) {
             $transactionAmountBaseCurrency = $transaction->getAmount();
 
             $overLimitAmount =
-                $userWithdrawCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
+                $userWithdrawCalculationState->getWeeklyTransactionsProcessed() >= $this->thresholdWeeklyTransactions
                     ? $transaction->getAmount()
                     : $transactionAmountBaseCurrency->minus($stateLimitDelta);
         } else {
-            $exchangeRate = $exchangeRates->getRate($transactionCurrencyCode) ?? null;
+            $exchangeRate = $exchangeRates->getRate($transaction->getCurrency()) ?? null;
             if ($exchangeRate === null) {
-                throw new Exception(sprintf('Exchange rate for currency code %s not found', $transactionCurrencyCode));
+                throw new Exception(sprintf('Exchange rate for currency code %s not found', $transaction->getCurrencyCode()));
             }
 
             // TODO inject dependency
             $exchangeRateProvider = new ConfigurableProvider();
             $exchangeRateProvider->setExchangeRate(
-                'EUR',
-                $transaction->getAmount()->getCurrency()->getCurrencyCode(),
+                $this->baseCurrency->getCurrencyCode(),
+                $transaction->getCurrencyCode(),
                 $exchangeRate
             );
             // TODO inject dependency
@@ -93,27 +134,27 @@ class PrivateWithdrawRule implements RuleInterface
 
             $transactionAmountBaseCurrency = Money::of(
                 $transaction->getAmount()->dividedBy($exchangeRate, RoundingMode::HALF_UP)->getAmount(), // TODO think on rounding
-                'EUR'
+                $this->baseCurrency
             );
 
             $overLimitAmountBaseCurrency =
-                $userWithdrawCalculationState->getWeeklyTransactionsProcessed() >= self::WITHDRAW_PRIVATE_WEEKLY_FREE_TRANSACTIONS_COUNT
+                $userWithdrawCalculationState->getWeeklyTransactionsProcessed() >= $this->thresholdWeeklyTransactions
                     ? $transaction->getAmount()
                     : $transactionAmountBaseCurrency->minus($stateLimitDelta);
 
             $overLimitAmount = $converter->convert(
                 $overLimitAmountBaseCurrency,
-                $transaction->getAmount()->getCurrency(),
+                $transaction->getCurrency(),
                 RoundingMode::HALF_UP
             );
         }
 
         if ($overLimitAmount->isNegative()) {
-            $overLimitAmount = Money::of(0, $transaction->getAmount()->getCurrency());
+            $overLimitAmount = Money::of(0, $transaction->getCurrency());
         }
 
         $commissionAmount = $overLimitAmount->multipliedBy(
-            self::WITHDRAW_PRIVATE_COMMON_COMMISSION_PERCENTAGE,
+            $this->exceedingThresholdPercentage,
             RoundingMode::HALF_UP
         );
 

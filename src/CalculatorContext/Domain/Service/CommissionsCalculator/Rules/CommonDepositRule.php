@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
 use Brick\Math\RoundingMode;
+use Brick\Money\Currency;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
@@ -14,7 +15,27 @@ use Exception;
 
 class CommonDepositRule implements RuleInterface
 {
-    private const DEPOSIT_COMMISSION_PERCENTAGE = '0.0003';
+    /**
+     * @var Currency
+     */
+    private Currency $baseCurrency;
+
+    /**
+     * @var string
+     */
+    private string $commonPercentage;
+
+    /**
+     * @param Currency $baseCurrency
+     * @param string $commonPercentage
+     */
+    public function __construct(
+        Currency $baseCurrency,
+        string $commonPercentage
+    ) {
+        $this->baseCurrency = $baseCurrency;
+        $this->commonPercentage = $commonPercentage;
+    }
 
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
@@ -42,7 +63,7 @@ class CommonDepositRule implements RuleInterface
 
         return new RuleResult(
             new UserCalculationState(), // TODO create new modified state
-            $transaction->getAmount()->multipliedBy(self::DEPOSIT_COMMISSION_PERCENTAGE, RoundingMode::HALF_UP)
+            $transaction->getAmount()->multipliedBy($this->commonPercentage, RoundingMode::HALF_UP)
         );
     }
 }

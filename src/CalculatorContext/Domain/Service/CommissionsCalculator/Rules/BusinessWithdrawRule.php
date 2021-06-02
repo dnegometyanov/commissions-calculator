@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
 use Brick\Math\RoundingMode;
+use Brick\Money\Currency;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
@@ -13,7 +14,27 @@ use Exception;
 
 class BusinessWithdrawRule implements RuleInterface
 {
-    private const WITHDRAW_BUSINESS_COMMON_COMMISSION_PERCENTAGE = '0.005';
+    /**
+     * @var Currency
+     */
+    private Currency $baseCurrency;
+
+    /**
+     * @var string
+     */
+    private string $commonPercentage;
+
+    /**
+     * @param Currency $baseCurrency
+     * @param string $commonPercentage
+     */
+    public function __construct(
+        Currency $baseCurrency,
+        string $commonPercentage
+    ) {
+        $this->baseCurrency = $baseCurrency;
+        $this->commonPercentage = $commonPercentage;
+    }
 
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
@@ -41,7 +62,7 @@ class BusinessWithdrawRule implements RuleInterface
         }
 
         $commissionAmount = $transaction->getAmount()->multipliedBy(
-            self::WITHDRAW_BUSINESS_COMMON_COMMISSION_PERCENTAGE,
+            $this->commonPercentage,
             RoundingMode::HALF_UP
         );
 

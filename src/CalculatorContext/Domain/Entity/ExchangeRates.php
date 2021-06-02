@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Entity;
 
+use Brick\Money\Currency;
 use DateTimeImmutable;
 
 class ExchangeRates
@@ -50,16 +51,16 @@ class ExchangeRates
     }
 
     /**
-     * @param string $currencyCode
+     * @param Currency $currency
      *
      * @return string|null
      */
-    public function getRate(string $currencyCode): ?string
+    public function getRate(Currency $currency): ?string
     {
-        if (!isset($this->rates[$currencyCode])) {
+        if (!isset($this->rates[$currency->getCurrencyCode()])) {
             return null;
         }
 
-        return (string) $this->rates[$currencyCode];
+        return (string)$this->rates[$currency->getCurrencyCode()];
     }
 }

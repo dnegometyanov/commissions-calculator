@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionsTest\Integration\Domain\Service\CommissionsCalculator;
 
+use Brick\Money\Currency;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
@@ -73,9 +74,23 @@ class CommissionsCalculatorTest extends TestCase
             ]
         );
 
-        $commonDepositRule = new CommonDepositRule();
-        $privateWithdrawRule = new PrivateWithdrawRule();
-        $businessWithdrawRule = new BusinessWithdrawRule();
+        $commonDepositRule = new CommonDepositRule(
+            Currency::of('EUR'),
+            '0.0003'
+        );
+
+        $privateWithdrawRule = new PrivateWithdrawRule(
+            Currency::of('EUR'),
+            '0',
+            Money::of('1000', 'EUR'),
+            3,
+            '0.003'
+        );
+
+        $businessWithdrawRule = new BusinessWithdrawRule(
+            Currency::of('EUR'),
+            '0.005',
+        );
 
         $rulesSequence = new RulesSequence(
             [

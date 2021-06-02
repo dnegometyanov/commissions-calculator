@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionsTest\Integration\Domain\Service\CommissionsCalculator\Rules;
 
+use Brick\Money\Currency;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
@@ -62,7 +63,10 @@ class BusinessWithdrawalRuleTest extends TestCase
             TransactionType::withdraw()->getValue() => $userCalculationState,
         ]);
 
-        $businessWithdrawalRule = new BusinessWithdrawRule();
+        $businessWithdrawalRule = new BusinessWithdrawRule(
+            Currency::of('EUR'),
+            '0.005',
+        );
 
         $ruleResult = $businessWithdrawalRule->calculate($transaction, $userCalculationStateCollection);
 
@@ -190,7 +194,10 @@ class BusinessWithdrawalRuleTest extends TestCase
             TransactionType::withdraw()->getValue() => $userCalculationState,
         ]);
 
-        $businessWithdrawalRule = new BusinessWithdrawRule();
+        $businessWithdrawalRule = new BusinessWithdrawRule(
+            Currency::of('EUR'),
+            '0.005',
+        );
 
         $businessWithdrawalRule->calculate($transaction, $userCalculationStateCollection);
     }

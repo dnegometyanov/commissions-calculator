@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Entity;
 
+use Brick\Money\Currency;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use DateTimeImmutable;
@@ -88,5 +89,16 @@ class Transaction
     public function getAmount(): Money
     {
         return $this->amount;
+    }
+
+    public function getCurrency(): Currency
+    {
+        return $this->getAmount()->getCurrency();
+    }
+
+
+    public function getCurrencyCode(): string
+    {
+        return $this->getAmount()->getCurrency()->getCurrencyCode();
     }
 }
