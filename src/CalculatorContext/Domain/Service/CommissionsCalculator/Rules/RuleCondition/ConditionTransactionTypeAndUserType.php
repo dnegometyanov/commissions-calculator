@@ -35,9 +35,7 @@ class ConditionTransactionTypeAndUserType implements ConditionInterface
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
     {
-        return ($transaction->getTransactionType()->is($this->transactionType)
-                || $this->transactionType === null)
-            && ($transaction->getUserType()->is($this->userType)
-                || $this->userType === null);
+        return ($this->transactionType === null || $transaction->getTransactionType()->is($this->transactionType))
+            && ($this->userType === null || $transaction->getUserType()->is($this->userType));
     }
 }

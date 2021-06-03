@@ -49,10 +49,59 @@ class ConditionTransactionTypeAndUserTypeTest extends TestCase
     {
         return [
             'private_withdraw' => [
-                'conditionTransactionType' => TransactionType::withdraw(),
-                'conditionUserType'        => UserType::private(),
+                'conditionTransactionType' => TransactionType::of('withdraw'),
+                'conditionUserType'        => UserType::of('private'),
                 'transactionTransactionType' => TransactionType::of('withdraw'),
-                'transactionUserType'        => UserType::private(),
+                'transactionUserType'        => UserType::of('private'),
+                'isSuitable'          => true,
+            ],
+            'business_withdraw' => [
+                'conditionTransactionType' => TransactionType::of('withdraw'),
+                'conditionUserType'        => UserType::of('business'),
+                'transactionTransactionType' => TransactionType::of('withdraw'),
+                'transactionUserType'        => UserType::of('business'),
+                'isSuitable'          => true,
+            ],
+            'all_deposit_business_transaction' => [
+                'conditionTransactionType' => TransactionType::of('deposit'),
+                'conditionUserType'        =>  null,
+                'transactionTransactionType' => TransactionType::of('deposit'),
+                'transactionUserType'        => UserType::of('business'),
+                'isSuitable'          => true,
+            ],
+            'all_deposit_private_transaction' => [
+                'conditionTransactionType' => TransactionType::of('deposit'),
+                'conditionUserType'        =>  null,
+                'transactionTransactionType' => TransactionType::of('deposit'),
+                'transactionUserType'        => UserType::of('private'),
+                'isSuitable'          => true,
+            ],
+            'all_deposit_private' => [
+                'conditionTransactionType' => null,
+                'conditionUserType'        =>  null,
+                'transactionTransactionType' => TransactionType::of('deposit'),
+                'transactionUserType'        => UserType::of('private'),
+                'isSuitable'          => true,
+            ],
+            'all_deposit_business' => [
+                'conditionTransactionType' => null,
+                'conditionUserType'        =>  null,
+                'transactionTransactionType' => TransactionType::of('deposit'),
+                'transactionUserType'        => UserType::of('business'),
+                'isSuitable'          => true,
+            ],
+            'all_withdraw_private' => [
+                'conditionTransactionType' => null,
+                'conditionUserType'        =>  null,
+                'transactionTransactionType' => TransactionType::of('withdraw'),
+                'transactionUserType'        => UserType::of('private'),
+                'isSuitable'          => true,
+            ],
+            'all_withdraw_business' => [
+                'conditionTransactionType' => null,
+                'conditionUserType'        =>  null,
+                'transactionTransactionType' => TransactionType::of('withdraw'),
+                'transactionUserType'        => UserType::of('business'),
                 'isSuitable'          => true,
             ],
         ];
