@@ -14,6 +14,7 @@ use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionInterface;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Exception;
 
@@ -44,6 +45,12 @@ class PrivateWithdrawRule implements RuleInterface
     private string $commonPercentage;
 
     /**
+     * @var ConditionInterface
+     */
+    private ConditionInterface $condition;
+
+    /**
+     * @param ConditionInterface $condition
      * @param Currency $baseCurrency
      * @param string $commonPercentage
      * @param Money $thresholdWeeklyAmount
@@ -51,6 +58,7 @@ class PrivateWithdrawRule implements RuleInterface
      * @param string $exceedingThresholdPercentage
      */
     public function __construct(
+        ConditionInterface $condition,
         Currency $baseCurrency,
         string $commonPercentage,
         Money $thresholdWeeklyAmount,
@@ -62,13 +70,13 @@ class PrivateWithdrawRule implements RuleInterface
         $this->thresholdWeeklyAmount        = $thresholdWeeklyAmount;
         $this->thresholdWeeklyTransactions  = $thresholdWeeklyTransactions;
         $this->exceedingThresholdPercentage = $exceedingThresholdPercentage;
+        $this->condition = $condition;
     }
 
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
     {
-        return $transaction->getTransactionType()->isWithdraw()
-            && $transaction->getUserType()->isPrivate();
+        return $this->condition->isSuitable($transaction);
     }
 
     /** @inheritDoc */

@@ -9,6 +9,7 @@ use Brick\Money\Currency;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionInterface;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Exception;
 
@@ -25,22 +26,29 @@ class BusinessWithdrawRule implements RuleInterface
     private string $commonPercentage;
 
     /**
+     * @var ConditionInterface
+     */
+    private ConditionInterface $condition;
+
+    /**
+     * @param ConditionInterface $condition
      * @param Currency $baseCurrency
      * @param string $commonPercentage
      */
     public function __construct(
+        ConditionInterface $condition,
         Currency $baseCurrency,
         string $commonPercentage
     ) {
         $this->baseCurrency = $baseCurrency;
         $this->commonPercentage = $commonPercentage;
+        $this->condition = $condition;
     }
 
     /** @inheritDoc */
     public function isSuitable(Transaction $transaction): bool
     {
-        return $transaction->getTransactionType()->isWithdraw()
-            && $transaction->getUserType()->isBusiness();
+        return $this->condition->isSuitable($transaction);
     }
 
     /** @inheritDoc */

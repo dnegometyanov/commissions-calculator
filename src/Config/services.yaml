@@ -24,21 +24,62 @@ services:
     factory:   [Brick\Money\Money, of]
     arguments: ['1000', 'EUR']
 
+  transaction.type.deposit:
+    class:     Commissions\CalculatorContext\Domain\ValueObject\TransactionType
+    factory:   [Commissions\CalculatorContext\Domain\ValueObject\TransactionType, of]
+    arguments: ['deposit']
+
+  transaction.type.withdraw:
+    class:     Commissions\CalculatorContext\Domain\ValueObject\TransactionType
+    factory:   [Commissions\CalculatorContext\Domain\ValueObject\TransactionType, of]
+    arguments: ['withdraw']
+
+  user.type.business:
+    class:     Commissions\CalculatorContext\Domain\ValueObject\UserType
+    factory:   [Commissions\CalculatorContext\Domain\ValueObject\UserType, of]
+    arguments: ['business']
+
+  user.type.private:
+    class:     Commissions\CalculatorContext\Domain\ValueObject\UserType
+    factory:   [Commissions\CalculatorContext\Domain\ValueObject\UserType, of]
+    arguments: ['private']
+
+  condition.common.deposit.rule:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType
+    arguments:
+      - '@transaction.type.deposit'
+      - null
+
   common.deposit.rule:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\CommonDepositRule
     arguments:
+      - '@condition.common.deposit.rule'
       - '@currency.base'
       - '0.0003'
+
+  condition.business.withdraw.rule:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType
+    arguments:
+      - '@transaction.type.withdraw'
+      - '@user.type.business'
 
   business.withdraw.rule:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\BusinessWithdrawRule
     arguments:
+      - '@condition.business.withdraw.rule'
       - '@currency.base'
       - '0.005'
 
+  condition.private.withdraw.rule:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType
+    arguments:
+      - '@transaction.type.withdraw'
+      - '@user.type.private'
+      -
   private.withdraw.rule:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\PrivateWithdrawRule
     arguments:
+      - '@condition.private.withdraw.rule'
       - '@currency.base'
       - '0'
       - '@money.private.withdrawal.rule.threshold.amount'
