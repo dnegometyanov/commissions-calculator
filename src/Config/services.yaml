@@ -76,15 +76,26 @@ services:
       - '@transaction.type.withdraw'
       - '@user.type.private'
       -
+#  private.withdraw.rule:
+#    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\PrivateWithdrawRule
+#    arguments:
+#      - '@condition.private.withdraw.rule'
+#      - '@currency.base'
+#      - '0'
+#      - '@money.private.withdrawal.rule.threshold.amount'
+#      - '3'
+#      - '0.003'
+
   private.withdraw.rule:
-    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\PrivateWithdrawRule
-    arguments:
-      - '@condition.private.withdraw.rule'
-      - '@currency.base'
-      - '0'
-      - '@money.private.withdrawal.rule.threshold.amount'
-      - '3'
-      - '0.003'
+      class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\WeeklyThresholdRule
+      arguments:
+        - '@condition.private.withdraw.rule'
+        - '@transaction.type.withdraw'
+        - '@currency.base'
+        - '0'
+        - '@money.private.withdrawal.rule.threshold.amount'
+        - '3'
+        - '0.003'
 
   rules.sequence:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence
