@@ -114,10 +114,12 @@ class WeeklyThresholdRule implements RuleInterface
         ExchangeRates $exchangeRates = null
     ): RuleResult {
         /**
-         * States are stored in UserCalculationStateCollection that is grouped by TransactionType
-         * UserCalculationStateCollection is per-user entry
+         * UserCalculationStateCollection is a place to store aggregation states,
+         * for example like weekly processed transactions amount amd number,
+         * they are grouped by TransactionType and each is per-user entry that is retrieved from repository by user id
          *
-         * We pass whole UserCalculationStateCollection to the rule - while its not needed for the current rule,
+         * We pass whole UserCalculationStateCollection to the rule, so for withdrawal rule it contains not only withdrawal data,
+         * but other transaction types aggregation data as well - while its not needed for the current rule,
          * as it uses only its TransactionType, but provides better extensibility in case we gonna add some new rules
          * that depend on different TransactionType than current rule
          *
@@ -146,11 +148,9 @@ class WeeklyThresholdRule implements RuleInterface
         }
 
         /**
-         * As this rule has calculation logic with different percentage of commission
-         * before and after some threshold conditions,
-         * we calculate here amount in base currency that is WITHIN(lower) then threshold
+         * Amount that is left within the threshold
          */
-        $amountWithingThresholdBaseCurrency = $this->getAmountWithinThresholdBaseCurrency($userCalculationState);
+        $leftOverAmountWithingThresholdBaseCurrency = $this->getLeftOverAmountWithinThresholdBaseCurrency($userCalculationState);
 
         /**
          * As this rule has calculation logic with different percentage of commission
@@ -161,12 +161,12 @@ class WeeklyThresholdRule implements RuleInterface
             ? $this->getOverThresholdAmountSameCurrencies(
                 $transaction,
                 $userCalculationState,
-                $amountWithingThresholdBaseCurrency
+                $leftOverAmountWithingThresholdBaseCurrency
             )
             : $this->getOverThresholdAmountDifferentCurrencies(
                 $transaction,
                 $userCalculationState,
-                $amountWithingThresholdBaseCurrency,
+                $leftOverAmountWithingThresholdBaseCurrency,
                 $exchangeRates
             );
 
@@ -237,11 +237,9 @@ class WeeklyThresholdRule implements RuleInterface
      * @throws \Brick\Money\Exception\MoneyMismatchException
      * @throws \Brick\Money\Exception\UnknownCurrencyException
      */
-    private function getAmountWithinThresholdBaseCurrency(UserCalculationState $userCalculationState): Money
+    private function getLeftOverAmountWithinThresholdBaseCurrency(UserCalculationState $userCalculationState): Money
     {
-        $limitAmount = Money::of($this->thresholdWeeklyAmount->getAmount(), $this->baseCurrency);
-
-        $amountWithingThresholdBaseCurrency = $limitAmount->minus($userCalculationState->getWeeklyAmount());
+        $amountWithingThresholdBaseCurrency = $this->thresholdWeeklyAmount->minus($userCalculationState->getWeeklyAmount());
 
         if ($amountWithingThresholdBaseCurrency->isNegative()) {
             $amountWithingThresholdBaseCurrency = Money::of('0', $this->baseCurrency);
@@ -258,13 +256,15 @@ class WeeklyThresholdRule implements RuleInterface
          */
         if ($amount->getCurrency()->is($this->baseCurrency)) {
             $exchangeRate = $exchangeRates->getRate($currencyTo) ?? null;
+            if ($exchangeRate === null) {
+                throw new ExchangeRateNotFoundException(sprintf('Exchange rate for currency code %s not found', $currencyTo));
+            }
         } else {
-            $exchangeRate = $exchangeRates->getRate($amount->getCurrency());
+            $exchangeRate = $exchangeRates->getRate($amount->getCurrency()) ?? null;
+            if ($exchangeRate === null) {
+                throw new ExchangeRateNotFoundException(sprintf('Exchange rate for currency code %s not found', $amount->getCurrency()));
+            }
             $exchangeRate = bcdiv('1', $exchangeRate, self::EXCHANGE_RATE_REVERSE_PRECISION);
-        }
-
-        if ($exchangeRate === null) {
-            throw new ExchangeRateNotFoundException(sprintf('Exchange rate for currency code %s not found', $amount->getCurrency()->getCurrencyCode()));
         }
 
         // TODO inject dependency
