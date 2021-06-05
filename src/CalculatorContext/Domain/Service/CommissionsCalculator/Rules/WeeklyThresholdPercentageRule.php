@@ -19,7 +19,7 @@ use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exc
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionInterface;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 
-class WeeklyThresholdRule implements RuleInterface
+class WeeklyThresholdPercentageRule implements RuleInterface
 {
     public const EXCHANGE_RATE_REVERSE_PRECISION = 8;
 
@@ -58,10 +58,6 @@ class WeeklyThresholdRule implements RuleInterface
     private string $withinThresholdPercentage;
 
     /**
-     * @var ConditionInterface
-     */
-
-    /**
      * @param ConditionInterface $condition
      * @param TransactionType $stateSelectorByTransactionType
      * @param Currency $baseCurrency
@@ -72,7 +68,7 @@ class WeeklyThresholdRule implements RuleInterface
      */
     public function __construct(
         ConditionInterface $condition,
-        TransactionType $stateSelectorByTransactionType, // we can select UserCalculationState for the Transaction's type
+        TransactionType $stateSelectorByTransactionType, // to select proper UserCalculationState for the Transaction's type
         Currency $baseCurrency,
         string $commonPercentage,
         Money $thresholdWeeklyAmount,
