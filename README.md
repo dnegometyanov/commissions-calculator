@@ -11,6 +11,8 @@ Given:
  - And `withdrawal` + (`private`) are free if weekly (Mon-Sun) total amount of these type of transactions is less then `EUR 1000`
     according to `api.exchangeratesapi.io` and at the same time less or equal then `3` transactions of this type per week. 
     In other case, the part of transaction that exceeds the above threshold conditions has commission of `0.3%`
+ - The rates above should be adjustable from the config without code changes, 
+   as well there should be a possibility to add new rules with entire new logic without existing code modifications.   
 
 Expected:
  - Console command should take the csv filename as input and output commission amount without currency as output.   
