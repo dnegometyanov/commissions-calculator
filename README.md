@@ -68,9 +68,15 @@ If dist files are not copied to actual destination, then
         
 ## Run application
 
-Runs container and executes console application.
+Runs container and executes console application with default `input.csv` parameter.
 
     Make run
+
+In case you need to execute it with another input filename parameter, you can use
+    
+    docker-compose run --rm --no-deps php-cli php src/index.php input.csv
+
+and change the filename accordingly
 
 ## Run tests
 
