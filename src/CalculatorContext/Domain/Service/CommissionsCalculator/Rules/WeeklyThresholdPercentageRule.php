@@ -153,7 +153,7 @@ class WeeklyThresholdPercentageRule implements RuleInterface
          * before and after some threshold conditions,
          * we calculate here amount in base currency that is OVER(higher) then threshold
          */
-        $overThresholdAmountInBaseCurrency = ($transaction->getCurrency()->is($this->baseCurrency))
+        $overThresholdAmountInTransactionCurrency = ($transaction->getCurrency()->is($this->baseCurrency))
             ? $this->getOverThresholdAmountSameCurrencies(
                 $transaction,
                 $userCalculationState,
@@ -166,25 +166,27 @@ class WeeklyThresholdPercentageRule implements RuleInterface
                 $exchangeRates
             );
 
-        if ($overThresholdAmountInBaseCurrency->isNegative()) {
-            $overThresholdAmountInBaseCurrency = Money::of(0, $transaction->getCurrency());
+        if ($overThresholdAmountInTransactionCurrency->isNegative()) {
+            $overThresholdAmountInTransactionCurrency = Money::of(0, $transaction->getCurrency());
         }
 
         $transactionAmountBaseCurrency = $this->getTransactionAmountBaseCurrency($transaction, $exchangeRates);
 
+        $commissionAmountOverThreshold = $overThresholdAmountInTransactionCurrency->multipliedBy(
+            $this->exceedingThresholdPercentage,
+            RoundingMode::UP
+        );
+
         /**
          * Its not required by directly described conditions,
          * but allows to configure non-zero percentage below threshold
-         * and calculate commission below threshold
+         * and calculate commission below threshold, so its an easy way to improve configurability
          */
-        $commissionAmountWithinThreshold = $overThresholdAmountInBaseCurrency->multipliedBy(
-            $this->withinThresholdPercentage,
-            RoundingMode::HALF_UP
-        );
+        $amountWithinThresholdInTransactionCurrency = $transaction->getAmount()->minus($overThresholdAmountInTransactionCurrency);
 
-        $commissionAmountOverThreshold = $overThresholdAmountInBaseCurrency->multipliedBy(
-            $this->exceedingThresholdPercentage,
-            RoundingMode::HALF_UP
+        $commissionAmountWithinThreshold = $amountWithinThresholdInTransactionCurrency->multipliedBy(
+            $this->withinThresholdPercentage,
+            RoundingMode::UP
         );
 
         $commissionAmount = $commissionAmountWithinThreshold->plus($commissionAmountOverThreshold);

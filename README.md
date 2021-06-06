@@ -16,12 +16,6 @@ Given:
 
 Expected:
  - Console command should take the csv filename as input and output commission amount without currency as output.   
- - Example of commissions calculation provided on the screenshot below, but **it has an error**
-
-**Please note, that expected example provided is incorrect !**
-
-![Error in expected result](error_in_expected_result.png "Error in expected result")
-
 
 ## Prerequisites
 
@@ -42,10 +36,9 @@ and you may check Dockerfile for troubleshooting of your local config.
 Each rule implements `RuleInterface` and basically takes  `Transaction`, `UserCalculationStateCollection`, `ExchangeRates` 
    as parameters for calculation of commission of each transaction. 
 
- - Rules are configured to the `RuleSequence`, so the first matching rule applies to calculate the commission. 
-   I have not used the chain of responsibility here, so Rules are standalone from the sequence and do not have redundant chain responsibility.  
+ - Rules added to the `RuleSequence`, so the first matching rule applies to calculate the commission. 
 
- - `UserCalculationStateCollection` is a collection the has Transaction Type (i.e. `deposit` or `withdrawal`) as a key,
+ - `UserCalculationStateCollection` is a collection that has Transaction Type (i.e. `deposit` or `withdrawal`) as a key,
    and `UserCalculationState` as value. For now `UserCalculationState` contains aggregation of Weekly Amount per transaction type and weekly transactions count per transaction type.
    TODOs : I need to make `UserCalculationState` extendable for new types of rules,
    but not only weekly amount and transactions count.
@@ -56,6 +49,9 @@ And `UserCalculationStateRepositoryDefault` is its in-memory implementation.
  - `CommissionCalculator` implements `CommissionCalculatorInterface`
    and finds proper calculation rule from `RulesSequence` using Rule's `isSuitable` condition.
 
+- `CommissionsCalculator` implements `CommissionsCalculatorInterface`
+  and runs all transaction calculation using `CommissionCalculator`
+  
 ## Build container and install composer dependencies
 
     Make build

@@ -332,7 +332,7 @@ class CommissionsCalculatorTest extends TestCase
                         'transactionDate'    => new DateTimeImmutable('2021-01-01 12:00:00'),
                         'transactionType'    => TransactionType::of('withdraw'),
                         'transactionAmount'  => Money::of('750.00', 'USD'),
-                        'expectedCommission' => 'USD 0.90',
+                        'expectedCommission' => 'USD 0.91',
                     ],
                 ],
             ],
