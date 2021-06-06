@@ -22,7 +22,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
-class PrivateWithdrawalRuleTest extends TestCase
+class WeeklyThresholdPercentageRuleTest extends TestCase
 {
     /**
      * @dataProvider calculateProvider
@@ -81,13 +81,13 @@ class PrivateWithdrawalRuleTest extends TestCase
             $stateSelectorByTransactionType->getValue() => $userCalculationState,
         ]);
 
-        $privateWithdrawalRule = new ConditionTransactionTypeAndUserType(
+        $conditionPrivateWithdrawalRule = new ConditionTransactionTypeAndUserType(
             $conditionTransactionType,
             $conditionUserType
         );
 
         $privateWithdrawalRule = new WeeklyThresholdPercentageRule(
-            $privateWithdrawalRule,
+            $conditionPrivateWithdrawalRule,
             $stateSelectorByTransactionType,
             Currency::of('EUR'),
             '0',

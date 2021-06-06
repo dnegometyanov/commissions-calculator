@@ -13,10 +13,10 @@ use Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCa
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionCalculator;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\BusinessWithdrawRule;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\CommonDepositRule;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\PrivateWithdrawRule;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\FlatPercentageRule;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\WeeklyThresholdPercentageRule;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Commissions\CalculatorContext\Domain\ValueObject\UserType;
 use DateTimeImmutable;
@@ -29,12 +29,12 @@ class CommissionCalculatorTest extends TestCase
      * @dataProvider calculateCommissionForTransactionProvider
      *
      * @param int $userId
-     * @param UserType $userType
      * @param int $stateWeeklyTransactionsProcessed
      * @param Money|null $stateWeeklyAmount
      * @param WeekRange|null $stateWeekRange
      * @param DateTimeImmutable $transactionDate
      * @param TransactionType $transactionType
+     * @param UserType $transactionUserType
      * @param Money $transactionAmount
      * @param string $expectedCommission
      *
@@ -43,16 +43,16 @@ class CommissionCalculatorTest extends TestCase
      */
     public function testCalculateCommissionForTransaction(
         int $userId,
-        UserType $userType,
         int $stateWeeklyTransactionsProcessed,
         ?Money $stateWeeklyAmount,
         ?WeekRange $stateWeekRange,
         DateTimeImmutable $transactionDate,
         TransactionType $transactionType,
+        UserType $transactionUserType,
         Money $transactionAmount,
         string $expectedCommission
     ): void {
-        $user = User::create($userId, $userType);
+        $user = User::create($userId, $transactionUserType);
 
         $transaction = new Transaction(
             Uuid::uuid4(),
@@ -71,22 +71,43 @@ class CommissionCalculatorTest extends TestCase
             ]
         );
 
-        $commonDepositRule = new CommonDepositRule(
-            Currency::of('EUR'),
-            '0.0003',
+        $conditionBusinessWithdrawalRule = new ConditionTransactionTypeAndUserType(
+            TransactionType::of('withdraw'),
+            UserType::of('business'),
         );
 
-        $privateWithdrawRule = new PrivateWithdrawRule(
+        $businessWithdrawRule = new FlatPercentageRule(
+            $conditionBusinessWithdrawalRule,
+            TransactionType::of('withdraw'),
+            Currency::of('EUR'),
+            '0.005'
+        );
+
+        $conditionCommonDepositRule = new ConditionTransactionTypeAndUserType(
+            TransactionType::of('deposit'),
+            null,
+        );
+
+        $commonDepositRule = new FlatPercentageRule(
+            $conditionCommonDepositRule,
+            TransactionType::of('withdraw'),
+            Currency::of('EUR'),
+            '0.0003'
+        );
+
+        $conditionPrivateWithdrawalRule = new ConditionTransactionTypeAndUserType(
+            TransactionType::of('withdraw'),
+            UserType::of('private')
+        );
+
+        $privateWithdrawRule = new WeeklyThresholdPercentageRule(
+            $conditionPrivateWithdrawalRule,
+            TransactionType::of('withdraw'),
             Currency::of('EUR'),
             '0',
             Money::of('1000', 'EUR'),
             3,
             '0.003'
-        );
-
-        $businessWithdrawRule = new BusinessWithdrawRule(
-            Currency::of('EUR'),
-            '0.005',
         );
 
         $rulesSequence = new RulesSequence(
@@ -124,80 +145,113 @@ class CommissionCalculatorTest extends TestCase
         return [
             'state_empty_transaction_amount_lower_then_weekly_withdrawal_limit'               => [
                 'userId'                           => 1,
-                'userType'                         => UserType::private(),
                 'stateWeeklyTransactionsProcessed' => 0,
                 'stateWeeklyAmount'                => null,
                 'stateWeekRange'                   => null,
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
+                'transactionType'                  => TransactionType::of('withdraw'),
+                'transactionUserType'              => UserType::of('private'),
                 'transactionAmount'                => Money::of('100.00', 'EUR'),
                 'expectedCommission'               => 'EUR 0.00',
             ],
             'state_empty_transaction_amount_higher_then_weekly_withdrawal_limit'              => [
                 'userId'                           => 1,
-                'userType'                         => UserType::private(),
                 'stateWeeklyTransactionsProcessed' => 0,
                 'stateWeeklyAmount'                => null,
                 'stateWeekRange'                   => null,
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
+                'transactionType'                  => TransactionType::of('withdraw'),
+                'transactionUserType'              => UserType::of('private'),
                 'transactionAmount'                => Money::of('2000.00', 'EUR'),
                 'expectedCommission'               => 'EUR 3.00',
             ],
             'state_has_weekly_amount_total_weekly_amount_lower_then_weekly_withdrawal_limit'  => [
                 'userId'                           => 1,
-                'userType'                         => UserType::private(),
                 'stateWeeklyTransactionsProcessed' => 0,
                 'stateWeeklyAmount'                => Money::of('900', 'EUR'),
                 'stateWeekRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
+                'transactionType'                  => TransactionType::of('withdraw'),
+                'transactionUserType'              => UserType::of('private'),
                 'transactionAmount'                => Money::of('50.00', 'EUR'),
                 'expectedCommission'               => 'EUR 0.00',
             ],
             'state_has_weekly_amount_total_weekly_amount_higher_then_weekly_withdrawal_limit' => [
                 'userId'                           => 1,
-                'userType'                         => UserType::private(),
                 'stateWeeklyTransactionsProcessed' => 0,
                 'stateWeeklyAmount'                => Money::of('900', 'EUR'),
                 'stateWeekRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
+                'transactionType'                  => TransactionType::of('withdraw'),
+                'transactionUserType'              => UserType::of('private'),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
                 'expectedCommission'               => 'EUR 1.20',
             ],
             'state_has_weekly_transactions_count_equal_to_weekly_withdrawal_limit'            => [
                 'userId'                           => 1,
-                'userType'                         => UserType::private(),
                 'stateWeeklyTransactionsProcessed' => 3,
                 'stateWeeklyAmount'                => Money::of('0', 'EUR'),
                 'stateWeekRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
+                'transactionType'                  => TransactionType::of('withdraw'),
+                'transactionUserType'              => UserType::of('private'),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
                 'expectedCommission'               => 'EUR 1.50',
             ],
             'state_has_weekly_transactions_count_higher_then_weekly_withdrawal_limit'         => [
                 'userId'                           => 1,
-                'userType'                         => UserType::private(),
                 'stateWeeklyTransactionsProcessed' => 4,
                 'stateWeeklyAmount'                => Money::of('0', 'EUR'),
                 'stateWeekRange'                   => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
+                'transactionType'                  => TransactionType::of('withdraw'),
+                'transactionUserType'              => UserType::of('private'),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
                 'expectedCommission'               => 'EUR 1.50',
             ],
-            'state_has_weekly_transactions_count_lower_then_weekly_withdrawal_limit'           => [
+            'state_has_weekly_transactions_count_lower_then_weekly_withdrawal_limit'          => [
                 'userId'                           => 1,
-                'userType'                         => UserType::private(),
                 'stateWeeklyTransactionsProcessed' => 1,
                 'stateWeeklyAmount'                => Money::of('0', 'EUR'),
                 'stateWeeklyRange'                 => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
                 'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
-                'transactionType'                  => TransactionType::withdraw(),
+                'transactionType'                  => TransactionType::of('withdraw'),
+                'transactionUserType'              => UserType::of('private'),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
                 'expectedCommission'               => 'EUR 0.00',
+            ],
+            'business_deposit'                                                                => [
+                'userId'                           => 1,
+                'stateWeeklyTransactionsProcessed' => 1,
+                'stateWeeklyAmount'                => Money::of('0', 'EUR'),
+                'stateWeeklyRange'                 => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                  => TransactionType::of('deposit'),
+                'transactionUserType'              => UserType::of('business'),
+                'transactionAmount'                => Money::of('500.00', 'EUR'),
+                'expectedCommission'               => 'EUR 0.15',
+            ],
+            'private_deposit'                                                                 => [
+                'userId'                           => 1,
+                'stateWeeklyTransactionsProcessed' => 1,
+                'stateWeeklyAmount'                => Money::of('0', 'EUR'),
+                'stateWeeklyRange'                 => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                  => TransactionType::of('deposit'),
+                'transactionUserType'              => UserType::of('private'),
+                'transactionAmount'                => Money::of('500.00', 'EUR'),
+                'expectedCommission'               => 'EUR 0.15',
+            ],
+            'business_withdraw'                                                               => [
+                'userId'                           => 1,
+                'stateWeeklyTransactionsProcessed' => 1,
+                'stateWeeklyAmount'                => Money::of('0', 'EUR'),
+                'stateWeeklyRange'                 => WeekRange::createFromDate(new DateTimeImmutable('2021-01-01 12:00:00')),
+                'transactionDate'                  => new DateTimeImmutable('2021-01-01 12:00:00'),
+                'transactionType'                  => TransactionType::of('withdraw'),
+                'transactionUserType'              => UserType::of('business'),
+                'transactionAmount'                => Money::of('500.00', 'EUR'),
+                'expectedCommission'               => 'EUR 0.15',
             ],
         ];
     }
