@@ -17,9 +17,36 @@ Expected:
 
 ## Prerequisites
 
-Install Docker and optionally Make utility.
+This project has DEV-env configs for Docker and Make utility,
+so Docker should take care of proper local environment independently of you local config 
+and Makefile has useful commands right in the repo.
 
 Commands from Makefile could be executed manually in case Make utility is not installed.
+
+As well as in case docker is not installed, you will need at least Php 7.4 with bcmath to run the app
+and you may check Dockerfile for troubleshooting of your local config. 
+
+## Architecture explanations
+ - We have the following domain entities: `Transaction` and its `User` dependency. 
+   As well as `TransactionType` and `UserType` value objects.
+   
+ - Most of the core calculation logic is in `Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules` namespace.
+Each rule implements `RuleInterface` and basically takes  `Transaction`, `UserCalculationStateCollection`, `ExchangeRates` 
+   as parameters for calculation of commission of each transaction. 
+
+ - Rules are configured to the `RuleSequence`, so the first matching rule applies to calculate the commission. 
+   I have not used the chain of responsibility here, so Rules are standalone from the sequence and do not have redundant chain responsibility.  
+
+ - `UserCalculationStateCollection` is a collection the has Transaction Type (i.e. `deposit` or `withdrawal`) as a key,
+   and `UserCalculationState` as value. For now `UserCalculationState` contains aggregation of Weekly Amount per transaction type and weekly transactions count per transaction type.
+   TODOs : I need to make `UserCalculationState` extendable for new types of rules,
+   but not only weekly amount and transactions count.
+
+- `UserCalculationStateRepositoryInterface` is an interface for storing and retrieving `UserCalculationStateCollection` per user id.
+And `UserCalculationStateRepositoryDefault` is its in-memory implementation.
+  
+ - `CommissionCalculator` implements `CommissionCalculatorInterface`
+   and finds proper calculation rule from `RulesSequence` using Rule's `isSuitable` condition.
 
 ## Build container and install composer dependencies
 
@@ -37,11 +64,15 @@ Runs container and executes console application.
 
     Make run
 
-## Run unit tests
+## Run tests
 
-Runs container and executes unit tests.
+Runs container and executes proper tests (Unit / Integration / All respectively).
 
     Make unit-tests
+
+    Make integration-tests
+
+    Make all-tests
 
 ## Static analysis
 

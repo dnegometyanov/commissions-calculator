@@ -11,7 +11,7 @@ vendors-install:
 copy-dist-configs:
 	docker-compose run --rm --no-deps php-cli cp -n phpunit.xml.dist phpunit.xml
 	docker-compose run --rm --no-deps php-cli cp -n phpstan.neon.dist phpstan.neon
-	docker-compose run --rm --no-deps php-cli cp -n .php_cs.dist .php_cs
+	docker-compose run --rm --no-deps php-cli cp -n .php-cs-fixer.php.dist .php-cs-fixer.php
 
 ## Update composer autoload
 dump-autoload:

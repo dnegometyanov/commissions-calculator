@@ -94,14 +94,14 @@ services:
     arguments:
       - ['@common.deposit.rule', '@business.withdraw.rule', '@private.withdraw.rule']
 
-  usercalculationstate.repository.default:
+  user.calculation.state.repository.default:
     class:     Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryDefault
 
   commission.calculator:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionCalculator
     arguments:
       - '@rules.sequence'
-      - '@usercalculationstate.repository.default'
+      - '@user.calculation.state.repository.default'
 
   commissions.calculator:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionsCalculator
