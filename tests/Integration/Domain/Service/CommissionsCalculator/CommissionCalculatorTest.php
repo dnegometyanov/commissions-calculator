@@ -251,7 +251,7 @@ class CommissionCalculatorTest extends TestCase
                 'transactionType'                  => TransactionType::of('withdraw'),
                 'transactionUserType'              => UserType::of('business'),
                 'transactionAmount'                => Money::of('500.00', 'EUR'),
-                'expectedCommission'               => 'EUR 0.15',
+                'expectedCommission'               => 'EUR 2.50',
             ],
         ];
     }
