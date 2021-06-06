@@ -10,6 +10,8 @@ services:
     arguments:
       - '@guzzle.http.client'
       - '@exchange.rates.api.factory'
+      - 'http://api.exchangeratesapi.io/v1/latest?access_key=%s&format=1'
+      - 'a3430aabe13721725b9853a2d2e29bfc'
 
   transactions.data.retriever:
     class:     Commissions\CalculatorContext\Infrastructure\InputData\TransactionsDataRetrieverCSV
@@ -107,3 +109,10 @@ services:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionsCalculator
     arguments:
       - '@commission.calculator'
+
+  calculate.commissions.console.command:
+    class:     Commissions\CalculatorContext\Api\CalculateCommissionsConsoleCommand
+    arguments:
+      - '@transactions.data.retriever'
+      - '@exchange.rates.retriever'
+      - '@commissions.calculator'

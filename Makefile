@@ -19,7 +19,7 @@ dump-autoload:
 
 ## Run console application
 run-input-csv:
-	docker-compose run --rm --no-deps php-cli php src/index.php input.csv.
+	docker-compose run --rm --no-deps php-cli php src/index.php input.csv
 
 ## Run unit tests
 unit-tests:

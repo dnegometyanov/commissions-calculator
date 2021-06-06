@@ -66,7 +66,7 @@ If dist files are not copied to actual destination, then
 
 Runs container and executes console application with default `input.csv` parameter.
 
-    Make run
+    Make run-input-csv
 
 In case you need to execute it with another input filename parameter, you can use
     

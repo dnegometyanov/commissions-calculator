@@ -8,7 +8,7 @@ use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Exception;
 use GuzzleHttp\ClientInterface;
 
-class ExchangeRatesRetriever
+class ExchangeRatesRetriever implements ExchangeRatesRetrieverInterface
 {
     /**
      * @var ClientInterface
@@ -20,10 +20,26 @@ class ExchangeRatesRetriever
      */
     private ExchangeRatesFactoryInterface $exchangeRatesFactory;
 
-    public function __construct(ClientInterface $client, ExchangeRatesFactoryInterface $exchangeRatesFactory)
-    {
+    /**
+     * @var string
+     */
+    private string $endpoint;
+
+    /**
+     * @var string
+     */
+    private string $apiKey;
+
+    public function __construct(
+        ClientInterface $client,
+        ExchangeRatesFactoryInterface $exchangeRatesFactory,
+        string $endpoint,
+        string $apiKey
+    ) {
         $this->exchangeRatesFactory = $exchangeRatesFactory;
         $this->client               = $client;
+        $this->endpoint = $endpoint;
+        $this->apiKey = $apiKey;
     }
 
     /**
@@ -33,7 +49,7 @@ class ExchangeRatesRetriever
      */
     public function retrieve(): ExchangeRates
     {
-        $response = $this->client->request('GET', 'http://api.exchangeratesapi.io/v1/latest?access_key=a3430aabe13721725b9853a2d2e29bfc&format=1');
+        $response = $this->client->request('GET', sprintf($this->endpoint, $this->apiKey));
 
         if ($response->getStatusCode() !== 200) {
             throw new Exception('Cannot retrieve exchange rates');
