@@ -146,7 +146,7 @@ class WeeklyThresholdPercentageRule implements RuleInterface
         /**
          * Amount that is left within the threshold
          */
-        $leftOverAmountWithingThresholdBaseCurrency = $this->getLeftOverAmountWithinThresholdBaseCurrency($userCalculationState);
+        $leftOverAmountWithingThresholdBaseCurrency = $this->getLeftOverAmountWithinThresholdInBaseCurrency($userCalculationState);
 
         /**
          * As this rule has calculation logic with different percentage of commission
@@ -233,7 +233,7 @@ class WeeklyThresholdPercentageRule implements RuleInterface
      * @throws \Brick\Money\Exception\MoneyMismatchException
      * @throws \Brick\Money\Exception\UnknownCurrencyException
      */
-    private function getLeftOverAmountWithinThresholdBaseCurrency(UserCalculationState $userCalculationState): Money
+    private function getLeftOverAmountWithinThresholdInBaseCurrency(UserCalculationState $userCalculationState): Money
     {
         $amountWithingThresholdBaseCurrency = $this->thresholdWeeklyAmount->minus($userCalculationState->getWeeklyAmount());
 

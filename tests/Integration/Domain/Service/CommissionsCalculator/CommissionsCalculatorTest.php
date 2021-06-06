@@ -129,7 +129,7 @@ class CommissionsCalculatorTest extends TestCase
         $commissionList      = $commissionsCalculator->calculateCommissions($transactionList, $exchangeRates);
         $commissionListArray = $commissionList->toArray();
 
-        // This may like code duplication, but direct assert for each transaction is intentional,
+        // This may look like code duplication, but direct assert for each transaction is intentional,
         // so it will be easier to find that transaction failed in case of test failure
         // in comparison to iterating them in cycle
         if (isset($transactionsData[self::TRANSACTION_UUID_1])) {

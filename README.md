@@ -16,6 +16,12 @@ Given:
 
 Expected:
  - Console command should take the csv filename as input and output commission amount without currency as output.   
+ - Example of commissions calculation provided on the screenshot below, but **it has an error**
+
+**Please note, that expected example provided is incorrect !**
+
+![Error in expected result](error_in_expected_result.png "Error in expected result")
+
 
 ## Prerequisites
 
