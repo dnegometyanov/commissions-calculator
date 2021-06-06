@@ -15,9 +15,9 @@ class UserTest extends TestCase
      */
     public function testCanCreateUser(): void
     {
-        $user = User::create(1, UserType::private());
+        $user = User::create(1, UserType::of('private'));
 
         $this->assertEquals(1, $user->getId());
-        $this->assertTrue($user->getUserType()->is(UserType::private()));
+        $this->assertTrue($user->getUserType()->is(UserType::of('private')));
     }
 }
