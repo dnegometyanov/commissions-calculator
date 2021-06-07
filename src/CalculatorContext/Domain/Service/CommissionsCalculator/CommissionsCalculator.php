@@ -11,15 +11,15 @@ use Commissions\CalculatorContext\Domain\Entity\TransactionList;
 class CommissionsCalculator implements CommissionsCalculatorInterface
 {
     /**
-     * @var CommissionCalculator
+     * @var TransactionCommissionCalculator
      */
-    private CommissionCalculator $commissionCalculator;
+    private TransactionCommissionCalculator $commissionCalculator;
 
     /**
-     * @param CommissionCalculator $commissionCalculator
+     * @param TransactionCommissionCalculator $commissionCalculator
      */
     public function __construct(
-        CommissionCalculator $commissionCalculator
+        TransactionCommissionCalculator $commissionCalculator
     ) {
         $this->commissionCalculator = $commissionCalculator;
     }

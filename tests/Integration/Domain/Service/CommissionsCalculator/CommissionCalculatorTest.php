@@ -12,7 +12,7 @@ use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryDefault;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionCalculator;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\TransactionCommissionCalculator;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\FlatPercentageRule;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence;
@@ -128,7 +128,7 @@ class CommissionCalculatorTest extends TestCase
 
         $userCalculationStateRepository->persistStateForUserAndTransactionType($user, $userCalculationState, $transaction->getTransactionType());
 
-        $transactionCommissionCalculator = new CommissionCalculator($rulesSequence, $userCalculationStateRepository);
+        $transactionCommissionCalculator = new TransactionCommissionCalculator($rulesSequence, $userCalculationStateRepository);
 
         $commission = $transactionCommissionCalculator->calculateCommissionForTransaction($transaction, $exchangeRates);
 

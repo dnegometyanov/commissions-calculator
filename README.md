@@ -46,11 +46,11 @@ Each rule implements `RuleInterface` and basically takes  `Transaction`, `UserCa
 - `UserCalculationStateRepositoryInterface` is an interface for storing and retrieving `UserCalculationStateCollection` per user id.
 And `UserCalculationStateRepositoryDefault` is its in-memory implementation.
   
- - `CommissionCalculator` implements `CommissionCalculatorInterface`
+ - `TransactionCommissionCalculator` implements `TransactionCommissionCalculatorInterface`
    and finds proper calculation rule from `RulesSequence` using Rule's `isSuitable` condition.
 
 - `CommissionsCalculator` implements `CommissionsCalculatorInterface`
-  and runs all transaction calculation using `CommissionCalculator`
+  and runs all transaction calculation using `TransactionCommissionCalculator`
   
 ## Build container and install composer dependencies
 

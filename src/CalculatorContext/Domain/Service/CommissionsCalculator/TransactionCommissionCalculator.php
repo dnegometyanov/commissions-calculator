@@ -11,7 +11,7 @@ use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryInterface;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence;
 
-class CommissionCalculator implements CommissionCalculatorInterface
+class TransactionCommissionCalculator implements TransactionCommissionCalculatorInterface
 {
     /**
      * @var RulesSequence

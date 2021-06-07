@@ -11,7 +11,7 @@ use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\TransactionList;
 use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryDefault;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionCalculator;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\TransactionCommissionCalculator;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionsCalculator;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\FlatPercentageRule;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType;
@@ -123,7 +123,7 @@ class CommissionsCalculatorTest extends TestCase
 
         $userCalculationStateRepository = new UserCalculationStateRepositoryDefault();
 
-        $commissionCalculator  = new CommissionCalculator($rulesSequence, $userCalculationStateRepository);
+        $commissionCalculator  = new TransactionCommissionCalculator($rulesSequence, $userCalculationStateRepository);
         $commissionsCalculator = new CommissionsCalculator($commissionCalculator);
 
         $commissionList      = $commissionsCalculator->calculateCommissions($transactionList, $exchangeRates);

@@ -99,8 +99,8 @@ services:
   user.calculation.state.repository.default:
     class:     Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryDefault
 
-  commission.calculator:
-    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionCalculator
+  transaction.commission.calculator:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\TransactionCommissionCalculator
     arguments:
       - '@rules.sequence'
       - '@user.calculation.state.repository.default'
@@ -108,7 +108,7 @@ services:
   commissions.calculator:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CommissionsCalculator
     arguments:
-      - '@commission.calculator'
+      - '@transaction.commission.calculator'
 
   calculate.commissions.console.command:
     class:     Commissions\CalculatorContext\Api\CalculateCommissionsConsoleCommand

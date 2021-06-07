@@ -8,7 +8,7 @@ use Commissions\CalculatorContext\Domain\Entity\Commission;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 
-interface CommissionCalculatorInterface
+interface TransactionCommissionCalculatorInterface
 {
     /**
      * @param Transaction $transaction
