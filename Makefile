@@ -31,8 +31,17 @@ integration-tests:
 	docker-compose run --rm --no-deps php-cli ./vendor/bin/phpunit --no-coverage --stop-on-error --stop-on-failure --testsuite Integration
 
 ## Run integration tests
-all-tests:
+all-phpunit-tests:
 	docker-compose run --rm --no-deps php-cli ./vendor/bin/phpunit --no-coverage --stop-on-error --stop-on-failure
+
+# Run behavior tests via behat
+behavior-tests:
+	docker-compose run --rm --no-deps php-cli vendor/bin/behat
+
+# Run all tests
+all-tests:
+	make all-phpunit-tests
+	make behavior-tests
 
 ## Run static analysis
 static-analysis:

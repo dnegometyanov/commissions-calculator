@@ -61,7 +61,7 @@ class WeeklyThresholdPercentageRuleTest extends TestCase
         int $expectedWeeklyTransactionProceeded,
         WeekRange $expectedWeekRange
     ): void {
-        $user = User::create(1, UserType::private());
+        $user = User::create(1, UserType::of('private'));
 
         $transaction = new Transaction(
             Uuid::uuid4(),
@@ -325,7 +325,7 @@ class WeeklyThresholdPercentageRuleTest extends TestCase
         $this->expectException($expectedExceptionClass);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
-        $user = User::create(1, UserType::private());
+        $user = User::create(1, UserType::of('private'));
 
         $transaction = new Transaction(
             Uuid::fromString('2dc5b876-0cca-4bc8-8e78-1cc904e4f143'),
