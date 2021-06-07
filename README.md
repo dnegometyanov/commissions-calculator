@@ -1,4 +1,4 @@
-# Commissions Calculator (IN PROGRESS)
+# Commissions Calculator (WIP)
 
 Given:
 
@@ -79,12 +79,16 @@ and change the filename accordingly
 
 ## Run tests
 
-Runs container and executes proper tests (Unit / Integration / All respectively).
+Runs container and executes proper tests (Unit / Integration / All PhpUnit / Behat Behavior / All respectively).
 
     Make unit-tests
 
     Make integration-tests
 
+    Make all-phpunit-tests
+    
+    Make behavior-tests
+    
     Make all-tests
 
 ## Static analysis
