@@ -11,7 +11,7 @@ services:
       - '@guzzle.http.client'
       - '@exchange.rates.api.factory'
       - 'http://api.exchangeratesapi.io/v1/latest?access_key=%s&format=1'
-      - 'a3430aabe13721725b9853a2d2e29bfc'
+      - 'PUT_API_KEY_HERE'
 
   transactions.data.retriever:
     class:     Commissions\CalculatorContext\Infrastructure\InputData\TransactionsDataRetrieverCSV

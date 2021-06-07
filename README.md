@@ -56,11 +56,14 @@ And `UserCalculationStateRepositoryDefault` is its in-memory implementation.
 
     Make build
 
-## Build container and install composer dependencies
+## Create configs from dist files ( needs manual replacement in 1 place) 
 
 If dist files are not copied to actual destination, then
     
     Make copy-dist-configs
+
+After creating `services.yaml` from its dist file,
+you need to change `PUT_API_KEY_HERE` in `services.yaml` to your `exchangeratesapi.io` api key
         
 ## Run application
 
