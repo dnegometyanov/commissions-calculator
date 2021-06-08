@@ -10,6 +10,12 @@ class WeekRangeComparison
     private const COMPARE_DATETIME_TO_WEEK_RANGE_AFTER  = 'after';
     private const COMPARE_DATETIME_TO_WEEK_RANGE_BEFORE = 'before';
 
+    private const WEEK_RANGE_COMPARISON_OPTIONS = [
+        self::COMPARE_DATETIME_TO_WEEK_RANGE_WITHIN,
+        self::COMPARE_DATETIME_TO_WEEK_RANGE_AFTER,
+        self::COMPARE_DATETIME_TO_WEEK_RANGE_BEFORE,
+    ];
+
     /**
      * @var string
      */
@@ -22,7 +28,7 @@ class WeekRangeComparison
      */
     private function __construct(string $value)
     {
-        if (!in_array($value, $this->getWeekRangeComparisonOptions(), true)) {
+        if (!in_array($value, self::WEEK_RANGE_COMPARISON_OPTIONS, true)) {
             throw new \Exception(sprintf('Invalid WeekRangeComparison value %s', $value));
         }
 
@@ -75,17 +81,5 @@ class WeekRangeComparison
     public function isAfter(): bool
     {
         return $this->value === self::COMPARE_DATETIME_TO_WEEK_RANGE_AFTER;
-    }
-
-    /**
-     * @return array|string[]
-     */
-    private function getWeekRangeComparisonOptions(): array
-    {
-        return [
-            self::COMPARE_DATETIME_TO_WEEK_RANGE_WITHIN,
-            self::COMPARE_DATETIME_TO_WEEK_RANGE_AFTER,
-            self::COMPARE_DATETIME_TO_WEEK_RANGE_BEFORE,
-        ];
     }
 }

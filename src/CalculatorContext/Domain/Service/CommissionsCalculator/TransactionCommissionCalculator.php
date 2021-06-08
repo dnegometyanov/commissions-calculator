@@ -57,6 +57,8 @@ class TransactionCommissionCalculator implements TransactionCommissionCalculator
                 );
 
                 $transactionCommissionAmount = $transactionCommissionAmount->plus($ruleResult->getCommissionAmount());
+
+                break;
             }
         }
 

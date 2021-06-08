@@ -45,6 +45,13 @@ all-tests:
 	make all-phpunit-tests
 	make behavior-tests
 
+# Run all tests
+all-tests-and-checks:
+	make cs-check
+	make all-phpunit-tests
+	make all-phpunit-tests
+	make behavior-tests
+
 ## Run static analysis
 static-analysis:
 	docker-compose run --rm --no-deps php-cli ./vendor/bin/phpstan analyze
@@ -52,3 +59,6 @@ static-analysis:
 ## Run unit tests
 cs-fix:
 	docker-compose run --rm --no-deps php-cli ./vendor/bin/php-cs-fixer fix
+
+cs-check:
+	docker-compose run --rm --no-deps php-cli ./vendor/bin/php-cs-fixer fix --dry-run -v
