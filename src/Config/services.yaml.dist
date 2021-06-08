@@ -1,3 +1,6 @@
+imports:
+  - { resource: 'parameters.yaml' }
+
 services:
   guzzle.http.client:
     class:     GuzzleHttp\Client
@@ -5,13 +8,18 @@ services:
   exchange.rates.api.factory:
     class:     Commissions\CalculatorContext\Infrastructure\ExchangeRates\ExchangeRatesApiFactory
 
+  exchange.rates.client:
+    class:     Commissions\CalculatorContext\Infrastructure\ExchangeRates\ExchangeRatesClient
+    arguments:
+      - '@guzzle.http.client'
+      - 'http://api.exchangeratesapi.io/v1/latest?access_key=%s&format=1'
+      - '%exchangeratesapi.apikey%'
+
   exchange.rates.retriever:
     class:     Commissions\CalculatorContext\Infrastructure\ExchangeRates\ExchangeRatesRetriever
     arguments:
-      - '@guzzle.http.client'
+      - '@exchange.rates.client'
       - '@exchange.rates.api.factory'
-      - 'http://api.exchangeratesapi.io/v1/latest?access_key=%s&format=1'
-      - 'PUT_API_KEY_HERE'
 
   transactions.data.retriever:
     class:     Commissions\CalculatorContext\Infrastructure\InputData\TransactionsDataRetrieverCSV
@@ -81,15 +89,15 @@ services:
       - '@user.type.private'
 
   private.withdraw.rule:
-      class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\WeeklyThresholdPercentageRule
-      arguments:
-        - '@condition.private.withdraw.rule'
-        - '@transaction.type.withdraw'
-        - '@currency.base'
-        - '0'
-        - '@money.private.withdrawal.rule.threshold.amount'
-        - '3'
-        - '0.003'
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\WeeklyThresholdPercentageRule
+    arguments:
+      - '@condition.private.withdraw.rule'
+      - '@transaction.type.withdraw'
+      - '@currency.base'
+      - '0'
+      - '@money.private.withdrawal.rule.threshold.amount'
+      - '3'
+      - '0.003'
 
   rules.sequence:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence

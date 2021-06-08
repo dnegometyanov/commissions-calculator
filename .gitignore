@@ -4,4 +4,6 @@ phpunit.xml
 phpstan.neon
 .php-cs-fixer.php
 .php-cs-fixer.cache
+src/Config/parameters.yaml
 src/Config/services.yaml
+src/Config/services_test.yaml

@@ -1,0 +1,2 @@
+parameters:
+  exchangeratesapi.apikey: 'PUT_EXCHANGERATESIO_API_KEY_HERE'

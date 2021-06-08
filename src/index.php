@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Commissions;
 
-use Commissions\CalculatorContext\Api\CalculateCommissionsConsoleCommand;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -18,7 +17,9 @@ $containerBuilder = new ContainerBuilder();
 
 $loader = new YamlFileLoader($containerBuilder, new FileLocator(APPROOT . '/src/config/'));
 
-$loader->load('services.yaml');
+getenv('APP_ENV') === 'test'
+    ? $loader->load('services_test.yaml')
+    : $loader->load('services.yaml');
 
 try {
     $consoleCommand =  $containerBuilder->get('calculate.commissions.console.command');

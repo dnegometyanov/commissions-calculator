@@ -5,54 +5,50 @@ declare(strict_types=1);
 namespace Commissions\CalculatorContext\Infrastructure\ExchangeRates;
 
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
+use Commissions\CalculatorContext\Infrastructure\ExchangeRates\Exception\ExchangeRatesRequestException;
 use Exception;
-use GuzzleHttp\ClientInterface;
 
 class ExchangeRatesRetriever implements ExchangeRatesRetrieverInterface
 {
     /**
-     * @var ClientInterface
+     * @var ExchangeRatesClientInterface
      */
-    private ClientInterface $client;
+    private ExchangeRatesClientInterface $client;
 
     /**
      * @var ExchangeRatesFactoryInterface
      */
     private ExchangeRatesFactoryInterface $exchangeRatesFactory;
 
-    /**
-     * @var string
-     */
-    private string $endpoint;
-
-    /**
-     * @var string
-     */
-    private string $apiKey;
-
     public function __construct(
-        ClientInterface $client,
-        ExchangeRatesFactoryInterface $exchangeRatesFactory,
-        string $endpoint,
-        string $apiKey
+        ExchangeRatesClientInterface $client,
+        ExchangeRatesFactoryInterface $exchangeRatesFactory
     ) {
         $this->exchangeRatesFactory = $exchangeRatesFactory;
         $this->client               = $client;
-        $this->endpoint = $endpoint;
-        $this->apiKey = $apiKey;
     }
 
     /**
      * @inheritDoc
      *
-     * @throws Exception
+     * @return ExchangeRates
+     *
+     * @throws ExchangeRatesRequestException
      */
     public function retrieve(): ExchangeRates
     {
-        $response = $this->client->request('GET', sprintf($this->endpoint, $this->apiKey));
+        try {
+            $response = $this->client->request();
+        } catch (Exception $e) {
+            throw new ExchangeRatesRequestException(
+                sprintf('Cannot retrieve exchange rates, ExchangeRateClient error: %s', $e->getMessage())
+            );
+        }
 
         if ($response->getStatusCode() !== 200) {
-            throw new Exception('Cannot retrieve exchange rates');
+            throw new ExchangeRatesRequestException(
+                sprintf('Cannot retrieve exchange rates: request failed, status code: %s', $response->getStatusCode())
+            );
         }
 
         return $this->exchangeRatesFactory->create((string)$response->getBody());

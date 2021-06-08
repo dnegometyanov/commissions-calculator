@@ -12,7 +12,9 @@ copy-dist-configs:
 	docker-compose run --rm --no-deps php-cli cp -n phpunit.xml.dist phpunit.xml
 	docker-compose run --rm --no-deps php-cli cp -n phpstan.neon.dist phpstan.neon
 	docker-compose run --rm --no-deps php-cli cp -n .php-cs-fixer.php.dist .php-cs-fixer.php
+	docker-compose run --rm --no-deps php-cli cp -n src/Config/parameters.yaml.dist src/Config/parameters.yaml
 	docker-compose run --rm --no-deps php-cli cp -n src/Config/services.yaml.dist src/Config/services.yaml
+	docker-compose run --rm --no-deps php-cli cp -n src/Config/services_test.yaml.dist src/Config/services_test.yaml
 
 ## Update composer autoload
 dump-autoload:

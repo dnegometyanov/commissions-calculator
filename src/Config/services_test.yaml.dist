@@ -1,0 +1,6 @@
+imports:
+  - { resource: 'services.yaml' }
+
+services:
+  exchange.rates.client:
+    class:     Commissions\CalculatorContext\Infrastructure\ExchangeRates\ExchangeRatesClientMock
