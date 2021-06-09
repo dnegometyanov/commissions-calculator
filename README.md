@@ -1,4 +1,4 @@
-# Commissions Calculator (WIP)
+# Commissions Calculator
 
 Given:
 
