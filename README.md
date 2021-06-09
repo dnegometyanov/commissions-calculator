@@ -81,28 +81,28 @@ you need to change `PUT_API_KEY_HERE` in `parameters.yaml` to your `exchangerate
 ## Run application
     docker-compose run --rm --no-deps php-cli php src/index.php input.csv
 
-####Run application with mocked Exchange Rates that match the reference example
+#### Run application with mocked Exchange Rates that match the reference example
     docker-compose run --rm --no-deps  -e APP_ENV=test php-cli php src/index.php input.csv
 
 ## Usage of composer scripts
 After the above setup steps you can run test with composer scripts form docker using the commands below
 
-####Run all tests including code style check, unit tests and behat automation tests
+#### Run all tests including code style check, unit tests and behat automation tests
     docker-compose run --rm --no-deps php-cli composer run test
 
-####Check code style
+#### Check code style
 
     docker-compose run --rm --no-deps php-cli composer run test-cs
 
-####Fix code style
+#### Fix code style
 
     docker-compose run --rm --no-deps php-cli composer run fix-cs
 
-####Run all phpunit tests
+#### Run all phpunit tests
 
     docker-compose run --rm --no-deps php-cli composer run phpunit
 
-####Run all behat tests
+#### Run all behat tests
 
     docker-compose run --rm --no-deps php-cli composer run behat
         
