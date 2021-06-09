@@ -67,7 +67,7 @@ You can use make command or just run appropriate commands from Makefile manually
 
     Make build
 
-### Step2: Create configs from dist files (*needs manual replacement in 1 place*)
+### Step2: Create configs from dist files
 
 If dist files are not copied to actual destination, then
 
