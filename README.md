@@ -118,7 +118,7 @@ In case you need to execute it with another input filename parameter, you can us
 
 and change the filename accordingly
 
-##Alternative Makefile commands (may be used instead of composer's scripts)
+## Alternative Makefile commands (may be used instead of composer's scripts)
 ### Run tests
 
 Runs container and executes proper tests (Unit / Integration / All PhpUnit / Behat Behavior / All respectively).
