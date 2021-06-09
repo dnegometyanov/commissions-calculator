@@ -57,7 +57,7 @@ our existing rules will not update the new state field.
    To support this, we need to create a separate service outside of rules (somewhere on the CommissionsCalculator probably) that updates the state independently from rules.
    
  - `UserCalculationStateRepositoryInterface` works with `WeeklyStateCollectionInterface`, so it cannot handle new types states at its current implementation.
-We need to refactor it to return / persist rules of any type we need.
+We need to refactor it to return / persist rules of any type we need. For example, to have matching methods (interfaces) for each state type.
 
 ## Build container and install composer dependencies
 
