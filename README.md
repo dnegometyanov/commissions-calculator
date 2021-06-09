@@ -55,6 +55,8 @@ And `WeeklyStateRepositoryDefault` is its in-memory implementation.
  - Calculation state, in this case `WeeklyState` is updated from the rules ATM, so in case we add new states with new fields for new rules,
 our existing rules will not update the new state field. 
    To support this, we need to create a separate service outside of rules (somewhere on the CommissionsCalculator probably) that updates the state independently from rules.
+   
+ - `UserCalculationStateRepositoryInterface` works with `WeeklyStateCollectionInterface`, so it cannot handle new types states at its current implementation.
 
 ## Build container and install composer dependencies
 
