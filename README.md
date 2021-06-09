@@ -58,19 +58,53 @@ our existing rules will not update the new state field.
    
  - `UserCalculationStateRepositoryInterface` works with `WeeklyStateCollectionInterface`, so it cannot handle new types states at its current implementation.
 We need to refactor it to return / persist rules of any type we need. For example, to have matching methods (interfaces) for each state type.
+   
+## Project setup
 
-## Build container and install composer dependencies
+You can use make command or just run appropriate commands from Makefile manually.
+
+### Step1: Build container and install composer dependencies
 
     Make build
 
-## Create configs from dist files ( needs manual replacement in 1 place) 
+### Step2: Create configs from dist files (*needs manual replacement in 1 place*)
 
 If dist files are not copied to actual destination, then
-    
+
     Make copy-dist-configs
 
-After creating `services.yaml` from its dist file,
-you need to change `PUT_API_KEY_HERE` in `services.yaml` to your `exchangeratesapi.io` api key
+### Step3: Create configs from dist files (*needs manual replacement in 1 place*)
+
+After creating `parameters.yaml` from its dist file on Step2,
+you need to change `PUT_API_KEY_HERE` in `parameters.yaml` to your `exchangeratesapi.io` api key
+
+## Run application
+    docker-compose run --rm --no-deps php-cli php src/index.php input.csv
+
+####Run application with mocked Exchange Rates that match the reference example
+    docker-compose run --rm --no-deps  -e APP_ENV=test php-cli php src/index.php input.csv
+
+## Usage of composer scripts
+After the above setup steps you can run test with composer scripts form docker using the commands below
+
+####Run all tests including code style check, unit tests and behat automation tests
+    docker-compose run --rm --no-deps php-cli composer run test
+
+####Check code style
+
+    docker-compose run --rm --no-deps php-cli composer run test-cs
+
+####Fix code style
+
+    docker-compose run --rm --no-deps php-cli composer run fix-cs
+
+####Run all phpunit tests
+
+    docker-compose run --rm --no-deps php-cli composer run phpunit
+
+####Run all behat tests
+
+    docker-compose run --rm --no-deps php-cli composer run behat
         
 ## Run application
 
@@ -84,7 +118,8 @@ In case you need to execute it with another input filename parameter, you can us
 
 and change the filename accordingly
 
-## Run tests
+##Alternative Makefile commands (may be used instead of composer's scripts)
+### Run tests
 
 Runs container and executes proper tests (Unit / Integration / All PhpUnit / Behat Behavior / All respectively).
 
@@ -98,12 +133,12 @@ Runs container and executes proper tests (Unit / Integration / All PhpUnit / Beh
     
     Make all-tests
 
-## Static analysis
+### Static analysis
 
 Static analysis check
 
     Make static-analysis
     
-## Fix code style
+### Fix code style
 
     Make cs-fix

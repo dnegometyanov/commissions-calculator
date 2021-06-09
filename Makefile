@@ -20,7 +20,7 @@ copy-dist-configs:
 dump-autoload:
 	docker-compose run --rm --no-deps php-cli composer dump-autoload
 
-## Run console application
+## Run console application with default source filename input.csv
 run-input-csv:
 	docker-compose run --rm --no-deps php-cli php src/index.php input.csv
 
