@@ -10,13 +10,13 @@ use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryDefault;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\TransactionCommissionCalculator;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\FlatPercentageRule;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\FlatPercentageWeeklyRule;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\WeeklyThresholdPercentageRule;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\ThresholdPercentageWeeklyRule;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Commissions\CalculatorContext\Domain\ValueObject\UserType;
 use DateTimeImmutable;
@@ -76,7 +76,7 @@ class CommissionCalculatorTest extends TestCase
             UserType::of('business'),
         );
 
-        $businessWithdrawRule = new FlatPercentageRule(
+        $businessWithdrawRule = new FlatPercentageWeeklyRule(
             $conditionBusinessWithdrawalRule,
             TransactionType::of('withdraw'),
             Currency::of('EUR'),
@@ -88,7 +88,7 @@ class CommissionCalculatorTest extends TestCase
             null,
         );
 
-        $commonDepositRule = new FlatPercentageRule(
+        $commonDepositRule = new FlatPercentageWeeklyRule(
             $conditionCommonDepositRule,
             TransactionType::of('withdraw'),
             Currency::of('EUR'),
@@ -100,7 +100,7 @@ class CommissionCalculatorTest extends TestCase
             UserType::of('private')
         );
 
-        $privateWithdrawRule = new WeeklyThresholdPercentageRule(
+        $privateWithdrawRule = new ThresholdPercentageWeeklyRule(
             $conditionPrivateWithdrawalRule,
             TransactionType::of('withdraw'),
             Currency::of('EUR'),
@@ -118,7 +118,7 @@ class CommissionCalculatorTest extends TestCase
             ]
         );
 
-        $userCalculationState = new UserCalculationState(
+        $userCalculationState = new WeeklyState(
             $stateWeeklyTransactionsProcessed,
             $stateWeeklyAmount,
             $stateWeekRange

@@ -9,13 +9,13 @@ use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyStateCollection;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exception\ExchangeRateNotFoundException;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exception\TransactionsNotSortedException;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\WeeklyThresholdPercentageRule;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\ThresholdPercentageWeeklyRule;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Commissions\CalculatorContext\Domain\ValueObject\UserType;
 use DateTimeImmutable;
@@ -71,13 +71,13 @@ class WeeklyThresholdPercentageRuleTest extends TestCase
             $transactionAmount
         );
 
-        $userCalculationState = new UserCalculationState(
+        $userCalculationState = new WeeklyState(
             $stateWeeklyTransactionsProcessed,
             $stateWeeklyAmount,
             $stateWeekRange
         );
 
-        $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
+        $userCalculationStateCollection = WeeklyStateCollection::createFromArray([
             $stateSelectorByTransactionType->getValue() => $userCalculationState,
         ]);
 
@@ -86,7 +86,7 @@ class WeeklyThresholdPercentageRuleTest extends TestCase
             $conditionUserType
         );
 
-        $privateWithdrawalRule = new WeeklyThresholdPercentageRule(
+        $privateWithdrawalRule = new ThresholdPercentageWeeklyRule(
             $conditionPrivateWithdrawalRule,
             $stateSelectorByTransactionType,
             Currency::of('EUR'),
@@ -335,13 +335,13 @@ class WeeklyThresholdPercentageRuleTest extends TestCase
             $transactionAmount
         );
 
-        $userCalculationState = new UserCalculationState(
+        $userCalculationState = new WeeklyState(
             $stateWeeklyTransactionsProcessed,
             $stateWeeklyAmount,
             $stateWeekRange
         );
 
-        $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
+        $userCalculationStateCollection = WeeklyStateCollection::createFromArray([
             $stateSelectorByTransactionType->getValue() => $userCalculationState,
         ]);
 
@@ -350,7 +350,7 @@ class WeeklyThresholdPercentageRuleTest extends TestCase
             $conditionUserType,
         );
 
-        $privateWithdrawalRule = new WeeklyThresholdPercentageRule(
+        $privateWithdrawalRule = new ThresholdPercentageWeeklyRule(
             $conditionWithdrawalRule,
             $stateSelectorByTransactionType,
             Currency::of('EUR'),

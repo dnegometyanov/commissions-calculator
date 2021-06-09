@@ -48,6 +48,7 @@ class TransactionCommissionCalculator implements TransactionCommissionCalculator
         foreach ($this->rulesSequence->toArray() as $rule) {
             if ($rule->isSuitable($transaction)) {
                 $userCalculationStateCollection = $this->userCalculationStateRepository->getStateCollectionForUser($transaction->getUser());
+
                 $ruleResult = $rule->calculate($transaction, $userCalculationStateCollection, $exchangeRates);
 
                 $this->userCalculationStateRepository->persistStateForUserAndTransactionType(

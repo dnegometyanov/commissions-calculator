@@ -5,23 +5,23 @@ declare(strict_types=1);
 namespace Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator;
 
 use Commissions\CalculatorContext\Domain\Entity\User;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces\WeeklyStateCollectionInterface;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 
 interface UserCalculationStateRepositoryInterface
 {
     /**
      * @param User $user
-     * @param UserCalculationState $userCalculationState
+     * @param WeeklyState $userCalculationState
      * @param TransactionType $transactionType
      */
-    public function persistStateForUserAndTransactionType(User $user, UserCalculationState $userCalculationState, TransactionType $transactionType): void;
+    public function persistStateForUserAndTransactionType(User $user, WeeklyState $userCalculationState, TransactionType $transactionType): void;
 
     /**
      * @param User $user
      *
-     * @return UserCalculationStateCollection
+     * @return WeeklyStateCollectionInterface
      */
-    public function getStateCollectionForUser(User $user): UserCalculationStateCollection;
+    public function getStateCollectionForUser(User $user): WeeklyStateCollectionInterface;
 }

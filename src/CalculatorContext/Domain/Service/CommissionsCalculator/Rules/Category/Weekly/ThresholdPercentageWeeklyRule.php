@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Currency;
@@ -11,15 +11,16 @@ use Brick\Money\ExchangeRateProvider\ConfigurableProvider;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces\WeeklyStateCollectionInterface;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exception\ExchangeRateNotFoundException;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exception\TransactionsNotSortedException;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionInterface;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleResult;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 
-class WeeklyThresholdPercentageRule implements RuleInterface
+class ThresholdPercentageWeeklyRule implements WeeklyRuleInterface
 {
     public const EXCHANGE_RATE_REVERSE_PRECISION = 8;
 
@@ -93,12 +94,6 @@ class WeeklyThresholdPercentageRule implements RuleInterface
     /**
      * @inheritDoc
      *
-     * @param Transaction $transaction
-     * @param UserCalculationStateCollection $userCalculationStateCollection
-     * @param ExchangeRates|null $exchangeRates
-     *
-     * @return RuleResult
-     *
      * @throws ExchangeRateNotFoundException
      * @throws TransactionsNotSortedException
      * @throws \Brick\Money\Exception\MoneyMismatchException
@@ -106,7 +101,7 @@ class WeeklyThresholdPercentageRule implements RuleInterface
      */
     public function calculate(
         Transaction $transaction,
-        UserCalculationStateCollection $userCalculationStateCollection,
+        WeeklyStateCollectionInterface $userCalculationStateCollection,
         ExchangeRates $exchangeRates = null
     ): RuleResult {
         /**
@@ -136,7 +131,7 @@ class WeeklyThresholdPercentageRule implements RuleInterface
          * to aggregate state for new week
          */
         if ($userCalculationState->isTransactionAfterWeekRange($transaction)) {
-            $userCalculationState = new UserCalculationState(
+            $userCalculationState = new WeeklyState(
                 0,
                 Money::of('0', $this->baseCurrency),
                 WeekRange::createFromDate($transaction->getDateTime())
@@ -194,7 +189,7 @@ class WeeklyThresholdPercentageRule implements RuleInterface
         /**
          * Return UserCalculationState with updated Weekly Stats
          */
-        $userCalculationState = new UserCalculationState(
+        $userCalculationState = new WeeklyState(
             $userCalculationState->getWeeklyTransactionsProcessed() + 1,
             $userCalculationState->getWeeklyAmount()->plus($transactionAmountBaseCurrency),
             WeekRange::createFromDate($transaction->getDateTime())
@@ -208,11 +203,11 @@ class WeeklyThresholdPercentageRule implements RuleInterface
 
     /**
      * @param Transaction $transaction
-     * @param UserCalculationState $userWithdrawCalculationState
+     * @param WeeklyState $userWithdrawCalculationState
      *
      * @throws TransactionsNotSortedException
      */
-    private function validateTransactionOrder(Transaction $transaction, UserCalculationState $userWithdrawCalculationState): void
+    private function validateTransactionOrder(Transaction $transaction, WeeklyState $userWithdrawCalculationState): void
     {
         if ($userWithdrawCalculationState->isTransactionBeforeWeekRange($transaction)) {
             throw new TransactionsNotSortedException(
@@ -228,14 +223,14 @@ class WeeklyThresholdPercentageRule implements RuleInterface
     /**
      * Calculated amount in base currency that is left withing Threshold
      *
-     * @param UserCalculationState $userCalculationState
+     * @param WeeklyState $userCalculationState
      *
      * @return Money
      *
      * @throws \Brick\Money\Exception\MoneyMismatchException
      * @throws \Brick\Money\Exception\UnknownCurrencyException
      */
-    private function getLeftOverAmountWithinThresholdInBaseCurrency(UserCalculationState $userCalculationState): Money
+    private function getLeftOverAmountWithinThresholdInBaseCurrency(WeeklyState $userCalculationState): Money
     {
         $amountWithingThresholdBaseCurrency = $this->thresholdWeeklyAmount->minus($userCalculationState->getWeeklyAmount());
 
@@ -297,14 +292,14 @@ class WeeklyThresholdPercentageRule implements RuleInterface
 
     /**
      * @param Transaction $transaction
-     * @param UserCalculationState $userCalculationState
+     * @param WeeklyState $userCalculationState
      *
      * @return Money
      *
      * @throws \Brick\Money\Exception\MoneyMismatchException
      * @throws \Brick\Money\Exception\UnknownCurrencyException
      */
-    private function getOverThresholdAmountSameCurrencies(Transaction $transaction, UserCalculationState $userCalculationState, Money $amountWithingThresholdBaseCurrency)
+    private function getOverThresholdAmountSameCurrencies(Transaction $transaction, WeeklyState $userCalculationState, Money $amountWithingThresholdBaseCurrency)
     {
         $transactionAmountBaseCurrency = $transaction->getAmount();
 
@@ -319,7 +314,7 @@ class WeeklyThresholdPercentageRule implements RuleInterface
 
     /**
      * @param Transaction $transaction
-     * @param UserCalculationState $userCalculationState
+     * @param WeeklyState $userCalculationState
      * @param Money $amountWithingThresholdBaseCurrency
      * @param ExchangeRates $exchangeRates
      *
@@ -332,7 +327,7 @@ class WeeklyThresholdPercentageRule implements RuleInterface
      */
     private function getOverThresholdAmountDifferentCurrencies(
         Transaction $transaction,
-        UserCalculationState $userCalculationState,
+        WeeklyState $userCalculationState,
         Money $amountWithingThresholdBaseCurrency,
         ExchangeRates $exchangeRates
     ): Money {

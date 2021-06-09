@@ -2,18 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Currency;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces\WeeklyStateCollectionInterface;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exception\TransactionsNotSortedException;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionInterface;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleResult;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 
-class FlatPercentageRule implements RuleInterface
+class FlatPercentageWeeklyRule implements WeeklyRuleInterface
 {
     /**
      * @var Currency
@@ -62,12 +63,12 @@ class FlatPercentageRule implements RuleInterface
     /** @inheritDoc */
     public function calculate(
         Transaction $transaction,
-        UserCalculationStateCollection $userCalculationStateCollection,
+        WeeklyStateCollectionInterface $userCalculationStateCollection,
         ExchangeRates $exchangeRates = null
     ): RuleResult {
-        $userWithdrawCalculationState = $userCalculationStateCollection->getByTransactionType($this->stateSelectorByTransactionType);
+        $userCalculationState = $userCalculationStateCollection->getByTransactionType($this->stateSelectorByTransactionType);
 
-        if ($userWithdrawCalculationState->isTransactionBeforeWeekRange($transaction)) {
+        if ($userCalculationState->isTransactionBeforeWeekRange($transaction)) {
             throw new TransactionsNotSortedException(
                 sprintf(
                     'Transactions should be sorted in ascending order by date, error for transaction with id %s and date %s',
@@ -83,7 +84,7 @@ class FlatPercentageRule implements RuleInterface
         );
 
         return new RuleResult(
-            $userWithdrawCalculationState,
+            $userCalculationState,
             $commissionAmount
         );
     }

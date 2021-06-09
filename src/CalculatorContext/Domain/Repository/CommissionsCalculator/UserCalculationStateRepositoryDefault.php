@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator;
 
 use Commissions\CalculatorContext\Domain\Entity\User;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyStateCollection;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 
 class UserCalculationStateRepositoryDefault implements UserCalculationStateRepositoryInterface
@@ -27,7 +27,7 @@ class UserCalculationStateRepositoryDefault implements UserCalculationStateRepos
     /**
      * @inheritDoc
      */
-    public function persistStateForUserAndTransactionType(User $user, UserCalculationState $userCalculationState, TransactionType $transactionType): void
+    public function persistStateForUserAndTransactionType(User $user, WeeklyState $userCalculationState, TransactionType $transactionType): void
     {
         if (!isset($this->userCalculationStatesGrouped[$user->getId()])) {
             $this->userCalculationStatesGrouped[$user->getId()] = [];
@@ -39,10 +39,10 @@ class UserCalculationStateRepositoryDefault implements UserCalculationStateRepos
     /**
      * @inheritDoc
      */
-    public function getStateCollectionForUser(User $user): UserCalculationStateCollection
+    public function getStateCollectionForUser(User $user): WeeklyStateCollection
     {
         return isset($this->userCalculationStatesGrouped[$user->getId()])
-            ? UserCalculationStateCollection::createFromArray($this->userCalculationStatesGrouped[$user->getId()])
-            : UserCalculationStateCollection::createFromArray([]);
+            ? WeeklyStateCollection::createFromArray($this->userCalculationStatesGrouped[$user->getId()])
+            : WeeklyStateCollection::createFromArray([]);
     }
 }

@@ -8,10 +8,10 @@ use Brick\Money\Currency;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Entity\User;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationState;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\UserCalculationStateCollection;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyStateCollection;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\FlatPercentageRule;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\FlatPercentageWeeklyRule;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Commissions\CalculatorContext\Domain\ValueObject\UserType;
@@ -65,13 +65,13 @@ class FlatPercentageRuleTest extends TestCase
             $transactionAmount
         );
 
-        $userCalculationState = new UserCalculationState(
+        $userCalculationState = new WeeklyState(
             $stateWeeklyTransactionsProcessed,
             $stateWeeklyAmount,
             $stateWeekRange
         );
 
-        $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
+        $userCalculationStateCollection = WeeklyStateCollection::createFromArray([
             $stateSelectorByTransactionType->getValue() => $userCalculationState,
         ]);
 
@@ -80,7 +80,7 @@ class FlatPercentageRuleTest extends TestCase
             $conditionUserType,
         );
 
-        $flatPercentageRule = new FlatPercentageRule(
+        $flatPercentageRule = new FlatPercentageWeeklyRule(
             $conditionWithdrawalRule,
             $stateSelectorByTransactionType,
             Currency::of('EUR'),
@@ -289,13 +289,13 @@ class FlatPercentageRuleTest extends TestCase
             $transactionAmount
         );
 
-        $userCalculationState = new UserCalculationState(
+        $userCalculationState = new WeeklyState(
             $stateWeeklyTransactionsProcessed,
             $stateWeeklyAmount,
             $stateWeekRange
         );
 
-        $userCalculationStateCollection = UserCalculationStateCollection::createFromArray([
+        $userCalculationStateCollection = WeeklyStateCollection::createFromArray([
             $stateSelectorByTransactionType->getValue() => $userCalculationState,
         ]);
 
@@ -304,7 +304,7 @@ class FlatPercentageRuleTest extends TestCase
             $conditionUserType,
         );
 
-        $flatPercentageRule = new FlatPercentageRule(
+        $flatPercentageRule = new FlatPercentageWeeklyRule(
             $conditionWithdrawalRule,
             $stateSelectorByTransactionType,
             Currency::of('EUR'),

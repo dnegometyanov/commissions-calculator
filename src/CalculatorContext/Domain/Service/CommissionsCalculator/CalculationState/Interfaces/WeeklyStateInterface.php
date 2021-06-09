@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces;
+
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces\Parts\WeeklyAmountAwareInterface;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces\Parts\WeeklyTransactionProcessedAwareInterface;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces\Parts\WeekRangeAwareInterface;
+
+interface WeeklyStateInterface extends WeekRangeAwareInterface, WeeklyAmountAwareInterface, WeeklyTransactionProcessedAwareInterface
+{
+}

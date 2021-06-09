@@ -61,7 +61,7 @@ services:
       - null
 
   common.deposit.rule:
-    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\FlatPercentageRule
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\FlatPercentageWeeklyRule
     arguments:
       - '@condition.common.deposit.rule'
       - '@transaction.type.withdraw'
@@ -75,7 +75,7 @@ services:
       - '@user.type.business'
 
   business.withdraw.rule:
-    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\FlatPercentageRule
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\FlatPercentageWeeklyRule
     arguments:
       - '@condition.business.withdraw.rule'
       - '@transaction.type.withdraw'
@@ -89,7 +89,7 @@ services:
       - '@user.type.private'
 
   private.withdraw.rule:
-    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\WeeklyThresholdPercentageRule
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\ThresholdPercentageWeeklyRule
     arguments:
       - '@condition.private.withdraw.rule'
       - '@transaction.type.withdraw'

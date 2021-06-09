@@ -33,18 +33,17 @@ and you may check Dockerfile for troubleshooting of your local config.
    As well as `TransactionType` and `UserType` value objects.
    
  - Most of the core calculation logic is in `Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules` namespace.
-Each rule implements `RuleInterface` and basically takes  `Transaction`, `UserCalculationStateCollection`, `ExchangeRates` 
+Currently we have only Weekly category rules that implement `WeeklyRuleInterface` taht extends `RuleInterface` and basically takes  `Transaction`, `WeeklyStateCollection`, `ExchangeRates` 
    as parameters for calculation of commission of each transaction. 
 
  - Rules added to the `RuleSequence`, so the first matching rule applies to calculate the commission. 
 
- - `UserCalculationStateCollection` is a collection that has Transaction Type (i.e. `deposit` or `withdrawal`) as a key,
-   and `UserCalculationState` as value. For now `UserCalculationState` contains aggregation of Weekly Amount per transaction type and weekly transactions count per transaction type.
-   TODOs : I need to make `UserCalculationState` extendable for new types of rules,
-   but not only weekly amount and transactions count.
+ - `WeeklyStateCollection` is a collection that has Transaction Type (i.e. `deposit` or `withdrawal`) as a key,
+   and `WeeklyState` as value. For now we have only `WeeklyState` that contains aggregation of Weekly Amount per transaction type and weekly transactions count per transaction type.
+   But we possibly can create any state objects that implement interfaces we need to the rule and aggregated to the common interface similar to `WeeklyStateInterface` 
 
-- `UserCalculationStateRepositoryInterface` is an interface for storing and retrieving `UserCalculationStateCollection` per user id.
-And `UserCalculationStateRepositoryDefault` is its in-memory implementation.
+- `WeeklyStateRepositoryInterface` is an interface for storing and retrieving `WeeklyStateCollection` per user id.
+And `WeeklyStateRepositoryDefault` is its in-memory implementation.
   
  - `TransactionCommissionCalculator` implements `TransactionCommissionCalculatorInterface`
    and finds proper calculation rule from `RulesSequence` using Rule's `isSuitable` condition.
@@ -52,6 +51,11 @@ And `UserCalculationStateRepositoryDefault` is its in-memory implementation.
 - `CommissionsCalculator` implements `CommissionsCalculatorInterface`
   and runs all transaction calculation using `TransactionCommissionCalculator`
   
+### Extensibility limitation of current solution (possible TODOs)
+ - Calculation state, in this case `WeeklyState` is updated from the rules ATM, so in case we add new states with new fields for new rules,
+our existing rules will not update the new state field. 
+   To support this, we need to create a separate service outside of rules (somewhere on the CommissionsCalculator probably) that updates the state independently from rules.
+
 ## Build container and install composer dependencies
 
     Make build
