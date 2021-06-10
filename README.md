@@ -89,7 +89,7 @@ If dist files are not copied to actual destination, then
 
  - After running please check that following files appeared in `src/Config` folder: `parameters.yaml`, `services.yaml`, `services_test.yaml`
 
-### Step3: Create configs from dist files (*needs manual replacement in 1 place*)
+### Step3: Replace api key in parameters.yaml (*needs manual replacement in 1 place*)
 
 After creating `parameters.yaml` from its dist file on Step2,
 you need to change `PUT_API_KEY_HERE` in `parameters.yaml` to your `exchangeratesapi.io` api key
