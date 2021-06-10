@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
 
 use Brick\Money\Money;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces\WeeklyStateInterface;
 
 class RuleResult
 {
     /**
-     * @var WeeklyState
+     * @var WeeklyStateInterface
      */
-    private WeeklyState $userCalculationState;
+    private WeeklyStateInterface $userCalculationState;
 
     /**
      * @var Money
@@ -20,11 +20,11 @@ class RuleResult
     private Money $commissionAmount;
 
     /**
-     * @param WeeklyState $userCalculationState
+     * @param WeeklyStateInterface $userCalculationState
      * @param Money $commissionAmount
      */
     public function __construct(
-        WeeklyState $userCalculationState,
+        WeeklyStateInterface $userCalculationState,
         Money $commissionAmount
     ) {
         $this->userCalculationState = $userCalculationState;
@@ -32,9 +32,9 @@ class RuleResult
     }
 
     /**
-     * @return WeeklyState
+     * @return WeeklyStateInterface
      */
-    public function getUserCalculationState(): WeeklyState
+    public function getUserCalculationState(): WeeklyStateInterface
     {
         return $this->userCalculationState;
     }
