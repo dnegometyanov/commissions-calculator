@@ -45,7 +45,7 @@ class TransactionCommissionCalculator implements TransactionCommissionCalculator
     {
         $transactionCommissionAmount = Money::of('0', $transaction->getAmount()->getCurrency()->getCurrencyCode());
 
-        foreach ($this->rulesSequence->toArray() as $rule) {
+        foreach ($this->rulesSequence as $rule) {
             if ($rule->isSuitable($transaction)) {
                 $userCalculationStateCollection = $this->userCalculationStateRepository->getStateCollectionForUser($transaction->getUser());
 
