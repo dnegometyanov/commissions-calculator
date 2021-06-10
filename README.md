@@ -92,7 +92,7 @@ If dist files are not copied to actual destination, then
 ### Step3: Replace api key in parameters.yaml (*needs manual replacement in 1 place*)
 
 After creating `parameters.yaml` from its dist file on Step2,
-you need to change `PUT_API_KEY_HERE` in `parameters.yaml` to your `exchangeratesapi.io` api key
+you need to change `PUT_API_KEY_HERE` in `src/Config/parameters.yaml` to your `exchangeratesapi.io` api key
 
 ## Run application
     docker-compose run --rm --no-deps php-cli php src/index.php input.csv
