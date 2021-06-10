@@ -10,12 +10,12 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 require 'vendor/autoload.php';
 
-define('APPROOT', realpath(__DIR__ . '/../'));
+$appRoot = realpath(__DIR__ . '/../');
 
-// init service container
+// Init service container
 $containerBuilder = new ContainerBuilder();
-
-$loader = new YamlFileLoader($containerBuilder, new FileLocator(APPROOT . '/src/config/'));
+$containerBuilder->setParameter('APPROOT',$appRoot);
+$loader = new YamlFileLoader($containerBuilder, new FileLocator($appRoot . '/src/config/'));
 
 getenv('APP_ENV') === 'test'
     ? $loader->load('services_test.yaml')

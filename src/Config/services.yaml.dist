@@ -23,6 +23,8 @@ services:
 
   transactions.data.retriever:
     class:     Commissions\CalculatorContext\Infrastructure\InputData\TransactionsDataRetrieverCSV
+    arguments:
+      - '%APPROOT%/src/InputData/%%s'
 
   currency.base:
     class:     Brick\Money\Currency
@@ -88,6 +90,21 @@ services:
       - '@transaction.type.withdraw'
       - '@user.type.private'
 
+  exchange.rate.configurable.provider:
+    class:  Brick\Money\ExchangeRateProvider\ConfigurableProvider
+
+  currency.converter:
+    class: Brick\Money\CurrencyConverter
+    arguments:
+      - '@exchange.rate.configurable.provider'
+
+  transaction.currency.converter:
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CurrencyConverter\TransactionCurrencyConverter
+    arguments:
+      - '@exchange.rate.configurable.provider'
+      - '@currency.converter'
+      - 8
+
   private.withdraw.rule:
     class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\ThresholdPercentageWeeklyRule
     arguments:
@@ -95,12 +112,13 @@ services:
       - '@transaction.type.withdraw'
       - '@currency.base'
       - '0'
+      - '@transaction.currency.converter'
       - '@money.private.withdrawal.rule.threshold.amount'
       - '3'
       - '0.003'
 
   rules.sequence:
-    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence
+    class:     Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\WeeklyRulesSequence
     arguments:
       - ['@common.deposit.rule', '@business.withdraw.rule', '@private.withdraw.rule']
 

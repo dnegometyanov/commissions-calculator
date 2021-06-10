@@ -17,11 +17,21 @@ use Ramsey\Uuid\Uuid;
 class TransactionsDataRetrieverCSV implements TransactionsDataRetrieverInterface
 {
     /**
+     * @var string
+     */
+    private string $inputDataPath;
+
+    public function __construct(string $inputDataPath)
+    {
+        $this->inputDataPath = $inputDataPath;
+    }
+
+    /**
      * @inheritDoc
      */
     public function retrieve(string $filename): TransactionList
     {
-        $path             = realpath(APPROOT) . sprintf('/src/InputData/%s', $filename);
+        $path             = sprintf($this->inputDataPath, $filename);
         $transactionsList = new TransactionList();
         foreach (LineReader::readLines($path) as $line) {
             $transactionData = explode(',', $line);
