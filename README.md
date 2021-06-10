@@ -64,7 +64,7 @@ We need to refactor it to return / persist rules of any type we need. For exampl
  - Test for WeekRange
  - Test for transactions retriever
  - test for ExchangeRatesRetriever
- - Command pattern - encapsulate logic from index.php
+ - Command pattern - encapsulate logic from CalculateCommissionsConsoleCommand
  - ValueObject for percentage
 
 ## Project setup
