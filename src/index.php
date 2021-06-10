@@ -14,7 +14,7 @@ $appRoot = realpath(__DIR__ . '/../');
 
 // Init service container
 $containerBuilder = new ContainerBuilder();
-$containerBuilder->setParameter('APPROOT',$appRoot);
+$containerBuilder->setParameter('APPROOT', $appRoot);
 $loader = new YamlFileLoader($containerBuilder, new FileLocator($appRoot . '/src/config/'));
 
 getenv('APP_ENV') === 'test'
