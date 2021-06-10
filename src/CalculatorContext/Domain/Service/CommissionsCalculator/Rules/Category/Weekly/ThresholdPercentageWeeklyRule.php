@@ -6,8 +6,6 @@ namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rul
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Currency;
-use Brick\Money\CurrencyConverter;
-use Brick\Money\ExchangeRateProvider\ConfigurableProvider;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
@@ -24,8 +22,6 @@ use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 
 class ThresholdPercentageWeeklyRule implements WeeklyRuleInterface
 {
-    public const EXCHANGE_RATE_REVERSE_PRECISION = 8;
-
     /**
      * @var ConditionInterface
      */
