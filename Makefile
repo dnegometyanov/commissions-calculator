@@ -48,6 +48,7 @@ all-tests:
 # Run all tests
 all-tests-and-checks:
 	make cs-check
+	make static-analysis
 	make unit-tests
 	make integration-tests
 	make behavior-tests

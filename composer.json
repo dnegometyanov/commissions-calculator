@@ -40,7 +40,8 @@
     "phpunit": "phpunit",
     "fix-cs": "php-cs-fixer fix",
     "test-cs": "php-cs-fixer fix --dry-run -v",
+    "static-analysis": "phpstan",
     "behat": "behat",
-    "test": ["@test-cs", "@phpunit", "@behat"]
+    "test": ["@test-cs", "@static-analysis", "@phpunit", "@behat"]
   }
 }

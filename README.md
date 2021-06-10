@@ -106,6 +106,10 @@ After the above setup steps you can run test with composer scripts form docker u
 
     docker-compose run --rm --no-deps php-cli composer run fix-cs
 
+#### Run static analysis checks
+
+    docker-compose run --rm --no-deps php-cli composer run static-analysis
+
 #### Run all phpunit tests
 
     docker-compose run --rm --no-deps php-cli composer run phpunit
