@@ -6,17 +6,17 @@ namespace Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator;
 
 use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces\WeeklyStateCollectionInterface;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces\WeeklyStateInterface;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 
 interface UserCalculationStateRepositoryInterface
 {
     /**
      * @param User $user
-     * @param WeeklyState $userCalculationState
+     * @param WeeklyStateInterface $userCalculationState
      * @param TransactionType $transactionType
      */
-    public function persistStateForUserAndTransactionType(User $user, WeeklyState $userCalculationState, TransactionType $transactionType): void;
+    public function persistStateForUserAndTransactionType(User $user, WeeklyStateInterface $userCalculationState, TransactionType $transactionType): void;
 
     /**
      * @param User $user

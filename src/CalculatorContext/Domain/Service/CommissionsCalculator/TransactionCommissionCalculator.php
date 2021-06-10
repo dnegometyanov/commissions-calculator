@@ -9,14 +9,14 @@ use Commissions\CalculatorContext\Domain\Entity\Commission;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
 use Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryInterface;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\WeeklyRulesSequence;
 
 class TransactionCommissionCalculator implements TransactionCommissionCalculatorInterface
 {
     /**
-     * @var RulesSequence
+     * @var WeeklyRulesSequence
      */
-    private RulesSequence $rulesSequence;
+    private WeeklyRulesSequence $rulesSequence;
 
     /**
      * @var UserCalculationStateRepositoryInterface
@@ -24,11 +24,11 @@ class TransactionCommissionCalculator implements TransactionCommissionCalculator
     private UserCalculationStateRepositoryInterface $userCalculationStateRepository;
 
     /**
-     * @param RulesSequence $rulesSequence
+     * @param WeeklyRulesSequence $rulesSequence
      * @param UserCalculationStateRepositoryInterface $userCalculationStateRepository
      */
     public function __construct(
-        RulesSequence $rulesSequence,
+        WeeklyRulesSequence $rulesSequence,
         UserCalculationStateRepositoryInterface $userCalculationStateRepository
     ) {
         $this->rulesSequence                  = $rulesSequence;

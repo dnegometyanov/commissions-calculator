@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules;
+namespace Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly;
 
-class RulesSequence
+class WeeklyRulesSequence
 {
     /**
-     * @var RuleInterface[]
+     * @var WeeklyRuleInterface[]
      */
     private array $rules;
 
@@ -20,7 +20,7 @@ class RulesSequence
     }
 
     /**
-     * @return RuleInterface[]
+     * @return WeeklyRuleInterface[]
      */
     public function toArray(): array
     {

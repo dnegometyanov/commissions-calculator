@@ -18,7 +18,7 @@ use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CurrencyC
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\TransactionCommissionCalculator;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\FlatPercentageWeeklyRule;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType;
-use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RulesSequence;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\WeeklyRulesSequence;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\ThresholdPercentageWeeklyRule;
 use Commissions\CalculatorContext\Domain\ValueObject\TransactionType;
 use Commissions\CalculatorContext\Domain\ValueObject\UserType;
@@ -123,7 +123,7 @@ class TransactionCommissionCalculatorTest extends TestCase
             '0.003'
         );
 
-        $rulesSequence = new RulesSequence(
+        $rulesSequence = new WeeklyRulesSequence(
             [
                 $commonDepositRule,
                 $businessWithdrawRule,
