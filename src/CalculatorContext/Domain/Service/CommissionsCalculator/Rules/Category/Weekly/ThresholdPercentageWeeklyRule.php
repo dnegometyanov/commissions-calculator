@@ -15,6 +15,7 @@ use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Calculati
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\Interfaces\WeeklyStateInterface;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CurrencyConverter\TransactionCurrencyConverter;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exception\ExchangeRateNotFoundException;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exception\TransactionsNotSortedException;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionInterface;
@@ -34,6 +35,11 @@ class ThresholdPercentageWeeklyRule implements WeeklyRuleInterface
      * @var TransactionType
      */
     private TransactionType $stateSelectorByTransactionType;
+
+    /**
+     * @var TransactionCurrencyConverter
+     */
+    private TransactionCurrencyConverter $transactionCurrencyConverter;
 
     /**
      * @var Money
@@ -73,17 +79,19 @@ class ThresholdPercentageWeeklyRule implements WeeklyRuleInterface
         TransactionType $stateSelectorByTransactionType, // to select proper UserCalculationState for the Transaction's type
         Currency $baseCurrency,
         string $commonPercentage,
+        TransactionCurrencyConverter $transactionCurrencyConverter,
         Money $thresholdWeeklyAmount,
         int $thresholdWeeklyTransactions,
         string $exceedingThresholdPercentage
     ) {
-        $this->baseCurrency                 = $baseCurrency;
+        $this->baseCurrency                   = $baseCurrency;
         $this->stateSelectorByTransactionType = $stateSelectorByTransactionType;
-        $this->withinThresholdPercentage    = $commonPercentage;
-        $this->thresholdWeeklyAmount        = $thresholdWeeklyAmount;
-        $this->thresholdWeeklyTransactions  = $thresholdWeeklyTransactions;
-        $this->exceedingThresholdPercentage = $exceedingThresholdPercentage;
-        $this->condition                    = $condition;
+        $this->withinThresholdPercentage      = $commonPercentage;
+        $this->transactionCurrencyConverter   = $transactionCurrencyConverter;
+        $this->thresholdWeeklyAmount          = $thresholdWeeklyAmount;
+        $this->thresholdWeeklyTransactions    = $thresholdWeeklyTransactions;
+        $this->exceedingThresholdPercentage   = $exceedingThresholdPercentage;
+        $this->condition                      = $condition;
     }
 
     /** @inheritDoc */
@@ -242,50 +250,15 @@ class ThresholdPercentageWeeklyRule implements WeeklyRuleInterface
         return $amountWithingThresholdBaseCurrency;
     }
 
-    private function convertTransactionAmount(Money $amount, Currency $currencyTo, ExchangeRates $exchangeRates): Money
-    {
-        /**
-         * We have one way exchange rates from Base Currency to Transactions Currency,
-         * so to convert from Transaction Currency to base currency, we need to revert it
-         */
-        if ($amount->getCurrency()->is($this->baseCurrency)) {
-            $exchangeRate = $exchangeRates->getRate($currencyTo) ?? null;
-            if ($exchangeRate === null) {
-                throw new ExchangeRateNotFoundException(sprintf('Exchange rate for currency code %s not found', $currencyTo));
-            }
-        } else {
-            $exchangeRate = $exchangeRates->getRate($amount->getCurrency()) ?? null;
-            if ($exchangeRate === null) {
-                throw new ExchangeRateNotFoundException(sprintf('Exchange rate for currency code %s not found', $amount->getCurrency()));
-            }
-            $exchangeRate = bcdiv('1', $exchangeRate, self::EXCHANGE_RATE_REVERSE_PRECISION);
-        }
-
-        // TODO inject dependency
-        $exchangeRateProvider = new ConfigurableProvider();
-        $exchangeRateProvider->setExchangeRate(
-            $amount->getCurrency()->getCurrencyCode(),
-            $currencyTo->getCurrencyCode(),
-            $exchangeRate
-        );
-        // TODO inject dependency
-        $converter = new CurrencyConverter($exchangeRateProvider);
-
-        return $converter->convert(
-            $amount,
-            $currencyTo,
-            RoundingMode::HALF_UP
-        );
-    }
-
     private function getTransactionAmountBaseCurrency(Transaction $transaction, ExchangeRates $exchangeRates): Money
     {
         if ($transaction->getCurrency()->is($this->baseCurrency)) {
             return $transaction->getAmount();
         }
 
-        return $this->convertTransactionAmount(
+        return $this->transactionCurrencyConverter->convertTransactionAmount(
             $transaction->getAmount(),
+            $this->baseCurrency,
             $this->baseCurrency,
             $exchangeRates
         );
@@ -339,8 +312,9 @@ class ThresholdPercentageWeeklyRule implements WeeklyRuleInterface
                 ? $transaction->getAmount()
                 : $transactionAmountBaseCurrency->minus($amountWithingThresholdBaseCurrency);
 
-        return $this->convertTransactionAmount(
+        return $this->transactionCurrencyConverter->convertTransactionAmount(
             $overThresholdAmountBaseCurrency,
+            $this->baseCurrency,
             $transaction->getCurrency(),
             $exchangeRates
         );

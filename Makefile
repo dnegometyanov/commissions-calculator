@@ -48,8 +48,8 @@ all-tests:
 # Run all tests
 all-tests-and-checks:
 	make cs-check
-	make all-phpunit-tests
-	make all-phpunit-tests
+	make unit-tests
+	make integration-tests
 	make behavior-tests
 
 ## Run static analysis

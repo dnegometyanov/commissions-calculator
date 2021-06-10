@@ -8,18 +8,30 @@ use Brick\Math\RoundingMode;
 use Brick\Money\Currency;
 use Brick\Money\CurrencyConverter;
 use Brick\Money\ExchangeRateProvider;
+use Brick\Money\ExchangeRateProvider\ConfigurableProvider;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exception\ExchangeRateNotFoundException;
 
 class TransactionCurrencyConverter
 {
-    private ExchangeRateProvider $exchangeRateProvider;
+    /**
+     * @var ConfigurableProvider
+     */
+    private ConfigurableProvider $exchangeRateProvider;
+
+    /**
+     * @var CurrencyConverter
+     */
     private CurrencyConverter $currencyConverter;
+
+    /**
+     * @var int
+     */
     private int $exchangeRateReversePrecision;
 
     public function __construct(
-        ExchangeRateProvider $exchangeRateProvider,
+        ConfigurableProvider $exchangeRateProvider,
         CurrencyConverter $currencyConverter,
         int $exchangeRateReversePrecision
     ) {
@@ -28,7 +40,7 @@ class TransactionCurrencyConverter
         $this->exchangeRateReversePrecision = $exchangeRateReversePrecision;
     }
 
-    private function convertTransactionAmount(Money $amount, Currency $baseCurrency, Currency $currencyTo, ExchangeRates $exchangeRates): Money
+    public function convertTransactionAmount(Money $amount, Currency $baseCurrency, Currency $currencyTo, ExchangeRates $exchangeRates): Money
     {
         /**
          * We have one way exchange rates from Base Currency to Transactions Currency,

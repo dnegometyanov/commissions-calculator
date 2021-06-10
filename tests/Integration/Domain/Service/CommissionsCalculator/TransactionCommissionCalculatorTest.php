@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace CommissionsTest\Integration\Domain\Service\CommissionsCalculator;
 
 use Brick\Money\Currency;
+use Brick\Money\CurrencyConverter;
+use Brick\Money\ExchangeRateProvider\ConfigurableProvider;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
@@ -12,6 +14,7 @@ use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Repository\CommissionsCalculator\UserCalculationStateRepositoryDefault;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CurrencyConverter\TransactionCurrencyConverter;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\TransactionCommissionCalculator;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Category\Weekly\FlatPercentageWeeklyRule;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType;
@@ -23,7 +26,7 @@ use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
-class CommissionCalculatorTest extends TestCase
+class TransactionCommissionCalculatorTest extends TestCase
 {
     /**
      * @dataProvider calculateCommissionForTransactionProvider
@@ -100,11 +103,21 @@ class CommissionCalculatorTest extends TestCase
             UserType::of('private')
         );
 
+        $configurableProvider = new ConfigurableProvider();
+        $currencyConverter = new CurrencyConverter($configurableProvider);
+
+        $transactionCurrencyConverter = new TransactionCurrencyConverter(
+            $configurableProvider,
+            $currencyConverter,
+            8
+        );
+
         $privateWithdrawRule = new ThresholdPercentageWeeklyRule(
             $conditionPrivateWithdrawalRule,
             TransactionType::of('withdraw'),
             Currency::of('EUR'),
             '0',
+            $transactionCurrencyConverter,
             Money::of('1000', 'EUR'),
             3,
             '0.003'

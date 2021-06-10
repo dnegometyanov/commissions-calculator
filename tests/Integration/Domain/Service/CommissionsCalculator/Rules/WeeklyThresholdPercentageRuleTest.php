@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace CommissionsTest\Integration\Domain\Service\CommissionsCalculator\Rules;
 
 use Brick\Money\Currency;
+use Brick\Money\CurrencyConverter;
+use Brick\Money\ExchangeRateProvider\ConfigurableProvider;
 use Brick\Money\Money;
 use Commissions\CalculatorContext\Domain\Entity\ExchangeRates;
 use Commissions\CalculatorContext\Domain\Entity\Transaction;
@@ -12,6 +14,7 @@ use Commissions\CalculatorContext\Domain\Entity\User;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyState;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\WeeklyStateCollection;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CalculationState\ValueObject\WeekRange;
+use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\CurrencyConverter\TransactionCurrencyConverter;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exception\ExchangeRateNotFoundException;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\Exception\TransactionsNotSortedException;
 use Commissions\CalculatorContext\Domain\Service\CommissionsCalculator\Rules\RuleCondition\ConditionTransactionTypeAndUserType;
@@ -86,11 +89,21 @@ class WeeklyThresholdPercentageRuleTest extends TestCase
             $conditionUserType
         );
 
+        $configurableProvider = new ConfigurableProvider();
+        $currencyConverter = new CurrencyConverter($configurableProvider);
+
+        $transactionCurrencyConverter = new TransactionCurrencyConverter(
+            $configurableProvider,
+            $currencyConverter,
+            8
+        );
+
         $privateWithdrawalRule = new ThresholdPercentageWeeklyRule(
             $conditionPrivateWithdrawalRule,
             $stateSelectorByTransactionType,
             Currency::of('EUR'),
             '0',
+            $transactionCurrencyConverter,
             Money::of('1000', 'EUR'),
             3,
             '0.003'
@@ -350,11 +363,21 @@ class WeeklyThresholdPercentageRuleTest extends TestCase
             $conditionUserType,
         );
 
+        $configurableProvider = new ConfigurableProvider();
+        $currencyConverter = new CurrencyConverter($configurableProvider);
+
+        $transactionCurrencyConverter = new TransactionCurrencyConverter(
+            $configurableProvider,
+            $currencyConverter,
+            8
+        );
+
         $privateWithdrawalRule = new ThresholdPercentageWeeklyRule(
             $conditionWithdrawalRule,
             $stateSelectorByTransactionType,
             Currency::of('EUR'),
             '0',
+            $transactionCurrencyConverter,
             Money::of('1000', 'EUR'),
             3,
             '0.003'
