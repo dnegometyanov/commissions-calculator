@@ -58,7 +58,15 @@ our existing rules will not update the new state field.
    
  - `UserCalculationStateRepositoryInterface` works with `WeeklyStateCollectionInterface`, so it cannot handle new types states at its current implementation.
 We need to refactor it to return / persist rules of any type we need. For example, to have matching methods (interfaces) for each state type.
-   
+
+### TODOs (in general)
+ - validator for transactions (set allowed userTypes and TransactionTypes to validator from yaml)
+ - Test for WeekRange
+ - Test for transactions retriever
+ - test for ExchangeRatesRetriever
+ - Command pattern - encapsulate logic from index.php
+ - ValueObject for percentage
+
 ## Project setup
 
 You can use make command or just run appropriate commands from Makefile manually.
