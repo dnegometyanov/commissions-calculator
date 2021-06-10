@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Entity;
 
-class TransactionList
+use Iterator;
+
+class TransactionList implements Iterator
 {
     /**
      * @var Transaction[]
@@ -38,11 +40,28 @@ class TransactionList
         return $this->transactions[$transactionUuid];
     }
 
-    /**
-     * @return Transaction[]
-     */
-    public function toArray(): array
+    public function rewind(): void
     {
-        return $this->transactions;
+        reset($this->transactions);
+    }
+
+    public function current(): Transaction
+    {
+        return current($this->transactions);
+    }
+
+    public function key(): string
+    {
+        return key($this->transactions);
+    }
+
+    public function next(): void
+    {
+        next($this->transactions);
+    }
+
+    public function valid(): bool
+    {
+        return key($this->transactions) !== null;
     }
 }

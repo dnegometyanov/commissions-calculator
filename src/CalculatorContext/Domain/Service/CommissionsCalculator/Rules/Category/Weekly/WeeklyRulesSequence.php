@@ -14,11 +14,6 @@ class WeeklyRulesSequence implements Iterator
     private array $rules;
 
     /**
-     * @var int
-     */
-    private int $position = 0;
-
-    /**
      * @param array $rules
      */
     public function __construct(array $rules)
@@ -28,26 +23,26 @@ class WeeklyRulesSequence implements Iterator
 
     public function rewind(): void
     {
-        $this->position = 0;
+        reset($this->rules);
     }
 
     public function current(): WeeklyRuleInterface
     {
-        return $this->rules[$this->position];
+        return current($this->rules);
     }
 
-    public function key(): int
+    public function key(): string
     {
-        return $this->position;
+        return key($this->rules);
     }
 
     public function next(): void
     {
-        $this->position++;
+        next($this->rules);
     }
 
     public function valid(): bool
     {
-        return isset($this->rules[$this->position]);
+        return key($this->rules) !== null;
     }
 }

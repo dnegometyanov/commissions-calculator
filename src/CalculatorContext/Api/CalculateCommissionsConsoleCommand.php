@@ -59,7 +59,7 @@ class CalculateCommissionsConsoleCommand implements CalculateCommissionsConsoleC
 
     private function displayResult(CommissionList $commissionList): void
     {
-        foreach ($commissionList->toArray() as $commission) {
+        foreach ($commissionList as $commission) {
             echo (string)$commission->getAmount()->getAmount() . "\n";
         }
     }

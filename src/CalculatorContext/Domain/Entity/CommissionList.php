@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Commissions\CalculatorContext\Domain\Entity;
 
-class CommissionList
+use ArrayAccess;
+use Iterator;
+
+class CommissionList implements Iterator, ArrayAccess
 {
     /**
      * @var Commission[]
@@ -38,11 +41,53 @@ class CommissionList
         return $this->commissions[(string)$transaction->getUuid()];
     }
 
-    /**
-     * @return Commission[]
-     */
-    public function toArray(): array
+
+    public function rewind(): void
     {
-        return $this->commissions;
+        reset($this->commissions);
+    }
+
+    public function current(): Commission
+    {
+        return current($this->commissions);
+    }
+
+    public function key(): string
+    {
+        return key($this->commissions);
+    }
+
+    public function next(): void
+    {
+        next($this->commissions);
+    }
+
+    public function valid(): bool
+    {
+        return key($this->commissions) !== null;
+    }
+
+    public function offsetSet($offset, $value): void
+    {
+        if (is_null($offset)) {
+            $this->commissions[] = $value;
+        } else {
+            $this->commissions[$offset] = $value;
+        }
+    }
+
+    public function offsetExists($offset): bool
+    {
+        return isset($this->commissions[$offset]);
+    }
+
+    public function offsetUnset($offset): void
+    {
+        unset($this->commissions[$offset]);
+    }
+
+    public function offsetGet($offset): ?Commission
+    {
+        return isset($this->commissions[$offset]) ? $this->commissions[$offset] : null;
     }
 }

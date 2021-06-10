@@ -140,49 +140,48 @@ class CommissionsCalculatorTest extends TestCase
         $commissionsCalculator = new CommissionsCalculator($commissionCalculator);
 
         $commissionList      = $commissionsCalculator->calculateCommissions($transactionList, $exchangeRates);
-        $commissionListArray = $commissionList->toArray();
 
         // This may look like code duplication, but direct assert for each transaction is intentional,
         // so it will be easier to find that transaction failed in case of test failure
         // in comparison to iterating them in cycle
         if (isset($transactionsData[self::TRANSACTION_UUID_1])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_1]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_1]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_1]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_1]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_2])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_2]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_2]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_2]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_2]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_3])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_3]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_3]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_3]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_3]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_4])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_4]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_4]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_4]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_4]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_5])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_5]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_5]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_5]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_5]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_6])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_6]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_6]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_6]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_6]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_7])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_7]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_7]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_7]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_7]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_8])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_8]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_8]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_8]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_8]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_9])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_9]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_9]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_9]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_9]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_10])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_10]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_10]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_10]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_10]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_11])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_11]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_11]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_11]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_11]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_12])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_12]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_12]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_12]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_12]->getAmount());
         }
         if (isset($transactionsData[self::TRANSACTION_UUID_13])) {
-            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_13]['expectedCommission'], (string)$commissionListArray[self::TRANSACTION_UUID_13]->getAmount());
+            $this->assertEquals($transactionsData[self::TRANSACTION_UUID_13]['expectedCommission'], (string)$commissionList[self::TRANSACTION_UUID_13]->getAmount());
         }
     }
 

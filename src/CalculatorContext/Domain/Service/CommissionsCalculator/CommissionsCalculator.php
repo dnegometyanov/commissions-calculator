@@ -33,7 +33,7 @@ class CommissionsCalculator implements CommissionsCalculatorInterface
     public function calculateCommissions(TransactionList $transactionList, ExchangeRates $exchangeRates): CommissionList
     {
         $commissionsList = new CommissionList();
-        foreach ($transactionList->toArray() as $transaction) {
+        foreach ($transactionList as $transaction) {
             $transactionCommission = $this->commissionCalculator->calculateCommissionForTransaction($transaction, $exchangeRates);
             $commissionsList->addCommission($transactionCommission);
         }
