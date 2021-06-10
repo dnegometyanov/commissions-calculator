@@ -71,6 +71,12 @@ We need to refactor it to return / persist rules of any type we need. For exampl
 
 You can use make command or just run appropriate commands from Makefile manually.
 
+### Step0: Check tools 
+
+ - Docker should be running
+
+ - Make utility should be installed on your host machine. Otherwise instead of make commands you may manually run their content.
+
 ### Step1: Build container and install composer dependencies
 
     Make build
