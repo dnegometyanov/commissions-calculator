@@ -36,13 +36,13 @@ and you may check Dockerfile for troubleshooting of your local config.
 Currently we have only Weekly category rules that implement `WeeklyRuleInterface` taht extends `RuleInterface` and basically takes  `Transaction`, `WeeklyStateCollection`, `ExchangeRates` 
    as parameters for calculation of commission of each transaction. 
 
- - Rules added to the `RuleSequence`, so the first matching rule applies to calculate the commission. 
+ - Rules added to the `WeeklyRuleSequence`, so the first matching rule applies to calculate the commission. 
 
  - `WeeklyStateCollection` is a collection that has Transaction Type (i.e. `deposit` or `withdrawal`) as a key,
-   and `WeeklyState` as value. For now we have only `WeeklyState` that contains aggregation of Weekly Amount per transaction type and weekly transactions count per transaction type.
+   and `WeeklyState` as value. For now, we have only `WeeklyState` that contains aggregation of Weekly Amount per transaction type and weekly transactions count per transaction type.
    But we possibly can create any state objects that implement interfaces we need to the rule and aggregated to the common interface similar to `WeeklyStateInterface` 
 
-- `WeeklyStateRepositoryInterface` is an interface for storing and retrieving `WeeklyStateCollection` per user id.
+- `UserCalculationStateRepositoryInterface` is an interface for storing and retrieving `WeeklyStateCollectionInterface` per user id.
 And `WeeklyStateRepositoryDefault` is its in-memory implementation.
   
  - `TransactionCommissionCalculator` implements `TransactionCommissionCalculatorInterface`
@@ -54,7 +54,7 @@ And `WeeklyStateRepositoryDefault` is its in-memory implementation.
 ### Extensibility limitation of current solution (possible TODOs)
  - Calculation state, in this case `WeeklyState` is updated from the rules ATM, so in case we add new states with new fields for new rules,
 our existing rules will not update the new state field. 
-   To support this, we need to create a separate service outside of rules (somewhere on the CommissionsCalculator probably) that updates the state independently from rules.
+   To support this, we need to create a separate service outside of rules (somewhere on the CommissionsCalculator probably) that updates the state independently of rules.
    
  - `UserCalculationStateRepositoryInterface` works with `WeeklyStateCollectionInterface`, so it cannot handle new types states at its current implementation.
 We need to refactor it to return / persist rules of any type we need. For example, to have matching methods (interfaces) for each state type.
