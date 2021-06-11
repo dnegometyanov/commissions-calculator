@@ -144,7 +144,12 @@ and change the filename accordingly
 ## Alternative Makefile commands (may be used instead of composer's scripts)
 ### Run tests
 
+All tests and checks
+
+    Make all-tests-and-checks
+
 Runs container and executes proper tests (Unit / Integration / All PhpUnit / Behat Behavior / All respectively).
+
 
     Make unit-tests
 
